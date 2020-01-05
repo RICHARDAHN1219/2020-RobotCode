@@ -9,7 +9,9 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.DriveConstants;
+import frc.robot.commands.limelightVisionCommand;
 import frc.robot.subsystems.driveSubsystem;
 
 /**
@@ -20,7 +22,7 @@ import frc.robot.subsystems.driveSubsystem;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-  private final driveSubsystem m_driveSubsystem = new driveSubsystem();
+  public final static driveSubsystem m_drive= new driveSubsystem();
 
 
   /**
@@ -50,8 +52,10 @@ public class RobotContainer {
    *
    * @return the command to run in autonomous
    */
-  /*public Command getAutonomousCommand() {
+  public Command getAutonomousCommand() {
     // An ExampleCommand will run in autonomous
-    //return m_autoCommand;
-  }*/
+    limelightVisionCommand m_autoCommand = new limelightVisionCommand();
+    return m_autoCommand;
+
+  }
 }
