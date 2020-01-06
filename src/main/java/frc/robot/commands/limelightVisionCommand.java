@@ -23,6 +23,8 @@ public class limelightVisionCommand extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    NetworkTableInstance.getDefault().getTable("limelight").getEntry("camMode").setNumber(0);
+    NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").setNumber(3);
 
   }
 
@@ -37,23 +39,23 @@ public class limelightVisionCommand extends CommandBase {
 
     double tv = NetworkTableInstance.getDefault().getTable("limelight-one").getEntry("tv").getDouble(0);
     double tx = NetworkTableInstance.getDefault().getTable("limelight-one").getEntry("tx").getDouble(0);
-    double ty = NetworkTableInstance.getDefault().getTable("limelight-one").getEntry("ty").getDouble(0);
+    //double ty = NetworkTableInstance.getDefault().getTable("limelight-one").getEntry("ty").getDouble(0);
     double ta = NetworkTableInstance.getDefault().getTable("limelight-one").getEntry("ta").getDouble(0);
 
-    boolean m_LimelightHasValidTarget = false;
+    //boolean m_LimelightHasValidTarget = false;
     double m_LimelightDriveCommand = 0.0;
     double m_LimelightSteerCommand = 0.0;
 
     if (tv < 1.0)
     {
-      m_LimelightHasValidTarget = false;
+      //m_LimelightHasValidTarget = false;
       m_LimelightDriveCommand = 0.0;
       m_LimelightSteerCommand = 0.0;
       RobotContainer.m_drive.arcadeDrive(0.0,0.0);
       return;
     }
 
-    m_LimelightHasValidTarget = true;
+    //m_LimelightHasValidTarget = true;
 
     // Start with proportional steering
     double steer_cmd = tx * STEER_K;
@@ -77,6 +79,9 @@ public class limelightVisionCommand extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    NetworkTableInstance.getDefault().getTable("limelight").getEntry("camMode").setNumber(1);
+    NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").setNumber(1);
+
   }
 
   // Returns true when the command should end.
