@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.commands.limelightVisionCommand;
 import frc.robot.subsystems.driveSubsystem;
+import frc.robot.subsystems.shooterSubsystem;
 
 /**
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
@@ -22,8 +23,9 @@ import frc.robot.subsystems.driveSubsystem;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
+  
   public final static driveSubsystem m_drive= new driveSubsystem();
-
+  public static final shooterSubsystem m_shooter = new shooterSubsystem();
 
   /**
    * The container for the robot.  Contains subsystems, OI devices, and commands.
