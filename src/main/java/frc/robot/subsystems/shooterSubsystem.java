@@ -40,7 +40,7 @@ public class shooterSubsystem extends SubsystemBase {
   }
 
   public void setShooterRPM (double desiredRPM) {
-    shooter1.set(ControlMode.Velocity, desiredRPM * 2048 / 600); //RPM must be less than 6380
+    shooter1.set(ControlMode.Velocity, desiredRPM * 4096 / 600); //RPM must be less than 6380
   }
 
   public void setShooterPID (double P, double I, double D, double F) {

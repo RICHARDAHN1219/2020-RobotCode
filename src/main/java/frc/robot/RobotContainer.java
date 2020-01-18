@@ -9,11 +9,17 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.commands.driveCommand;
+import frc.robot.commands.elevatorCommand;
 import frc.robot.commands.limelightTurretVisionCommand;
+import frc.robot.commands.shooterCommand;
+import frc.robot.commands.shooterHalfCommand;
 import frc.robot.subsystems.driveSubsystem;
+import frc.robot.subsystems.elevatorSubsystem;
 import frc.robot.subsystems.turretSubsystem;
 import frc.robot.subsystems.shooterSubsystem;
 
@@ -30,6 +36,9 @@ public class RobotContainer {
   private final limelightTurretVisionCommand m_turretVisionCommand = new limelightTurretVisionCommand(m_turretSubsystem);
   private final driveCommand m_driveCommand = new driveCommand(m_driveSubsystem);
   public static final shooterSubsystem m_shooter = new shooterSubsystem();
+  public static final shooterCommand m_shooterCommand = new shooterCommand(m_shooter);
+  public static final elevatorSubsystem m_elevatorSubsystem = new elevatorSubsystem();
+  public final elevatorCommand m_elevatorCommand = new elevatorCommand(m_elevatorSubsystem);
   /**
    * The container for the robot.  Contains subsystems, OI devices, and commands.
    */
@@ -40,6 +49,8 @@ public class RobotContainer {
     configureButtonBindings();
     m_driveSubsystem.setDefaultCommand(new driveCommand(m_driveSubsystem));
     m_turretSubsystem.setDefaultCommand(new limelightTurretVisionCommand(m_turretSubsystem));
+    m_elevatorSubsystem.setDefaultCommand(new elevatorCommand(m_elevatorSubsystem));
+    
   }
 
   /**
@@ -49,6 +60,10 @@ public class RobotContainer {
    * {@link edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
+    final JoystickButton abutton = new JoystickButton(m_driveController, Button.kA.value);
+    abutton.whileHeld(new shooterCommand(m_shooter));
+    final JoystickButton bbutton = new JoystickButton(m_driveController, Button.kB.value);
+    bbutton.whileHeld(new shooterHalfCommand(m_shooter));
 
   }
 

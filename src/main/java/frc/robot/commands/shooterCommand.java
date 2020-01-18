@@ -12,7 +12,7 @@ import frc.robot.subsystems.shooterSubsystem;
 
 public class shooterCommand extends CommandBase {
   
-  private final shooterSubsystem m_shooterSubsystem;
+  public final shooterSubsystem m_shooterSubsystem;
 
   public shooterCommand(shooterSubsystem subsystem) {
     // Use addRequirements() here to declare subsystem dependencies.
@@ -23,14 +23,14 @@ public class shooterCommand extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_shooterSubsystem.setShooterPID(0.5, 0, 0.1, 0);
-    m_shooterSubsystem.setShooterRPM(4000);
+    m_shooterSubsystem.setShooterPID(0.1, 0, 0, 0);
+    
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    
+    m_shooterSubsystem.setShooterRPM(6300);
   }
 
   // Called once the command ends or is interrupted.

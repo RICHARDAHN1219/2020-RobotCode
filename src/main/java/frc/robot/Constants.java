@@ -37,4 +37,11 @@ public static final class shooterConstants {
     public static final int shooterTimeout = 30;
     public static final int shooterSlotIdx = 0;
 }
+public static final class elevatorConstants {
+    public static final int elevator1 = 6;
+    public static final int elevator2 = 7;
+    public static final int elevatorWinch = 8;
+    public static final int elevatorPivotTimeout = 30;
+    public static final int elevatorSlotIdx = 1;
+}
 }
