@@ -7,7 +7,10 @@
 
 package frc.robot.commands;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
+
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.subsystems.IndexerSubsystem;
 import frc.robot.subsystems.shooterSubsystem;
 
 public class shooterCommand extends CommandBase {
@@ -24,18 +27,25 @@ public class shooterCommand extends CommandBase {
   @Override
   public void initialize() {
     m_shooterSubsystem.setShooterPID(0.1, 0, 0, 0);
+    m_shooterSubsystem.setShooterRPM(6380);
     
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_shooterSubsystem.setShooterRPM(6300);
+    m_shooterSubsystem.setShooterRPM(6380);
+    //Uose 3190 for testing purposes, as it is exactly half speed.
+    //m_shooterSubsystem.setShooterRPM(1500);
+    IndexerSubsystem.indexLoad.set(ControlMode.PercentOutput, .7);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    shooterSubsystem.shooter1.set(ControlMode.PercentOutput, 0);
+    IndexerSubsystem.indexLoad.set(ControlMode.PercentOutput, 0);
+
   }
 
   // Returns true when the command should end.

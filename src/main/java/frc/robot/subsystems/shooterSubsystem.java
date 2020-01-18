@@ -21,8 +21,8 @@ public class shooterSubsystem extends SubsystemBase {
 
   public shooterSubsystem() {
     shooter1.configFactoryDefault();
-    shooter2.configFactoryDefault();
-    shooter2.follow(shooter1);
+        //......shooter2.configFactoryDefault();
+    //shooter2.follow(shooter1);
     shooter2.setInverted(true);
     shooter1.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor, shooterConstants.shooterSlotIdx, shooterConstants.shooterTimeout);
     shooter1.setSensorPhase(true);
@@ -31,7 +31,7 @@ public class shooterSubsystem extends SubsystemBase {
     shooter1.configPeakOutputForward(1, shooterConstants.shooterTimeout);
     shooter1.configPeakOutputReverse(-1, shooterConstants.shooterTimeout);
     shooter1.setNeutralMode(NeutralMode.Coast);
-    shooter2.setNeutralMode(NeutralMode.Coast);
+    //shooter2.setNeutralMode(NeutralMode.Coast);
   }
 
   @Override

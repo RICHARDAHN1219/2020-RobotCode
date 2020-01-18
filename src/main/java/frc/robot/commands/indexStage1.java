@@ -8,30 +8,30 @@
 package frc.robot.commands;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.NeutralMode;
 
+//import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-//import frc.robot.RobotContainer;
-import frc.robot.subsystems.elevatorSubsystem;
+import frc.robot.subsystems.IndexerSubsystem;
 
-public class elevatorWinchCommand extends CommandBase {
+public class indexStage1 extends CommandBase {
   /**
-   * Creates a new elevatorWinchCommand.
+   * Creates a new indexLoad.
    */
-  public elevatorWinchCommand() {
+  public indexStage1() {
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    elevatorSubsystem.elevatorWinch.setNeutralMode(NeutralMode.Brake);
+    IndexerSubsystem.indexStage1_2.follow(IndexerSubsystem.indexStage1_1);
+    IndexerSubsystem.indexStage1_2.setInverted(true);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    elevatorSubsystem.elevatorWinch.set(ControlMode.PercentOutput, 1);
+    IndexerSubsystem.indexStage1_1.set(ControlMode.PercentOutput, 0.5);
   }
 
   // Called once the command ends or is interrupted.

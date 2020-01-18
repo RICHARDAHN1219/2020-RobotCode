@@ -10,11 +10,12 @@ package frc.robot;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.XboxController.Button;
-import edu.wpi.first.wpilibj2.command.Command;
+//import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.commands.driveCommand;
 import frc.robot.commands.elevatorCommand;
+import frc.robot.commands.indexStage1;
 import frc.robot.commands.limelightTurretVisionCommand;
 import frc.robot.commands.shooterCommand;
 import frc.robot.commands.shooterHalfCommand;
@@ -33,8 +34,8 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   public final static driveSubsystem m_driveSubsystem = new driveSubsystem();
   private final turretSubsystem m_turretSubsystem = new turretSubsystem();
-  private final limelightTurretVisionCommand m_turretVisionCommand = new limelightTurretVisionCommand(m_turretSubsystem);
-  private final driveCommand m_driveCommand = new driveCommand(m_driveSubsystem);
+  //private final limelightTurretVisionCommand m_turretVisionCommand = new limelightTurretVisionCommand(m_turretSubsystem);
+  //private final driveCommand m_driveCommand = new driveCommand(m_driveSubsystem);
   public static final shooterSubsystem m_shooter = new shooterSubsystem();
   public static final shooterCommand m_shooterCommand = new shooterCommand(m_shooter);
   public static final elevatorSubsystem m_elevatorSubsystem = new elevatorSubsystem();
@@ -63,7 +64,10 @@ public class RobotContainer {
     final JoystickButton abutton = new JoystickButton(m_driveController, Button.kA.value);
     abutton.whileHeld(new shooterCommand(m_shooter));
     final JoystickButton bbutton = new JoystickButton(m_driveController, Button.kB.value);
+    //final JoystickButton xbutton = new JoystickButton(m_driveController, Button.kX.value);
+    final JoystickButton ybutton = new JoystickButton(m_driveController, Button.kY.value);
     bbutton.whileHeld(new shooterHalfCommand(m_shooter));
+    ybutton.whileHeld(new indexStage1());
 
   }
 

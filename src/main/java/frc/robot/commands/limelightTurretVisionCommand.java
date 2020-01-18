@@ -41,6 +41,7 @@ public class limelightTurretVisionCommand extends CommandBase {
 
     double tv = NetworkTableInstance.getDefault().getTable("limelight-one").getEntry("tv").getDouble(0);
     double tx = NetworkTableInstance.getDefault().getTable("limelight-one").getEntry("tx").getDouble(0);
+    
     //boolean m_LimelightHasValidTarget = false;
     double m_LimelightSteerCommand = 0.0;
 

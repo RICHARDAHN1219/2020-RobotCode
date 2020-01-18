@@ -44,4 +44,9 @@ public static final class elevatorConstants {
     public static final int elevatorPivotTimeout = 30;
     public static final int elevatorSlotIdx = 1;
 }
+public static final class indexConstants {
+    public static final int index1_1 = 8;
+    public static final int index1_2 = 9;
+    public static final int indexLoad = 10;
+}
 }
