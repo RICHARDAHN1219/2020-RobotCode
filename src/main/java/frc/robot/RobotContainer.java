@@ -15,6 +15,7 @@ import frc.robot.commands.driveCommand;
 import frc.robot.commands.limelightTurretVisionCommand;
 import frc.robot.subsystems.driveSubsystem;
 import frc.robot.subsystems.turretSubsystem;
+import frc.robot.subsystems.shooterSubsystem;
 
 /**
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
@@ -28,6 +29,7 @@ public class RobotContainer {
   private final turretSubsystem m_turretSubsystem = new turretSubsystem();
   private final limelightTurretVisionCommand m_turretVisionCommand = new limelightTurretVisionCommand(m_turretSubsystem);
   private final driveCommand m_driveCommand = new driveCommand(m_driveSubsystem);
+  public static final shooterSubsystem m_shooter = new shooterSubsystem();
   /**
    * The container for the robot.  Contains subsystems, OI devices, and commands.
    */

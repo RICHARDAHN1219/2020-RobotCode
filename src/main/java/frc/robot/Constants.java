@@ -31,4 +31,10 @@ public static final class Manipulator {
     public static final int kTurretRotationsPerTick  = 1;
 
 }
+public static final class shooterConstants {
+    public static final int shooter1 = 4;
+    public static final int shooter2 = 5;
+    public static final int shooterTimeout = 30;
+    public static final int shooterSlotIdx = 0;
+}
 }
