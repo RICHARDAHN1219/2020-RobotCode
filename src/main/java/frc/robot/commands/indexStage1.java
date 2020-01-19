@@ -25,18 +25,19 @@ public class indexStage1 extends CommandBase {
   @Override
   public void initialize() {
     IndexerSubsystem.indexStage1_2.follow(IndexerSubsystem.indexStage1_1);
-    IndexerSubsystem.indexStage1_2.setInverted(true);
+    IndexerSubsystem.indexStage1_1.setInverted(true);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    IndexerSubsystem.indexStage1_1.set(ControlMode.PercentOutput, 0.5);
+    IndexerSubsystem.indexStage1_1.set(ControlMode.PercentOutput, 0.7);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    IndexerSubsystem.indexStage1_1.set(ControlMode.PercentOutput, 0);
   }
 
   // Returns true when the command should end.

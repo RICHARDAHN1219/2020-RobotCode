@@ -7,6 +7,8 @@
 
 package frc.robot;
 
+//import com.ctre.phoenix.motorcontrol.ControlMode;
+
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.XboxController.Button;
@@ -18,7 +20,8 @@ import frc.robot.commands.elevatorCommand;
 import frc.robot.commands.indexStage1;
 import frc.robot.commands.limelightTurretVisionCommand;
 import frc.robot.commands.shooterCommand;
-import frc.robot.commands.shooterHalfCommand;
+//import frc.robot.commands.shooterHalfCommand;
+//import frc.robot.subsystems.IndexerSubsystem;
 import frc.robot.subsystems.driveSubsystem;
 import frc.robot.subsystems.elevatorSubsystem;
 import frc.robot.subsystems.turretSubsystem;
@@ -63,11 +66,13 @@ public class RobotContainer {
   private void configureButtonBindings() {
     final JoystickButton abutton = new JoystickButton(m_driveController, Button.kA.value);
     abutton.whileHeld(new shooterCommand(m_shooter));
-    final JoystickButton bbutton = new JoystickButton(m_driveController, Button.kB.value);
+    final JoystickButton bbutton = new JoystickButton(m_driveController, Button.kBumperRight.value);
     //final JoystickButton xbutton = new JoystickButton(m_driveController, Button.kX.value);
-    final JoystickButton ybutton = new JoystickButton(m_driveController, Button.kY.value);
-    bbutton.whileHeld(new shooterHalfCommand(m_shooter));
-    ybutton.whileHeld(new indexStage1());
+    final JoystickButton ybutton = new JoystickButton(m_driveController, Button.kBumperLeft.value);
+    bbutton.toggleWhenPressed(new shooterCommand(m_shooter));
+    //bbutton.whenReleased(command)
+    //xbutton.whenPressed( () -> shooterCommand.index()).whenReleased(() -> IndexerSubsystem.indexLoad.set(ControlMode.PercentOutput, 0));
+    ybutton.toggleWhenPressed(new indexStage1());
 
   }
 
