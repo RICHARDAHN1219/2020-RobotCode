@@ -27,7 +27,7 @@ public class shooterCommand extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_shooterSubsystem.setShooterPID(0.5, 0, 0, 0);
+    m_shooterSubsystem.setShooterPID(0.55, 0.15, 0.175, 0);
     m_shooterSubsystem.setShooterRPM(6380);
     
   }
@@ -41,7 +41,7 @@ public class shooterCommand extends CommandBase {
     //Uose 3190 for testing purposes, as it is exactly half speed.
     //m_shooterSubsystem.setShooterRPM(1500);
     System.out.println("Starting Kicker Wheel");
-    IndexerSubsystem.indexLoad.set(ControlMode.PercentOutput, .85);
+    IndexerSubsystem.indexLoad.set(ControlMode.PercentOutput, 1);
   }
   // Called once the command ends or is interrupted.
   @Override

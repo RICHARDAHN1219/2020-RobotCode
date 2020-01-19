@@ -31,7 +31,7 @@ public class indexStage1 extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    IndexerSubsystem.indexStage1_1.set(ControlMode.PercentOutput, 0.7);
+    IndexerSubsystem.indexStage1_1.set(ControlMode.PercentOutput, 0.75);
   }
 
   // Called once the command ends or is interrupted.
@@ -46,3 +46,4 @@ public class indexStage1 extends CommandBase {
     return false;
   }
 }
+
