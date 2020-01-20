@@ -9,6 +9,7 @@ package frc.robot.commands;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.subsystems.IndexerSubsystem;
@@ -28,7 +29,7 @@ public class shooterCommand extends CommandBase {
   @Override
   public void initialize() {
     m_shooterSubsystem.setShooterPID(0.55, 0.15, 0.175, 0);
-    m_shooterSubsystem.setShooterRPM(6380);
+    //m_shooterSubsystem.setShooterRPM(6380);
     
   }
 
@@ -36,12 +37,22 @@ public class shooterCommand extends CommandBase {
   @Override
   public void execute() {
     System.out.println("Spooling Flywheel");
+    /*
+    double ta = NetworkTableInstance.getDefault().getTable("limelight-one").getEntry("ta").getDouble(0);
+    if (ta == 0){
+      shooterSubsystem.shooter1.set(ControlMode.PercentOutput, 0);
+    } else {
+      shooterSubsystem.shooter1.set(ControlMode.PercentOutput, 1-(100/ta));
+    }
+    System.out.println(1*100/ta);
+    */
+    
     m_shooterSubsystem.setShooterRPM(6380);
     new WaitCommand(0.5);
-    //Uose 3190 for testing purposes, as it is exactly half speed.
+    //Use 1500 for testing purposes, as it is exactly half speed.
     //m_shooterSubsystem.setShooterRPM(1500);
     System.out.println("Starting Kicker Wheel");
-    IndexerSubsystem.indexLoad.set(ControlMode.PercentOutput, 1);
+    //IndexerSubsystem.indexLoad.set(ControlMode.PercentOutput, 1);
   }
   // Called once the command ends or is interrupted.
   @Override
