@@ -7,37 +7,61 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.RobotContainer;
-import frc.robot.subsystems.elevatorSubsystem;
+import com.ctre.phoenix.motorcontrol.ControlMode;
 
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
+import frc.robot.subsystems.IndexerSubsystem;
+import frc.robot.subsystems.elevatorSubsystem;
+import frc.robot.subsystems.shooterSubsystem;
 
 public class elevatorCommand extends CommandBase {
-  public elevatorSubsystem m_elevatorSubsystem;
-  /**
-   * Creates a new elevatorCommand.
-   */
+  
+  public final shooterSubsystem m_shooterSubsystem;
+
   public elevatorCommand(elevatorSubsystem subsystem) {
-    m_elevatorSubsystem = subsystem;
     // Use addRequirements() here to declare subsystem dependencies.
+    m_elevatorSubsystem = subsystem;
     addRequirements(subsystem);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    RobotContainer.m_elevatorSubsystem.setelevatorPID(0.1, 0, 0, 0);
+    m_elevatorSubsystem.setElevatorPID(0.1, 0, 0, 0);
+    //m_shooterSubsystem.setShooterRPM(6380);
+    
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    RobotContainer.m_elevatorSubsystem.setelevatorRPM(6300);
+  0  //System.out.println("Spooling Flywheel");
+    /*
+    double ta = NetworkTableInstance.getDefault().getTable("limelight-one").getEntry("ta").getDouble(0);
+    if (ta == 0){
+      shooterSubsystem.shooter1.set(ControlMode.PercentOutput, 0);
+    } else {
+      shooterSubsystem.shooter1.set(ControlMode.PercentOutput, 1-(100/ta));
+    }
+    System.out.println(1*100/ta);
+    */
+    
+    elevatorSubsystem.elevator1.set(ControlMode.Position, 2048);
+    new WaitCommand(0.5);
+    //Use 1500 for testing purposes, as it is exactly half speed.
+    //m_shooterSubsystem.setShooterRPM(1500);
+    System.out.println("Starting Kicker Wheel");
+    //IndexerSubsystem.indexLoad.set(ControlMode.PercentOutput, 1);
   }
-
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    //System.out.println("Stopping Flywheel/Kicker Wheel");
+    //shooterSubsystem.shooter1.set(ControlMode.PercentOutput, 0);
+    //IndexerSubsystem.indexLoad.set(ControlMode.PercentOutput, 0);
+
   }
 
   // Returns true when the command should end.

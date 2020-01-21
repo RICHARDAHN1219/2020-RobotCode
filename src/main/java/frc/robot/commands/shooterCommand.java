@@ -28,7 +28,7 @@ public class shooterCommand extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_shooterSubsystem.setShooterPID(0.55, 0.15, 0.175, 0);
+    m_shooterSubsystem.setShooterPID(0.1, 0, 0, 0);
     //m_shooterSubsystem.setShooterRPM(6380);
     
   }
@@ -47,7 +47,7 @@ public class shooterCommand extends CommandBase {
     System.out.println(1*100/ta);
     */
     
-    m_shooterSubsystem.setShooterRPM(6380);
+    m_shooterSubsystem.shooter1.set(ControlMode.Position, 2048);
     new WaitCommand(0.5);
     //Use 1500 for testing purposes, as it is exactly half speed.
     //m_shooterSubsystem.setShooterRPM(1500);

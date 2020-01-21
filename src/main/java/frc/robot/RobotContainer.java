@@ -42,7 +42,7 @@ public class RobotContainer {
   public static final shooterSubsystem m_shooter = new shooterSubsystem();
   public static final shooterCommand m_shooterCommand = new shooterCommand(m_shooter);
   public static final elevatorSubsystem m_elevatorSubsystem = new elevatorSubsystem();
-  public final elevatorCommand m_elevatorCommand = new elevatorCommand(m_elevatorSubsystem);
+  public final elevatorCommand m_elevatorCommand = new elevatorCommand();
   /**
    * The container for the robot.  Contains subsystems, OI devices, and commands.
    */
@@ -53,7 +53,7 @@ public class RobotContainer {
     configureButtonBindings();
     m_driveSubsystem.setDefaultCommand(new driveCommand(m_driveSubsystem));
     m_turretSubsystem.setDefaultCommand(new limelightTurretVisionCommand(m_turretSubsystem));
-    m_elevatorSubsystem.setDefaultCommand(new elevatorCommand(m_elevatorSubsystem));
+   //m_elevatorSubsystem.setDefaultCommand(new elevatorCommand(m_elevatorSubsystem));
     
   }
 
@@ -65,7 +65,7 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
     final JoystickButton abutton = new JoystickButton(m_driveController, Button.kA.value);
-    abutton.whileHeld(new shooterCommand(m_shooter));
+    abutton.toggleWhenPressed(new elevatorCommand());
     final JoystickButton bbutton = new JoystickButton(m_driveController, Button.kBumperRight.value);
     //final JoystickButton xbutton = new JoystickButton(m_driveController, Button.kX.value);
     final JoystickButton ybutton = new JoystickButton(m_driveController, Button.kBumperLeft.value);

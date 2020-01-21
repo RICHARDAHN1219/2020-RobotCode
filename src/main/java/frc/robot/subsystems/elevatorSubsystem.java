@@ -37,6 +37,12 @@ public class elevatorSubsystem extends SubsystemBase {
     elevator1.configPeakOutputReverse(-1, elevatorConstants.elevatorPivotTimeout);
     elevator1.setNeutralMode(NeutralMode.Coast);
     elevator2.setNeutralMode(NeutralMode.Coast);
+    //elevator1.configForwardSoftLimitEnable(false);
+    //elevator1.configReverseSoftLimitEnable(false);
+    //elevator1.configForwardSoftLimitThreshold(20*4096);
+    //elevator1.configReverseSoftLimitThreshold(0);
+
+    
   }
 
   @Override
@@ -48,7 +54,7 @@ public class elevatorSubsystem extends SubsystemBase {
     elevator1.set(ControlMode.Velocity, desiredRPM * 4096 / 600); //RPM must be less than 6380
   }
 
-  public void setelevatorPID (double P, double I, double D, double F) {
+  public static void setelevatorPID (double P, double I, double D, double F) {
     elevator1.config_kP(elevatorConstants.elevatorSlotIdx, P, elevatorConstants.elevatorPivotTimeout);
     elevator1.config_kI(elevatorConstants.elevatorSlotIdx, I, elevatorConstants.elevatorPivotTimeout);
     elevator1.config_kD(elevatorConstants.elevatorSlotIdx, D, elevatorConstants.elevatorPivotTimeout);
