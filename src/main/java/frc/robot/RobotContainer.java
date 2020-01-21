@@ -42,7 +42,7 @@ public class RobotContainer {
   public static final shooterSubsystem m_shooter = new shooterSubsystem();
   public static final shooterCommand m_shooterCommand = new shooterCommand(m_shooter);
   public static final elevatorSubsystem m_elevatorSubsystem = new elevatorSubsystem();
-  public final elevatorCommand m_elevatorCommand = new elevatorCommand();
+  public final elevatorCommand m_elevatorCommand = new elevatorCommand(m_elevatorSubsystem);
   /**
    * The container for the robot.  Contains subsystems, OI devices, and commands.
    */
@@ -65,7 +65,7 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
     final JoystickButton abutton = new JoystickButton(m_driveController, Button.kA.value);
-    abutton.toggleWhenPressed(new elevatorCommand());
+    abutton.toggleWhenPressed(new elevatorCommand(m_elevatorSubsystem));
     final JoystickButton bbutton = new JoystickButton(m_driveController, Button.kBumperRight.value);
     //final JoystickButton xbutton = new JoystickButton(m_driveController, Button.kX.value);
     final JoystickButton ybutton = new JoystickButton(m_driveController, Button.kBumperLeft.value);
