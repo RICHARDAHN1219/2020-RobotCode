@@ -10,6 +10,7 @@ package frc.robot.subsystems;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
@@ -17,6 +18,7 @@ public class turretSubsystem extends SubsystemBase {
   /**
    * Creates a new turretSubsystem.
    */
+  public static boolean turretHome = false;
   public static final TalonSRX turretDrive = new TalonSRX(Constants.Manipulator.TURRET_DRIVE);
   public turretSubsystem() {
     turretDrive.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute, 0, 10);
@@ -28,6 +30,17 @@ public class turretSubsystem extends SubsystemBase {
         (int) (Constants.Manipulator.kSoftMinTurretAngle / (360.0 * Constants.Manipulator.kTurretRotationsPerTick)));
 
     
+  }
+  public static void turretHome(){
+    if (turretDrive.getSelectedSensorPosition() < 0)
+    {
+      turretDrive.set(ControlMode.PercentOutput, .5);
+    } else if (turretDrive.getSelectedSensorPosition() > 0)
+    {
+      turretDrive.set(ControlMode.PercentOutput, -.5);
+    } else if (turretDrive.getSelectedSensorPosition() == 0) {
+      turretDrive.set(ControlMode.PercentOutput, 0);
+    }
   }
 
   @Override

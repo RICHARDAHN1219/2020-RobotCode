@@ -72,8 +72,11 @@ public class limelightTurretVisionCommand extends CommandBase {
 */
     turretSubsystem.turretDrive.set(ControlMode.PercentOutput, m_LimelightSteerCommand);
     }
-    else {
+    else if (Robot.manualMode = true) {
       turretSubsystem.turretDrive.set(ControlMode.PercentOutput, RobotContainer.m_operatorController.getX(Hand.kLeft));
+    }
+    else if (turretSubsystem.turretHome = true){
+      turretSubsystem.turretHome();
     }
   }
 
