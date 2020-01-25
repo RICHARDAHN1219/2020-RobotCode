@@ -26,7 +26,7 @@ public class elevatorCommand extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    elevatorSubsystem.setelevatorPID(0.1, 0, 0, 0);
+    m_elevatorSubsystem.setelevatorPID(0.1, 0, 0, 0);
     //m_shooterSubsystem.setShooterRPM(6380);
     
   }
@@ -35,7 +35,7 @@ public class elevatorCommand extends CommandBase {
   @Override
   public void execute() {
   System.out.println("Moving Elevator to Position.");    
-  elevatorSubsystem.elevator1.set(ControlMode.Position, 2048);
+    elevatorSubsystem.elevator1.set(ControlMode.Position, 2048);
   }
   // Called once the command ends or is interrupted.
   @Override

@@ -47,7 +47,7 @@ public class shooterCommand extends CommandBase {
     System.out.println(1*100/ta);
     */
     
-    m_shooterSubsystem.shooter1.set(ControlMode.Position, 2048);
+    shooterSubsystem.shooter1.set(ControlMode.Position, 2048);
     new WaitCommand(0.5);
     //Use 1500 for testing purposes, as it is exactly half speed.
     //m_shooterSubsystem.setShooterRPM(1500);

@@ -43,7 +43,7 @@ public class shooterSubsystem extends SubsystemBase {
     shooter1.set(ControlMode.Velocity, desiredRPM * 4096 / 600); //RPM must be less than 6380
   }
 
-  public static void setShooterPID (double P, double I, double D, double F) {
+  public void setShooterPID (double P, double I, double D, double F) {
     shooter1.config_kP(shooterConstants.shooterSlotIdx, P, shooterConstants.shooterTimeout);
     shooter1.config_kI(shooterConstants.shooterSlotIdx, I, shooterConstants.shooterTimeout);
     shooter1.config_kD(shooterConstants.shooterSlotIdx, D, shooterConstants.shooterTimeout);
