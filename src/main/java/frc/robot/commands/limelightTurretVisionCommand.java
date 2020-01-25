@@ -29,7 +29,7 @@ public class limelightTurretVisionCommand extends CommandBase {
   @Override
   public void initialize() {
     NetworkTableInstance.getDefault().getTable("limelight").getEntry("camMode").setNumber(0);
-    NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").setNumber(3);
+    NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").setNumber(2);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
