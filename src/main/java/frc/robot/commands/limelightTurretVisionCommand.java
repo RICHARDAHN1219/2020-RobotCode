@@ -50,7 +50,7 @@ public class limelightTurretVisionCommand extends CommandBase {
      // m_LimelightHasValidTarget = false;
      // m_LimelightDriveCommand = 0.0;
       m_LimelightSteerCommand = 0.0;
-      turretSubsystem.turretDrive.set(ControlMode.PercentOutput, 0.0);
+      turretSubsystem.turretDrive.set(ControlMode.PercentOutput, RobotContainer.m_operatorController.getX(Hand.kLeft));
       return;
     }
 
