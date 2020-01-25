@@ -7,36 +7,33 @@
 
 package frc.robot.commands;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
-
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.elevatorSubsystem;
+import frc.robot.RobotContainer;
+import frc.robot.subsystems.turretSubsystem;
 
-
-public class elevatorCommand extends CommandBase {
-
-  public final elevatorSubsystem m_elevatorSubsystem;
-
-  public elevatorCommand(elevatorSubsystem subsystem) {
+public class turretHomingCommand extends CommandBase {
+  /**
+   * Creates a new turretHomingCommand.
+   */
+  public turretHomingCommand() {
     // Use addRequirements() here to declare subsystem dependencies.
-    m_elevatorSubsystem = subsystem;
-    addRequirements(subsystem);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_elevatorSubsystem.setelevatorPID(0.1, 0, 0, 0);
-    //m_shooterSubsystem.setShooterRPM(6380);
-    
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-  System.out.println("Moving Elevator to Position.");    
-    elevatorSubsystem.elevator1.set(ControlMode.Position, 2048);
+    if (turretSubsystem.turretHome = false){
+      turretSubsystem.turretHome = true;
+    } else if (turretSubsystem.turretHome = true){
+      turretSubsystem.turretHome = false;
+    }
   }
+
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {

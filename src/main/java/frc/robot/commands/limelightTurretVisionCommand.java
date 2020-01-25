@@ -29,7 +29,7 @@ public class limelightTurretVisionCommand extends CommandBase {
   @Override
   public void initialize() {
     NetworkTableInstance.getDefault().getTable("limelight").getEntry("camMode").setNumber(0);
-    NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").setNumber(3);
+    NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").setNumber(2);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -37,7 +37,7 @@ public class limelightTurretVisionCommand extends CommandBase {
   public void execute() {
     if (Robot.manualMode==false) {
        // These numbers must be tuned for Comp Robot!  Be careful!
-    final double STEER_K = 0.05;                    // how hard to turn toward the target
+    final double STEER_K = 0.07;                    // how hard to turn toward the target
 
     double tv = NetworkTableInstance.getDefault().getTable("limelight-one").getEntry("tv").getDouble(0);
     double tx = NetworkTableInstance.getDefault().getTable("limelight-one").getEntry("tx").getDouble(0);
@@ -50,7 +50,7 @@ public class limelightTurretVisionCommand extends CommandBase {
      // m_LimelightHasValidTarget = false;
      // m_LimelightDriveCommand = 0.0;
       m_LimelightSteerCommand = 0.0;
-      turretSubsystem.turretDrive.set(ControlMode.PercentOutput, 0.0);
+      turretSubsystem.turretDrive.set(ControlMode.PercentOutput, RobotContainer.m_operatorController.getX(Hand.kLeft));
       return;
     }
 
@@ -72,8 +72,11 @@ public class limelightTurretVisionCommand extends CommandBase {
 */
     turretSubsystem.turretDrive.set(ControlMode.PercentOutput, m_LimelightSteerCommand);
     }
-    else {
+    else if (Robot.manualMode = true) {
       turretSubsystem.turretDrive.set(ControlMode.PercentOutput, RobotContainer.m_operatorController.getX(Hand.kLeft));
+    }
+    else if (turretSubsystem.turretHome = true){
+      turretSubsystem.turretHome();
     }
   }
 

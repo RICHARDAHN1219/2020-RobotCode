@@ -70,6 +70,7 @@ public class RobotContainer {
     abutton.toggleWhenPressed(new elevatorCommand(m_elevatorSubsystem));
     final JoystickButton bbutton = new JoystickButton(m_driveController, Button.kBumperRight.value);
     final JoystickButton xbutton = new JoystickButton(m_driveController, Button.kX.value);
+    final JoystickButton opBbutton = new JoystickButton(m_operatorController, Button.kBumperRight.value);
     final JoystickButton ybutton = new JoystickButton(m_driveController, Button.kBumperLeft.value);
     bbutton.toggleWhenPressed(new shooterCommand(m_shooter));
     //bbutton.whenReleased(command)
