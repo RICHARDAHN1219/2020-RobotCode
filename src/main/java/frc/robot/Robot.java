@@ -97,7 +97,7 @@ public class Robot extends TimedRobot {
     }
     if (turretLimit2 == true) {
       turretSubsystem.turretDrive.set(ControlMode.PercentOutput, .5);
-      DriverStation.reportError("Limit Reached on turret, going back to safe position.", f);
+      DriverStation.reportError("Limit Reached on turret, going back to safe position.", false);
     }
        
     
