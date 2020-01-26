@@ -26,6 +26,7 @@ import frc.robot.subsystems.driveSubsystem;
 import frc.robot.subsystems.elevatorSubsystem;
 import frc.robot.subsystems.turretSubsystem;
 import frc.robot.subsystems.shooterSubsystem;
+import frc.robot.subsystems.controlPanelMotors;
 
 /**
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
@@ -43,6 +44,7 @@ public class RobotContainer {
   public static final shooterCommand m_shooterCommand = new shooterCommand(m_shooter);
   public static final elevatorSubsystem m_elevatorSubsystem = new elevatorSubsystem();
   public final elevatorCommand m_elevatorCommand = new elevatorCommand(m_elevatorSubsystem);
+  private final controlPanelMotors m_controlPanelMotors = new controlPanelMotors();
   /**
    * The container for the robot.  Contains subsystems, OI devices, and commands.
    */
@@ -53,7 +55,7 @@ public class RobotContainer {
     configureButtonBindings();
     m_driveSubsystem.setDefaultCommand(new driveCommand(m_driveSubsystem));
     m_turretSubsystem.setDefaultCommand(new limelightTurretVisionCommand(m_turretSubsystem));
-   //m_elevatorSubsystem.setDefaultCommand(new elevatorCommand(m_elevatorSubsystem));
+    //m_elevatorSubsystem.setDefaultCommand(new elevatorCommand(m_elevatorSubsystem));
     
   }
 
@@ -67,17 +69,17 @@ public class RobotContainer {
     final JoystickButton abutton = new JoystickButton(m_driveController, Button.kA.value);
     abutton.toggleWhenPressed(new elevatorCommand(m_elevatorSubsystem));
     final JoystickButton bbutton = new JoystickButton(m_driveController, Button.kBumperRight.value);
+    final JoystickButton xbutton = new JoystickButton(m_driveController, Button.kX.value);
     final JoystickButton opBbutton = new JoystickButton(m_operatorController, Button.kBumperRight.value);
-    //final JoystickButton xbutton = new JoystickButton(m_driveController, Button.kX.value);
     final JoystickButton ybutton = new JoystickButton(m_driveController, Button.kBumperLeft.value);
     bbutton.toggleWhenPressed(new shooterCommand(m_shooter));
     //bbutton.whenReleased(command)
     //xbutton.whenPressed( () -> shooterCommand.index()).whenReleased(() -> IndexerSubsystem.indexLoad.set(ControlMode.PercentOutput, 0));
     ybutton.toggleWhenPressed(new indexStage1());
+    ybutton.whenPressed(() -> m_controlPanelMotors.setPosition(0), m_controlPanelMotors);
+    xbutton.whenPressed(() -> m_controlPanelMotors.setPosition(1 * 4096), m_controlPanelMotors);
 
   }
-
-
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
