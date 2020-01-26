@@ -24,8 +24,6 @@ public class indexStage1 extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    IndexerSubsystem.indexStage1_2.follow(IndexerSubsystem.indexStage1_1);
-    IndexerSubsystem.indexStage1_1.setInverted(true);
   }
 
   // Called every time the scheduler runs while the command is scheduled.

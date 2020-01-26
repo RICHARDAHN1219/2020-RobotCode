@@ -10,10 +10,13 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.subsystems.IndexerSubsystem;
 import frc.robot.subsystems.elevatorSubsystem;
 import frc.robot.subsystems.turretSubsystem;
+import com.ctre.phoenix.motorcontrol.*;
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
  * each mode, as described in the TimedRobot documentation. If you change the name of this class or
@@ -25,6 +28,10 @@ public class Robot extends TimedRobot {
   public static boolean manualMode = false;
   @SuppressWarnings("unused")
   private RobotContainer m_robotContainer;
+  boolean sensor1Last = true;
+  boolean sensor2Last = true;
+  boolean sensor3Last = true;
+  int stateChangeCount = 0;
   
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -40,7 +47,6 @@ public class Robot extends TimedRobot {
     turretSubsystem.turretDrive.setSelectedSensorPosition(0, 0, 10); 
     turretSubsystem.turretDrive.getSensorCollection().setQuadraturePosition(0, 10);
     elevatorSubsystem.elevatorWinch.setNeutralMode(NeutralMode.Coast);
-    
   }
 
   /**
@@ -57,6 +63,112 @@ public class Robot extends TimedRobot {
     // and running subsystem periodic() methods.  This must be called from the robot's periodic
     // block in order for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run();
+    boolean sensor1 = IndexerSubsystem.Sensor1.get();
+    boolean sensor2 = IndexerSubsystem.Sensor2.get();
+    boolean sensor3 = IndexerSubsystem.Sensor3.get();
+    IndexerSubsystem.indexStage1_2.follow(IndexerSubsystem.indexStage1_1);
+    IndexerSubsystem.indexStage1_1.setInverted(true);
+    SmartDashboard.putNumber("ball count", IndexerSubsystem.ballCount);
+    SmartDashboard.putNumber("state change count", stateChangeCount);
+    
+    if (sensor1 == false) {
+      IndexerSubsystem.indexStage1_1.set(ControlMode.PercentOutput, 0.75);
+      IndexerSubsystem.indexLoad.set(ControlMode.PercentOutput, 0.75);
+    } 
+    
+    else if (sensor2 == false) {
+      IndexerSubsystem.indexStage1_1.set(ControlMode.PercentOutput, 0);
+      IndexerSubsystem.indexLoad.set(ControlMode.PercentOutput, 0);
+    }
+
+    if (sensor1 != sensor1Last && sensor1 == false) {
+      IndexerSubsystem.ballCount += 1;
+      sensor1Last = sensor1;
+    }
+
+    if (sensor1 != sensor1Last && sensor1 == true) {
+      sensor1Last = sensor1;
+    }
+
+    if (sensor3 != sensor3Last && sensor3 == false) {
+      IndexerSubsystem.ballCount -= 1;
+      sensor3Last = sensor3;
+    }
+
+    if (sensor3 != sensor3Last && sensor3 == true) {
+      sensor3Last = sensor3;
+    }
+
+    if ((IndexerSubsystem.ballCount >= 1) && sensor1 == true && sensor2 == true) {
+      IndexerSubsystem.indexStage1_1.set(ControlMode.PercentOutput, 0.75);
+    }
+
+    if (sensor2 != sensor2Last && sensor2 == false) {
+      stateChangeCount += 1;
+      sensor2Last = sensor2;
+    }
+
+    if (sensor2 != sensor2Last && sensor2 == true) {
+      stateChangeCount += 1;
+      sensor2Last = sensor2;
+    }
+    
+    if (IndexerSubsystem.ballCount == 1 && stateChangeCount != 1) {
+      IndexerSubsystem.indexStage1_1.set(ControlMode.PercentOutput, 0.75);
+      IndexerSubsystem.indexLoad.set(ControlMode.PercentOutput, 0.75);
+    }
+    
+    if (IndexerSubsystem.ballCount == 2 && stateChangeCount != 3) {
+      IndexerSubsystem.indexStage1_1.set(ControlMode.PercentOutput, 0.75);
+      IndexerSubsystem.indexLoad.set(ControlMode.PercentOutput, 0.75);
+      if (IndexerSubsystem.ballCount == 2 && stateChangeCount == 3) {
+        IndexerSubsystem.indexStage1_1.set(ControlMode.PercentOutput, 0);
+        IndexerSubsystem.indexLoad.set(ControlMode.PercentOutput, 0);
+      }
+    }
+    /*else {
+      IndexerSubsystem.indexStage1_1.set(ControlMode.PercentOutput, 0);
+      IndexerSubsystem.indexLoad.set(ControlMode.PercentOutput, 0);
+    }*/
+    
+    if (IndexerSubsystem.ballCount == 3 && stateChangeCount != 5) {
+      IndexerSubsystem.indexStage1_1.set(ControlMode.PercentOutput, 0.75);
+      IndexerSubsystem.indexLoad.set(ControlMode.PercentOutput, 0.75);
+      if (IndexerSubsystem.ballCount == 3 && stateChangeCount == 5) {
+        IndexerSubsystem.indexStage1_1.set(ControlMode.PercentOutput, 0);
+        IndexerSubsystem.indexLoad.set(ControlMode.PercentOutput, 0);
+      }
+    }
+/*    else {
+      IndexerSubsystem.indexStage1_1.set(ControlMode.PercentOutput, 0);
+      IndexerSubsystem.indexLoad.set(ControlMode.PercentOutput, 0);
+    }*/
+
+    if (IndexerSubsystem.ballCount == 4 && stateChangeCount != 7) {
+      IndexerSubsystem.indexStage1_1.set(ControlMode.PercentOutput, 0.75);
+      IndexerSubsystem.indexLoad.set(ControlMode.PercentOutput, 0.75);
+      if (IndexerSubsystem.ballCount == 4 && stateChangeCount == 7) {
+        IndexerSubsystem.indexStage1_1.set(ControlMode.PercentOutput, 0);
+        IndexerSubsystem.indexLoad.set(ControlMode.PercentOutput, 0);
+      }
+    }
+    /*else {
+      IndexerSubsystem.indexStage1_1.set(ControlMode.PercentOutput, 0);
+      IndexerSubsystem.indexLoad.set(ControlMode.PercentOutput, 0);
+    }*/
+
+    if (IndexerSubsystem.ballCount == 5 && stateChangeCount != 9) {
+      IndexerSubsystem.indexStage1_1.set(ControlMode.PercentOutput, 0.75);
+      IndexerSubsystem.indexLoad.set(ControlMode.PercentOutput, 0.75);
+      if (IndexerSubsystem.ballCount == 5 && stateChangeCount == 9) {
+        IndexerSubsystem.indexStage1_1.set(ControlMode.PercentOutput, 0);
+        IndexerSubsystem.indexLoad.set(ControlMode.PercentOutput, 0);
+      }
+    }
+    /*else {
+      IndexerSubsystem.indexStage1_1.set(ControlMode.PercentOutput, 0);
+      IndexerSubsystem.indexLoad.set(ControlMode.PercentOutput, 0);
+    }*/
   }
 
   /**
