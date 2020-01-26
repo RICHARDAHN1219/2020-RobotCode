@@ -25,7 +25,7 @@ public static final class DriveConstants {
     public static final int k_operatorController = 1;
 }
 public static final class Manipulator {
-    public static final int TURRET_DRIVE  = 1;
+    public static final int TURRET_DRIVE  = 11;
     public static final int kSoftMaxTurretAngle  = 1;
     public static final int kSoftMinTurretAngle  = 1;
     public static final int kTurretRotationsPerTick  = 1;
@@ -40,7 +40,7 @@ public static final class shooterConstants {
 public static final class elevatorConstants {
     public static final int elevator1 = 6;
     public static final int elevator2 = 7;
-    public static final int elevatorWinch = 8;
+    public static final int elevatorWinch = 12;
     public static final int elevatorPivotTimeout = 30;
     public static final int elevatorSlotIdx = 1;
 }

@@ -19,7 +19,9 @@ import frc.robot.commands.driveCommand;
 import frc.robot.commands.elevatorCommand;
 import frc.robot.commands.indexStage1;
 import frc.robot.commands.limelightTurretVisionCommand;
+import frc.robot.commands.manualMode;
 import frc.robot.commands.shooterCommand;
+import frc.robot.commands.turretHomingCommand;
 //import frc.robot.commands.shooterHalfCommand;
 //import frc.robot.subsystems.IndexerSubsystem;
 import frc.robot.subsystems.driveSubsystem;
@@ -71,6 +73,9 @@ public class RobotContainer {
     //final JoystickButton xbutton = new JoystickButton(m_driveController, Button.kX.value);
     final JoystickButton ybutton = new JoystickButton(m_driveController, Button.kBumperLeft.value);
     bbutton.toggleWhenPressed(new shooterCommand(m_shooter));
+    final JoystickButton opAbutton = new JoystickButton(m_driveController, Button.kA.value);
+    opAbutton.whenPressed(new manualMode());
+    opBbutton.whenPressed(new turretHomingCommand());
     //bbutton.whenReleased(command)
     //xbutton.whenPressed( () -> shooterCommand.index()).whenReleased(() -> IndexerSubsystem.indexLoad.set(ControlMode.PercentOutput, 0));
     ybutton.toggleWhenPressed(new indexStage1());
