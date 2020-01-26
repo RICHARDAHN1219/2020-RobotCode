@@ -8,6 +8,7 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
+import com.ctre.phoenix.sensors.PigeonIMU;
 
 import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
@@ -24,6 +25,7 @@ public class driveSubsystem extends SubsystemBase {
    WPI_TalonFX falcon2 = new WPI_TalonFX(DriveConstants.FALCON_2);
    WPI_TalonFX falcon3 = new WPI_TalonFX(DriveConstants.FALCON_3);
    WPI_TalonFX falcon4 = new WPI_TalonFX(DriveConstants.FALCON_4);
+   public PigeonIMU m_pigeon = new PigeonIMU(11);
    public static SpeedController leftSide;
    public static SpeedController rightSide;
    DifferentialDrive drive;
@@ -37,6 +39,7 @@ public class driveSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    
   }
   public void arcadeDrive(double xSpeed, double zRotation) {
     drive.arcadeDrive(xSpeed, zRotation);

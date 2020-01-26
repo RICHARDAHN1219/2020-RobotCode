@@ -26,6 +26,7 @@ import com.ctre.phoenix.motorcontrol.*;
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
   public static boolean manualMode = false;
+  public static boolean turretHome = false;
   @SuppressWarnings("unused")
   private RobotContainer m_robotContainer;
   boolean sensor1Last = true;

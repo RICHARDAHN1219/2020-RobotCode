@@ -9,8 +9,6 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-
-import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
@@ -18,12 +16,11 @@ public class turretSubsystem extends SubsystemBase {
   /**
    * Creates a new turretSubsystem.
    */
-  public static boolean turretHome = false;
   public static final TalonSRX turretDrive = new TalonSRX(Constants.Manipulator.TURRET_DRIVE);
   public turretSubsystem() {
-    turretDrive.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute, 0, 10);
-    turretDrive.configForwardSoftLimitEnable(true);
-    turretDrive.configReverseSoftLimitEnable(true);
+    turretDrive.configSelectedFeedbackSensor(FeedbackDevice.Analog, 0, 10);
+    turretDrive.configForwardSoftLimitEnable(false);
+    turretDrive.configReverseSoftLimitEnable(false);
     turretDrive.configForwardSoftLimitThreshold(
         (int) (Constants.Manipulator.kSoftMaxTurretAngle / (360.0 * Constants.Manipulator.kTurretRotationsPerTick)));
     turretDrive.configReverseSoftLimitThreshold(
@@ -34,11 +31,14 @@ public class turretSubsystem extends SubsystemBase {
   public static void turretHome(){
     if (turretDrive.getSelectedSensorPosition() < 0)
     {
+      System.out.println("Turret is going clockwise to home");
       turretDrive.set(ControlMode.PercentOutput, .5);
     } else if (turretDrive.getSelectedSensorPosition() > 0)
     {
+      System.out.println("Turret is going counter-clockwise home!");
       turretDrive.set(ControlMode.PercentOutput, -.5);
     } else if (turretDrive.getSelectedSensorPosition() == 0) {
+      System.out.println("Turret is home!");
       turretDrive.set(ControlMode.PercentOutput, 0);
     }
   }
