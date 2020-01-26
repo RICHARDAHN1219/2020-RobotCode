@@ -9,6 +9,7 @@ package frc.robot;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -92,9 +93,11 @@ public class Robot extends TimedRobot {
     SmartDashboard.putNumber("state change count", stateChangeCount);
     if (turretLimit1 == true) {
       turretSubsystem.turretDrive.set(ControlMode.PercentOutput, -.5);
+      DriverStation.reportError("Limit Reached on turret, going back to safe position.", false);
     }
     if (turretLimit2 == true) {
       turretSubsystem.turretDrive.set(ControlMode.PercentOutput, .5);
+      DriverStation.reportError("Limit Reached on turret, going back to safe position.", f);
     }
        
     
