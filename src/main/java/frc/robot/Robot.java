@@ -14,7 +14,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.subsystems.IndexerSubsystem;
+import frc.robot.subsystems.driveSubsystem;
 import frc.robot.subsystems.elevatorSubsystem;
+import frc.robot.subsystems.shooterSubsystem;
 import frc.robot.subsystems.turretSubsystem;
 import com.ctre.phoenix.motorcontrol.*;
 /**
@@ -33,6 +35,9 @@ public class Robot extends TimedRobot {
   boolean sensor2Last = true;
   boolean sensor3Last = true;
   int stateChangeCount = 0;
+  SupplyCurrentLimitConfiguration m_currentlimitMain = new SupplyCurrentLimitConfiguration(true, 35, 1, 1);
+  SupplyCurrentLimitConfiguration m_currentlimitSecondary = new SupplyCurrentLimitConfiguration(true, 25, 1, 1);
+
   
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -47,7 +52,19 @@ public class Robot extends TimedRobot {
     NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").setNumber(1);
     turretSubsystem.turretDrive.setSelectedSensorPosition(0, 0, 10); 
     turretSubsystem.turretDrive.getSensorCollection().setQuadraturePosition(0, 10);
+    turretSubsystem.turretDrive.configContinuousCurrentLimit(25);
+    driveSubsystem.falcon1.configSupplyCurrentLimit(m_currentlimitMain);
+    driveSubsystem.falcon2.configSupplyCurrentLimit(m_currentlimitMain);
+    driveSubsystem.falcon2.configSupplyCurrentLimit(m_currentlimitMain);
+    driveSubsystem.falcon4.configSupplyCurrentLimit(m_currentlimitMain);
+    shooterSubsystem.shooter1.configSupplyCurrentLimit(m_currentlimitSecondary);
+    shooterSubsystem.shooter2.configSupplyCurrentLimit(m_currentlimitSecondary);
+    IndexerSubsystem.indexStage1_1.configSupplyCurrentLimit(m_currentlimitSecondary);
+    IndexerSubsystem.indexStage1_2.configSupplyCurrentLimit(m_currentlimitSecondary);
+    IndexerSubsystem.indexLoad.configSupplyCurrentLimit(m_currentlimitSecondary);
+    elevatorSubsystem.elevatorWinch.configSupplyCurrentLimit(m_currentlimitMain);
     elevatorSubsystem.elevatorWinch.setNeutralMode(NeutralMode.Coast);
+    
   }
 
   /**
@@ -67,10 +84,19 @@ public class Robot extends TimedRobot {
     boolean sensor1 = IndexerSubsystem.Sensor1.get();
     boolean sensor2 = IndexerSubsystem.Sensor2.get();
     boolean sensor3 = IndexerSubsystem.Sensor3.get();
+    boolean turretLimit1 = turretSubsystem.limit1.get();
+    boolean turretLimit2 = turretSubsystem.limit2.get();
     IndexerSubsystem.indexStage1_2.follow(IndexerSubsystem.indexStage1_1);
     IndexerSubsystem.indexStage1_1.setInverted(true);
     SmartDashboard.putNumber("ball count", IndexerSubsystem.ballCount);
     SmartDashboard.putNumber("state change count", stateChangeCount);
+    if (turretLimit1 == true) {
+      turretSubsystem.turretDrive.set(ControlMode.PercentOutput, -.5);
+    }
+    if (turretLimit2 == true) {
+      turretSubsystem.turretDrive.set(ControlMode.PercentOutput, .5);
+    }
+       
     
     if (sensor1 == false) {
       IndexerSubsystem.indexStage1_1.set(ControlMode.PercentOutput, 0.75);

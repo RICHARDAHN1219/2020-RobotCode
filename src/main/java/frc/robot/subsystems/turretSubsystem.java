@@ -7,8 +7,12 @@
 
 package frc.robot.subsystems;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.Robot;
+
+import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
@@ -17,16 +21,16 @@ public class turretSubsystem extends SubsystemBase {
    * Creates a new turretSubsystem.
    */
   public static final TalonSRX turretDrive = new TalonSRX(Constants.Manipulator.TURRET_DRIVE);
+  public static DigitalInput limit1 = new DigitalInput(8);
+  public static DigitalInput limit2 = new DigitalInput(9);
   public turretSubsystem() {
     turretDrive.configSelectedFeedbackSensor(FeedbackDevice.Analog, 0, 10);
-    turretDrive.configForwardSoftLimitEnable(false);
-    turretDrive.configReverseSoftLimitEnable(false);
+    turretDrive.configForwardSoftLimitEnable(true);
+    turretDrive.configReverseSoftLimitEnable(true);
     turretDrive.configForwardSoftLimitThreshold(
         (int) (Constants.Manipulator.kSoftMaxTurretAngle / (360.0 * Constants.Manipulator.kTurretRotationsPerTick)));
     turretDrive.configReverseSoftLimitThreshold(
         (int) (Constants.Manipulator.kSoftMinTurretAngle / (360.0 * Constants.Manipulator.kTurretRotationsPerTick)));
-
-    
   }
   public static void turretHome(){
     if (turretDrive.getSelectedSensorPosition() < 0)

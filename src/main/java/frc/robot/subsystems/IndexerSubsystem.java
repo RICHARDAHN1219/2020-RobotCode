@@ -7,6 +7,7 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -33,8 +34,8 @@ public class IndexerSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    if (ballCount == 5) {
-      //TODO prevent further ball intake
+    if (indexStage1_1.getSupplyCurrent() <= 20 || indexStage1_2.getSupplyCurrent() <= 20){
+        indexStage1_1.set(ControlMode.PercentOutput, -.5);
     }
   }
 }
