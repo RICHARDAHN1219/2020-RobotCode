@@ -9,6 +9,7 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Robot;
 import frc.robot.Constants.elevatorConstants;
 
 public class elevatorSubsystem extends SubsystemBase {
@@ -16,6 +17,7 @@ public class elevatorSubsystem extends SubsystemBase {
   public static WPI_TalonFX elevatorWinch = new WPI_TalonFX(elevatorConstants.elevatorWinch);
 
   public elevatorSubsystem() {
+    elevatorSubsystem.elevatorWinch.configSupplyCurrentLimit(Robot.m_currentlimitMain);
   }
 
   @Override

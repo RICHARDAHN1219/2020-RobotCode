@@ -10,6 +10,7 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Robot;
 import frc.robot.Constants.intakeConstants;
 
 public class intakeSubsystem extends SubsystemBase {
@@ -17,6 +18,7 @@ public class intakeSubsystem extends SubsystemBase {
   public static TalonSRX intake = new TalonSRX(intakeConstants.intakeMotor);
   
   public intakeSubsystem() {
+    intakeSubsystem.intake.configSupplyCurrentLimit(Robot.m_currentlimitSecondary);
   }
 
   @Override

@@ -27,8 +27,8 @@ public class Robot extends TimedRobot {
   boolean sensor3Last = true;
   int stateChangeCount = 0;
   int ballCount = 0;
-  SupplyCurrentLimitConfiguration m_currentlimitMain = new SupplyCurrentLimitConfiguration(true, 35, 1, 1);
-  SupplyCurrentLimitConfiguration m_currentlimitSecondary = new SupplyCurrentLimitConfiguration(true, 25, 1, 1);
+  public static SupplyCurrentLimitConfiguration m_currentlimitMain = new SupplyCurrentLimitConfiguration(true, 35, 1, 1);
+  public static SupplyCurrentLimitConfiguration m_currentlimitSecondary = new SupplyCurrentLimitConfiguration(true, 25, 1, 1);
 
   @Override
   public void robotInit() {
@@ -37,19 +37,8 @@ public class Robot extends TimedRobot {
     NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").setNumber(1);
     turretSubsystem.turretDrive.setSelectedSensorPosition(0, 0, 10); 
     turretSubsystem.turretDrive.getSensorCollection().setQuadraturePosition(0, 10);
-    turretSubsystem.turretDrive.configContinuousCurrentLimit(25);
-    driveSubsystem.falcon1.configSupplyCurrentLimit(m_currentlimitMain);
-    driveSubsystem.falcon2.configSupplyCurrentLimit(m_currentlimitMain);
-    driveSubsystem.falcon2.configSupplyCurrentLimit(m_currentlimitMain);
-    driveSubsystem.falcon4.configSupplyCurrentLimit(m_currentlimitMain);
-    shooterSubsystem.shooter1.configSupplyCurrentLimit(m_currentlimitSecondary);
-    shooterSubsystem.shooter2.configSupplyCurrentLimit(m_currentlimitSecondary);
-    indexerSubsystem.indexStage1_1.configSupplyCurrentLimit(m_currentlimitSecondary);
-    indexerSubsystem.indexStage1_2.configSupplyCurrentLimit(m_currentlimitSecondary);
-    indexerSubsystem.indexKicker.configSupplyCurrentLimit(m_currentlimitSecondary);
-    elevatorSubsystem.elevatorWinch.configSupplyCurrentLimit(m_currentlimitMain);
     elevatorSubsystem.elevatorWinch.setNeutralMode(NeutralMode.Coast);
-    intakeSubsystem.intake.configSupplyCurrentLimit(m_currentlimitSecondary);
+    
   }
 
   @Override

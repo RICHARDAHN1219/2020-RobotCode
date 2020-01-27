@@ -9,6 +9,8 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
+
+import frc.robot.Robot;
 import frc.robot.Constants.shooterConstants;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
@@ -24,6 +26,8 @@ public class shooterSubsystem extends SubsystemBase {
     shooter2.configFactoryDefault();
     shooter2.follow(shooter1);
     shooter2.setInverted(true);
+    shooter1.configSupplyCurrentLimit(Robot.m_currentlimitSecondary);
+    shooter2.configSupplyCurrentLimit(Robot.m_currentlimitSecondary);
     shooter1.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor, shooterConstants.shooterSlotIdx, shooterConstants.shooterTimeout);
     shooter1.setSensorPhase(true);
     shooter1.configNominalOutputForward(0, shooterConstants.shooterTimeout);

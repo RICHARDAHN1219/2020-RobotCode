@@ -10,6 +10,7 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Robot;
 import frc.robot.Constants.indexConstants;
 import edu.wpi.first.wpilibj.DigitalInput;
 
@@ -25,6 +26,9 @@ public class indexerSubsystem extends SubsystemBase {
   public indexerSubsystem() {
     indexStage1_2.follow(indexStage1_1);
     indexStage1_1.setInverted(true);
+    indexStage1_1.configSupplyCurrentLimit(Robot.m_currentlimitSecondary);
+    indexStage1_2.configSupplyCurrentLimit(Robot.m_currentlimitSecondary);
+    indexKicker.configSupplyCurrentLimit(Robot.m_currentlimitSecondary);
   }
 
   @Override

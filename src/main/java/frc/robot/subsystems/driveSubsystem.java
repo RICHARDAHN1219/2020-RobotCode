@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Robot;
 import frc.robot.Constants.driveConstants;
 public class driveSubsystem extends SubsystemBase {
   public static WPI_TalonFX falcon1 = new WPI_TalonFX(driveConstants.falcon1);
@@ -25,6 +26,10 @@ public class driveSubsystem extends SubsystemBase {
   DifferentialDrive drive;
 
   public driveSubsystem() {
+    driveSubsystem.falcon1.configSupplyCurrentLimit(Robot.m_currentlimitMain);
+    driveSubsystem.falcon2.configSupplyCurrentLimit(Robot.m_currentlimitMain);
+    driveSubsystem.falcon2.configSupplyCurrentLimit(Robot.m_currentlimitMain);
+    driveSubsystem.falcon4.configSupplyCurrentLimit(Robot.m_currentlimitMain);
     leftSide = new SpeedControllerGroup(falcon1, falcon3);
     rightSide = new SpeedControllerGroup(falcon2, falcon4);
     drive = new DifferentialDrive(leftSide, rightSide);
