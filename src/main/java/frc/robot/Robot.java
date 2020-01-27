@@ -9,10 +9,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.subsystems.indexerSubsystem;
-import frc.robot.subsystems.driveSubsystem;
 import frc.robot.subsystems.elevatorSubsystem;
-import frc.robot.subsystems.intakeSubsystem;
-import frc.robot.subsystems.shooterSubsystem;
 import frc.robot.subsystems.turretSubsystem;
 import com.ctre.phoenix.motorcontrol.*;
 
@@ -47,23 +44,11 @@ public class Robot extends TimedRobot {
     boolean sensor1 = indexerSubsystem.Sensor1.get();
     boolean sensor2 = indexerSubsystem.Sensor2.get();
     boolean sensor3 = indexerSubsystem.Sensor3.get();
-    boolean turretLimit1 = turretSubsystem.limit1.get();
-    boolean turretLimit2 = turretSubsystem.limit2.get();
     indexerSubsystem.indexStage1_2.follow(indexerSubsystem.indexStage1_1);
     indexerSubsystem.indexStage1_1.setInverted(true);
     SmartDashboard.putNumber("ball count", ballCount);
     SmartDashboard.putNumber("state change count", stateChangeCount);
-    
-    if (turretLimit1 == true) {
-      turretSubsystem.turretDrive.set(ControlMode.PercentOutput, -.5);
-      DriverStation.reportError("Limit Reached on turret, going back to safe position.", false);
-    }
-    
-    if (turretLimit2 == true) {
-      turretSubsystem.turretDrive.set(ControlMode.PercentOutput, .5);
-      DriverStation.reportError("Limit Reached on turret, going back to safe position.", false);
-    }
-    
+
     if (sensor1 == false) {
       indexerSubsystem.indexStage1_1.set(ControlMode.PercentOutput, 0.75);
       indexerSubsystem.indexKicker.set(ControlMode.PercentOutput, 0.75);
