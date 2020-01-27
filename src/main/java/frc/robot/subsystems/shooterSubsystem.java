@@ -36,7 +36,6 @@ public class shooterSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-
   }
 
   public void setShooterRPM (double desiredRPM) {
