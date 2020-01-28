@@ -1,9 +1,11 @@
 package frc.robot;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.sensors.PigeonIMU;
 
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.subsystems.elevatorSubsystem;
@@ -14,6 +16,9 @@ public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
   public static boolean manualMode = false;
   public static boolean turretHome = false;
+  public static double IMUHeading;
+  public static double temp;
+  public static PigeonIMU m_pigeon = new PigeonIMU(turretSubsystem.turretDrive);
   @SuppressWarnings("unused")
   private RobotContainer m_robotContainer;
   public static SupplyCurrentLimitConfiguration m_currentlimitMain = new SupplyCurrentLimitConfiguration(true, 35, 1, 1);
@@ -32,6 +37,11 @@ public class Robot extends TimedRobot {
   @Override
   public void robotPeriodic() {
     CommandScheduler.getInstance().run();
+    //m_pigeon.get();
+    temp = m_pigeon.getTemp();
+    IMUHeading = m_pigeon.getFusedHeading();
+    SmartDashboard.putNumber("IMU Fused Heading", IMUHeading);
+    SmartDashboard.putNumber("Temperature (VERY IMPORTANT)", temp);
   }
 
   @Override
@@ -47,6 +57,7 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
     }
+    m_pigeon.setFusedHeadingToCompass();
   }
 
   @Override
