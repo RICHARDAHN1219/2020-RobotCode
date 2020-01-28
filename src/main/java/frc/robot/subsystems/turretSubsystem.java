@@ -21,9 +21,9 @@ public class turretSubsystem extends SubsystemBase {
   public static DigitalInput limit1 = new DigitalInput(7);
   public static DigitalInput limit2 = new DigitalInput(8);
   public static DigitalInput limit3 = new DigitalInput(9);
-  static boolean turretLimit1 = turretSubsystem.limit1.get();
-  static boolean turretLimit2 = turretSubsystem.limit2.get();
-  static boolean turretLimit3 = turretSubsystem.limit3.get();
+  public static boolean turretLimit1;
+  public static boolean turretLimit2;
+  public static boolean turretLimit3;
   
   public turretSubsystem() {
     turretDrive.configSelectedFeedbackSensor(FeedbackDevice.Analog, 0, 10);
@@ -37,18 +37,20 @@ public class turretSubsystem extends SubsystemBase {
   
   public static void turretHome(){
     if (turretLimit1 == true) {
-      turretDrive.set(ControlMode.PercentOutput, -1);
-    } else if (turretLimit2 == true){
-      turretDrive.set(ControlMode.PercentOutput, 1);
-    } else if (turretLimit3 == true) {
-      turretDrive.set(ControlMode.PercentOutput, 0);
-    } else {
-      turretDrive.set(ControlMode.PercentOutput, 1);
+      turretDrive.setSelectedSensorPosition(170);
+      turretDrive.set(ControlMode.Position, 0);
+
+     }
+      else {
+      turretDrive.set(ControlMode.PercentOutput, -.5);
     }
     }
 
   @Override
   public void periodic() {
+    boolean turretLimit1 = turretSubsystem.limit1.get();
+    boolean turretLimit2 = turretSubsystem.limit2.get();
+    boolean turretLimit3 = turretSubsystem.limit3.get();
     if (turretLimit1 == true) {
       turretSubsystem.turretDrive.set(ControlMode.PercentOutput, -.5);
       DriverStation.reportError("Limit Reached on turret, going back to safe position.", false);
