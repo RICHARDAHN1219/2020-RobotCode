@@ -48,7 +48,10 @@ public class indexerSubsystem extends SubsystemBase {
     if (indexStage1_1.getSupplyCurrent() <= 20 || indexStage1_2.getSupplyCurrent() <= 20){
       indexStage1_1.set(ControlMode.PercentOutput, -0.5);
     }
-    
+    //TODO Limit ball count to 5
+    if (ballCount == 5){
+      return;
+    }
     if (ballReady4Indexer == true) {
       indexStage1_1.set(ControlMode.PercentOutput, 0.75);
       indexKicker.set(ControlMode.PercentOutput, 0.75);
@@ -76,17 +79,12 @@ public class indexerSubsystem extends SubsystemBase {
     if (ballExiting != ballExitingLast && ballExiting == false) {
       ballExitingLast = ballExiting;
     }
-
+    //TODO Limit ball count to 5 part 2: electric boogaloo
     if ((ballCount >= 1) && ballReady4Indexer == false && ballStaged == false) {
       indexStage1_1.set(ControlMode.PercentOutput, 0.75);
     }
 
-    if (ballStaged != ballStagedLast && ballStaged == true) {
-      stateChangeCount += 1;
-      ballStagedLast = ballStaged;
-    }
-
-    if (ballStaged != ballStagedLast && ballStaged == false) {
+    if (ballStaged != ballStagedLast) {
       stateChangeCount += 1;
       ballStagedLast = ballStaged;
     }
@@ -99,6 +97,7 @@ public class indexerSubsystem extends SubsystemBase {
     if (ballCount == 2 && stateChangeCount != 3) {
       indexStage1_1.set(ControlMode.PercentOutput, 0.75);
       indexKicker.set(ControlMode.PercentOutput, 0.75);
+      //TODO Delete if not used/wrong.
       if (ballCount == 2 && stateChangeCount == 3) {
         indexStage1_1.set(ControlMode.PercentOutput, 0);
         indexKicker.set(ControlMode.PercentOutput, 0);
