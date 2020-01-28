@@ -23,7 +23,7 @@ public class indexerSubsystem extends SubsystemBase {
   public static DigitalInput Sensor1 = new DigitalInput(0);
   public static DigitalInput Sensor2 = new DigitalInput(1);
   public static DigitalInput Sensor3 = new DigitalInput(2);
-  boolean sensor1Last = false;
+  boolean ballReady4IndexerLast = false;
   boolean ballStagedLast = false;
   boolean ballExitingLast = false;
   int stateChangeCount = 0;
@@ -48,10 +48,11 @@ public class indexerSubsystem extends SubsystemBase {
     if (indexStage1_1.getSupplyCurrent() <= 20 || indexStage1_2.getSupplyCurrent() <= 20){
       indexStage1_1.set(ControlMode.PercentOutput, -0.5);
     }
-    //TODO Limit ball count to 5
+
     if (ballCount == 5){
       return;
     }
+
     if (ballReady4Indexer == true) {
       indexStage1_1.set(ControlMode.PercentOutput, 0.75);
       indexKicker.set(ControlMode.PercentOutput, 0.75);
@@ -62,24 +63,18 @@ public class indexerSubsystem extends SubsystemBase {
       indexKicker.set(ControlMode.PercentOutput, 0);
     }
 
-    if (ballReady4Indexer != sensor1Last && ballReady4Indexer == true) {
-      ballCount += 1;
-      sensor1Last = ballReady4Indexer;
+    if (ballReady4Indexer != ballReady4IndexerLast && ballReady4Indexer == true) {
+      ballCount += 1;  
     }
-
-    if (ballReady4Indexer != sensor1Last && ballReady4Indexer == false) {
-      sensor1Last = ballReady4Indexer;
-    }
+    
+    ballReady4IndexerLast = ballReady4Indexer;
 
     if (ballExiting != ballExitingLast && ballExiting == true) {
-      ballCount -= 1;
-      ballExitingLast = ballExiting;
+      ballCount -= 1; 
     }
 
-    if (ballExiting != ballExitingLast && ballExiting == false) {
-      ballExitingLast = ballExiting;
-    }
-    //TODO Limit ball count to 5 part 2: electric boogaloo
+    ballExitingLast = ballExiting;
+
     if ((ballCount >= 1) && ballReady4Indexer == false && ballStaged == false) {
       indexStage1_1.set(ControlMode.PercentOutput, 0.75);
     }
@@ -89,46 +84,11 @@ public class indexerSubsystem extends SubsystemBase {
       ballStagedLast = ballStaged;
     }
     
-    if (ballCount == 1 && stateChangeCount != 1) {
+    if ((-1 + (ballCount * 2)) != stateChangeCount) {
       indexStage1_1.set(ControlMode.PercentOutput, 0.75);
       indexKicker.set(ControlMode.PercentOutput, 0.75);
     }
-    
-    if (ballCount == 2 && stateChangeCount != 3) {
-      indexStage1_1.set(ControlMode.PercentOutput, 0.75);
-      indexKicker.set(ControlMode.PercentOutput, 0.75);
-      //TODO Delete if not used/wrong.
-      if (ballCount == 2 && stateChangeCount == 3) {
-        indexStage1_1.set(ControlMode.PercentOutput, 0);
-        indexKicker.set(ControlMode.PercentOutput, 0);
-      }
-    }
-    
-    if (ballCount == 3 && stateChangeCount != 5) {
-      indexStage1_1.set(ControlMode.PercentOutput, 0.75);
-      indexKicker.set(ControlMode.PercentOutput, 0.75);
-      if (ballCount == 3 && stateChangeCount == 5) {
-        indexStage1_1.set(ControlMode.PercentOutput, 0);
-        indexKicker.set(ControlMode.PercentOutput, 0);
-      }
-    }
-
-    if (ballCount == 4 && stateChangeCount != 7) {
-      indexStage1_1.set(ControlMode.PercentOutput, 0.75);
-      indexKicker.set(ControlMode.PercentOutput, 0.75);
-      if (ballCount == 4 && stateChangeCount == 7) {
-        indexStage1_1.set(ControlMode.PercentOutput, 0);
-        indexKicker.set(ControlMode.PercentOutput, 0);
-      }
-    }
-
-    if (ballCount == 5 && stateChangeCount != 9) {
-      indexStage1_1.set(ControlMode.PercentOutput, 0.75);
-      indexKicker.set(ControlMode.PercentOutput, 0.75);
-      if (ballCount == 5 && stateChangeCount == 9) {
-        indexStage1_1.set(ControlMode.PercentOutput, 0);
-        indexKicker.set(ControlMode.PercentOutput, 0);
-      }
-    }
+    //TODO add code for new 4th sensor in front of the kicker wheel
+    //TODO remove the code running the kicker wheels once we are past the testing phase
   }
 }
