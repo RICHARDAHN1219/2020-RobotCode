@@ -15,6 +15,7 @@ import frc.robot.Constants.indexConstants;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
+//TODO work on conditions where we run or don't run the kicker motor
 public class indexerSubsystem extends SubsystemBase {
 
   public static WPI_TalonFX indexStage1_1 = new WPI_TalonFX(indexConstants.index1_1);
@@ -45,50 +46,63 @@ public class indexerSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("ball count", ballCount);
     SmartDashboard.putNumber("state change count", stateChangeCount);
     
+    //set the current limit to prevent jamming and unnecessary battery draw
     if (indexStage1_1.getSupplyCurrent() <= 20 || indexStage1_2.getSupplyCurrent() <= 20){
       indexStage1_1.set(ControlMode.PercentOutput, -0.5);
     }
 
+    //prevent intake of new balls when we already have 5
     if (ballCount == 5){
       return;
     }
 
+    //move indexer when a new ball is ready to enter the system
     if (ballReady4Indexer == true) {
       indexStage1_1.set(ControlMode.PercentOutput, 0.75);
       indexKicker.set(ControlMode.PercentOutput, 0.75);
     } 
     
+    //stop indexer when balls are properly staged
     else if (ballStaged == true) {
       indexStage1_1.set(ControlMode.PercentOutput, 0);
-      indexKicker.set(ControlMode.PercentOutput, 0);
     }
 
+    //increase ball count as balls enter the indexer
     if (ballReady4Indexer != ballReady4IndexerLast && ballReady4Indexer == true) {
       ballCount += 1;  
     }
-    
     ballReady4IndexerLast = ballReady4Indexer;
-
-    if (ballExiting != ballExitingLast && ballExiting == true) {
-      ballCount -= 1; 
-    }
-
-    ballExitingLast = ballExiting;
-
-    if ((ballCount >= 1) && ballReady4Indexer == false && ballStaged == false) {
-      indexStage1_1.set(ControlMode.PercentOutput, 0.75);
-    }
-
+    
+    //count number of state changes on ballStaged sensor to combat error states
     if (ballStaged != ballStagedLast) {
       stateChangeCount += 1;
       ballStagedLast = ballStaged;
     }
     
+    //finish staging balls when this error state occurs
     if ((-1 + (ballCount * 2)) != stateChangeCount) {
       indexStage1_1.set(ControlMode.PercentOutput, 0.75);
-      indexKicker.set(ControlMode.PercentOutput, 0.75);
     }
-    //TODO add code for new 4th sensor in front of the kicker wheel
-    //TODO remove the code running the kicker wheels once we are past the testing phase
+    
+    //finish staging balls when this error state occurs
+    if ((ballCount >= 1) && ballReady4Indexer == false && ballStaged == false) {
+      indexStage1_1.set(ControlMode.PercentOutput, 0.75);
+    }
+    
+    //automatically stage the balls for shooting when we have 5
+    if (ballCount == 5 && ballExiting != true) {
+      indexStage1_1.set(ControlMode.PercentOutput, 0.75);
+    }
+    
+    //stop indexer when all 5 balls are staged for shooting
+    if (ballCount == 5 && ballExiting == true) {
+      indexStage1_1.set(ControlMode.PercentOutput, 0);
+    }
+
+    //decrease ballCount as balls leave the indexer
+    if (ballExiting != ballExitingLast && ballExiting == false) {
+      ballCount -= 1; 
+    }
+    ballExitingLast = ballExiting;
   }
 }
