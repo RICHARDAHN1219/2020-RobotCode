@@ -13,7 +13,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
 import frc.robot.Constants.indexConstants;
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.smartdashboard.*;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class indexerSubsystem extends SubsystemBase {
 
@@ -23,9 +23,9 @@ public class indexerSubsystem extends SubsystemBase {
   public static DigitalInput Sensor1 = new DigitalInput(0);
   public static DigitalInput Sensor2 = new DigitalInput(1);
   public static DigitalInput Sensor3 = new DigitalInput(2);
-  boolean sensor1Last = true;
-  boolean sensor2Last = true;
-  boolean sensor3Last = true;
+  boolean sensor1Last = false;
+  boolean ballStagedLast = false;
+  boolean ballExitingLast = false;
   int stateChangeCount = 0;
   int ballCount = 0;
 
@@ -39,9 +39,9 @@ public class indexerSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    boolean sensor1 = Sensor1.get();
-    boolean sensor2 = Sensor2.get();
-    boolean sensor3 = Sensor3.get();
+    boolean ballReady4Indexer = ! Sensor1.get();
+    boolean ballStaged = ! Sensor2.get();
+    boolean ballExiting = ! Sensor3.get();
     SmartDashboard.putNumber("ball count", ballCount);
     SmartDashboard.putNumber("state change count", stateChangeCount);
     
@@ -49,86 +49,86 @@ public class indexerSubsystem extends SubsystemBase {
       indexStage1_1.set(ControlMode.PercentOutput, -0.5);
     }
     
-    if (sensor1 == false) {
-      indexerSubsystem.indexStage1_1.set(ControlMode.PercentOutput, 0.75);
-      indexerSubsystem.indexKicker.set(ControlMode.PercentOutput, 0.75);
+    if (ballReady4Indexer == true) {
+      indexStage1_1.set(ControlMode.PercentOutput, 0.75);
+      indexKicker.set(ControlMode.PercentOutput, 0.75);
     } 
     
-    else if (sensor2 == false) {
-      indexerSubsystem.indexStage1_1.set(ControlMode.PercentOutput, 0);
-      indexerSubsystem.indexKicker.set(ControlMode.PercentOutput, 0);
+    else if (ballStaged == true) {
+      indexStage1_1.set(ControlMode.PercentOutput, 0);
+      indexKicker.set(ControlMode.PercentOutput, 0);
     }
 
-    if (sensor1 != sensor1Last && sensor1 == false) {
+    if (ballReady4Indexer != sensor1Last && ballReady4Indexer == true) {
       ballCount += 1;
-      sensor1Last = sensor1;
+      sensor1Last = ballReady4Indexer;
     }
 
-    if (sensor1 != sensor1Last && sensor1 == true) {
-      sensor1Last = sensor1;
+    if (ballReady4Indexer != sensor1Last && ballReady4Indexer == false) {
+      sensor1Last = ballReady4Indexer;
     }
 
-    if (sensor3 != sensor3Last && sensor3 == false) {
+    if (ballExiting != ballExitingLast && ballExiting == true) {
       ballCount -= 1;
-      sensor3Last = sensor3;
+      ballExitingLast = ballExiting;
     }
 
-    if (sensor3 != sensor3Last && sensor3 == true) {
-      sensor3Last = sensor3;
+    if (ballExiting != ballExitingLast && ballExiting == false) {
+      ballExitingLast = ballExiting;
     }
 
-    if ((ballCount >= 1) && sensor1 == true && sensor2 == true) {
-      indexerSubsystem.indexStage1_1.set(ControlMode.PercentOutput, 0.75);
+    if ((ballCount >= 1) && ballReady4Indexer == false && ballStaged == false) {
+      indexStage1_1.set(ControlMode.PercentOutput, 0.75);
     }
 
-    if (sensor2 != sensor2Last && sensor2 == false) {
+    if (ballStaged != ballStagedLast && ballStaged == true) {
       stateChangeCount += 1;
-      sensor2Last = sensor2;
+      ballStagedLast = ballStaged;
     }
 
-    if (sensor2 != sensor2Last && sensor2 == true) {
+    if (ballStaged != ballStagedLast && ballStaged == false) {
       stateChangeCount += 1;
-      sensor2Last = sensor2;
+      ballStagedLast = ballStaged;
     }
     
     if (ballCount == 1 && stateChangeCount != 1) {
-      indexerSubsystem.indexStage1_1.set(ControlMode.PercentOutput, 0.75);
-      indexerSubsystem.indexKicker.set(ControlMode.PercentOutput, 0.75);
+      indexStage1_1.set(ControlMode.PercentOutput, 0.75);
+      indexKicker.set(ControlMode.PercentOutput, 0.75);
     }
     
     if (ballCount == 2 && stateChangeCount != 3) {
-      indexerSubsystem.indexStage1_1.set(ControlMode.PercentOutput, 0.75);
-      indexerSubsystem.indexKicker.set(ControlMode.PercentOutput, 0.75);
+      indexStage1_1.set(ControlMode.PercentOutput, 0.75);
+      indexKicker.set(ControlMode.PercentOutput, 0.75);
       if (ballCount == 2 && stateChangeCount == 3) {
-        indexerSubsystem.indexStage1_1.set(ControlMode.PercentOutput, 0);
-        indexerSubsystem.indexKicker.set(ControlMode.PercentOutput, 0);
+        indexStage1_1.set(ControlMode.PercentOutput, 0);
+        indexKicker.set(ControlMode.PercentOutput, 0);
       }
     }
     
     if (ballCount == 3 && stateChangeCount != 5) {
-      indexerSubsystem.indexStage1_1.set(ControlMode.PercentOutput, 0.75);
-      indexerSubsystem.indexKicker.set(ControlMode.PercentOutput, 0.75);
+      indexStage1_1.set(ControlMode.PercentOutput, 0.75);
+      indexKicker.set(ControlMode.PercentOutput, 0.75);
       if (ballCount == 3 && stateChangeCount == 5) {
-        indexerSubsystem.indexStage1_1.set(ControlMode.PercentOutput, 0);
-        indexerSubsystem.indexKicker.set(ControlMode.PercentOutput, 0);
+        indexStage1_1.set(ControlMode.PercentOutput, 0);
+        indexKicker.set(ControlMode.PercentOutput, 0);
       }
     }
 
     if (ballCount == 4 && stateChangeCount != 7) {
-      indexerSubsystem.indexStage1_1.set(ControlMode.PercentOutput, 0.75);
-      indexerSubsystem.indexKicker.set(ControlMode.PercentOutput, 0.75);
+      indexStage1_1.set(ControlMode.PercentOutput, 0.75);
+      indexKicker.set(ControlMode.PercentOutput, 0.75);
       if (ballCount == 4 && stateChangeCount == 7) {
-        indexerSubsystem.indexStage1_1.set(ControlMode.PercentOutput, 0);
-        indexerSubsystem.indexKicker.set(ControlMode.PercentOutput, 0);
+        indexStage1_1.set(ControlMode.PercentOutput, 0);
+        indexKicker.set(ControlMode.PercentOutput, 0);
       }
     }
 
     if (ballCount == 5 && stateChangeCount != 9) {
-      indexerSubsystem.indexStage1_1.set(ControlMode.PercentOutput, 0.75);
-      indexerSubsystem.indexKicker.set(ControlMode.PercentOutput, 0.75);
+      indexStage1_1.set(ControlMode.PercentOutput, 0.75);
+      indexKicker.set(ControlMode.PercentOutput, 0.75);
       if (ballCount == 5 && stateChangeCount == 9) {
-        indexerSubsystem.indexStage1_1.set(ControlMode.PercentOutput, 0);
-        indexerSubsystem.indexKicker.set(ControlMode.PercentOutput, 0);
+        indexStage1_1.set(ControlMode.PercentOutput, 0);
+        indexKicker.set(ControlMode.PercentOutput, 0);
       }
     }
   }
