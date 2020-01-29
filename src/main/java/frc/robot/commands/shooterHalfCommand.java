@@ -31,7 +31,7 @@ public class shooterHalfCommand extends CommandBase {
 
   @Override
   public void end(boolean interrupted) {
-    m_shooterSubsystem.setPerentOutput(0.0);
+    m_shooterSubsystem.setPercentOutput(0.0);
     m_indexer.setKickerPercentOutput(0.0);
   }
 

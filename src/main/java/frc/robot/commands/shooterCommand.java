@@ -55,7 +55,7 @@ public class shooterCommand extends CommandBase {
   @Override
   public void end(boolean interrupted) {
     System.out.println("Stopping Flywheel/Kicker Wheel");
-    m_shooterSubsystem.setPerentOutput(0.0);
+    m_shooterSubsystem.setPercentOutput(0.0);
     m_indexer.setKickerPercentOutput(0.0);
   }
 

@@ -53,7 +53,7 @@ public class shooterSubsystem extends SubsystemBase {
     shooter1.config_kF(shooterConstants.shooterSlotIdx, F, shooterConstants.shooterTimeout);
   }
 
-  public void setPerentOutput(double percent) {
+  public void setPercentOutput(double percent) {
     shooter1.set(ControlMode.PercentOutput, percent);
   }
 }
