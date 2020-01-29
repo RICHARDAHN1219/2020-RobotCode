@@ -1,6 +1,4 @@
 package frc.robot.commands;
-
-import com.ctre.phoenix.motorcontrol.ControlMode;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.indexerSubsystem;
 import frc.robot.subsystems.shooterSubsystem;
@@ -32,7 +30,7 @@ public class shooterHalfCommand extends CommandBase {
 
   @Override
   public void end(boolean interrupted) {
-    m_shooterSubsystem.setPerentOutput(0.0);
+    m_shooterSubsystem.setPercentOutput(0.0);
     m_indexer.setKickerPercentOutput(0.0);
   }
 

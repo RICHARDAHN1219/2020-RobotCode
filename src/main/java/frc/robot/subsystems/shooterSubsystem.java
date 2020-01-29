@@ -26,8 +26,8 @@ public class shooterSubsystem extends SubsystemBase {
     shooter2.configFactoryDefault();
     shooter2.follow(shooter1);
     shooter2.setInverted(true);
-    shooter1.configSupplyCurrentLimit(Robot.m_currentlimitSecondary);
-    shooter2.configSupplyCurrentLimit(Robot.m_currentlimitSecondary);
+    shooter1.configSupplyCurrentLimit(Robot.m_currentlimitMain);
+    shooter2.configSupplyCurrentLimit(Robot.m_currentlimitMain);
     shooter1.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor, shooterConstants.shooterSlotIdx, shooterConstants.shooterTimeout);
     shooter1.setSensorPhase(true);
     shooter1.configNominalOutputForward(0, shooterConstants.shooterTimeout);
@@ -53,7 +53,7 @@ public class shooterSubsystem extends SubsystemBase {
     shooter1.config_kF(shooterConstants.shooterSlotIdx, F, shooterConstants.shooterTimeout);
   }
 
-  public void setPerentOutput(double percent) {
+  public void setPercentOutput(double percent) {
     shooter1.set(ControlMode.PercentOutput, percent);
   }
 }
