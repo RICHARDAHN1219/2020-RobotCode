@@ -37,9 +37,9 @@ public class Robot extends TimedRobot {
   @Override
   public void robotPeriodic() {
     CommandScheduler.getInstance().run();
-    //m_pigeon.get();
     temp = m_pigeon.getTemp();
     IMUHeading = m_pigeon.getFusedHeading();
+    SmartDashboard.putNumber("CompassFieldStrength", m_pigeon.getCompassFieldStrength());
     SmartDashboard.putNumber("IMU Fused Heading", IMUHeading);
     SmartDashboard.putNumber("Temperature (VERY IMPORTANT)", temp);
   }
