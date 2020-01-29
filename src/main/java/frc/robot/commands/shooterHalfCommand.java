@@ -18,16 +18,15 @@ public class shooterHalfCommand extends CommandBase {
 
   @Override
   public void initialize() {
-   m_shooterSubsystem.setShooterPID(0.1, 0, 0, 0);
-   m_shooterSubsystem.setShooterRPM(3190);
+   //m_shooterSubsystem.setShooterPID(0.1, 0, 0, 0);
+   //m_shooterSubsystem.setShooterRPM(3190);
   }
 
   @Override
   public void execute() {
-    m_shooterSubsystem.setShooterRPM(3190);
-    //indexerSubsystem.indexKicker.set(ControlMode.PercentOutput, .7);
-    m_indexer.setKickerPercentOutput(0.7);
-  
+    // TODO: anything here will get run repeatedly while command runs
+    //m_shooterSubsystem.setShooterRPM(3190);
+    //m_indexer.setKickerPercentOutput(0.7);
   }
 
   @Override

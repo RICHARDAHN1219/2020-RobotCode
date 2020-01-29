@@ -59,9 +59,12 @@ public class RobotContainer {
     final JoystickButton opAbutton = new JoystickButton(m_driveController, Button.kA.value);
     opAbutton.whenPressed(new manualMode());
     opBbutton.whenPressed(new turretHomingCommand());
-    ybutton.toggleWhenPressed(new indexStage1Command(m_indexer));
-    ybutton.whenPressed(() -> m_controlPanelMotors.setPosition(0), m_controlPanelMotors);
-    xbutton.whenPressed(() -> m_controlPanelMotors.setPosition(1 * 4096), m_controlPanelMotors);
+    //ybutton.toggleWhenPressed(new indexStage1Command(m_indexer));
+    //ybutton.whenPressed(() -> m_controlPanelMotors.setPosition(0), m_controlPanelMotors);
+    //xbutton.whenPressed(() -> m_controlPanelMotors.setPosition(1 * 4096), m_controlPanelMotors);
+    abutton.whenPressed(() -> m_shooter.setShooterRPM(1000));
+    xbutton.whenPressed(() -> m_shooter.setShooterRPM(3000));
+    ybutton.whenPressed(() -> m_shooter.setShooterRPM(5000));
   }
   /*
   public Command getAutonomousCommand() {
