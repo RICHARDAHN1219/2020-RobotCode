@@ -7,6 +7,7 @@
 
 package frc.robot.subsystems;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
@@ -40,6 +41,7 @@ public class shooterSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
+    SmartDashboard.putNumber("ShooterRPM", (int) (shooter1.getSelectedSensorVelocity() * 600 / 4096));
   }
 
   public void setShooterRPM (double desiredRPM) {
@@ -56,4 +58,13 @@ public class shooterSubsystem extends SubsystemBase {
   public void setPercentOutput(double percent) {
     shooter1.set(ControlMode.PercentOutput, percent);
   }
+
+  public void disableCurrentLimit() {
+    shooter1.configGetSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(false, 35, 35, 1));
+  }
+
+  public void enableCurrentLimit() {
+    shooter1.configGetSupplyCurrentLimit(Robot.m_currentlimitMain);
+  }
+
 }
