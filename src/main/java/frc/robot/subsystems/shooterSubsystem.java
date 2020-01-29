@@ -18,8 +18,8 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 
 public class shooterSubsystem extends SubsystemBase {
 
-  public static WPI_TalonFX shooter1 = new WPI_TalonFX(shooterConstants.shooter1);
-  public static WPI_TalonFX shooter2 = new WPI_TalonFX(shooterConstants.shooter2);
+  private WPI_TalonFX shooter1 = new WPI_TalonFX(shooterConstants.shooter1);
+  private WPI_TalonFX shooter2 = new WPI_TalonFX(shooterConstants.shooter2);
 
   public shooterSubsystem() {
     shooter1.configFactoryDefault();
@@ -51,5 +51,9 @@ public class shooterSubsystem extends SubsystemBase {
     shooter1.config_kI(shooterConstants.shooterSlotIdx, I, shooterConstants.shooterTimeout);
     shooter1.config_kD(shooterConstants.shooterSlotIdx, D, shooterConstants.shooterTimeout);
     shooter1.config_kF(shooterConstants.shooterSlotIdx, F, shooterConstants.shooterTimeout);
+  }
+
+  public void setPerentOutput(double percent) {
+    shooter1.set(ControlMode.PercentOutput, percent);
   }
 }

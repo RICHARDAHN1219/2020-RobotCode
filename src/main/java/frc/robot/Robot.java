@@ -17,8 +17,9 @@ public class Robot extends TimedRobot {
   public static boolean manualMode = false;
   public static boolean turretHome = false;
   public static double IMUHeading;
-  public static double temp;
-  public static PigeonIMU m_pigeon = new PigeonIMU(turretSubsystem.turretDrive);
+  public static double temp; 
+  // TODO: fix me, PigeonIMU(turretSubsystem.turretDrive) can't go here;
+  public static PigeonIMU m_pigeon = new PigeonIMU(20);
   @SuppressWarnings("unused")
   private RobotContainer m_robotContainer;
   public static SupplyCurrentLimitConfiguration m_currentlimitMain = new SupplyCurrentLimitConfiguration(true, 35, 1, 1);
@@ -29,9 +30,8 @@ public class Robot extends TimedRobot {
     m_robotContainer = new RobotContainer();
     NetworkTableInstance.getDefault().getTable("limelight").getEntry("camMode").setNumber(1);
     NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").setNumber(1);
-    turretSubsystem.turretDrive.setSelectedSensorPosition(0, 0, 10); 
-    turretSubsystem.turretDrive.getSensorCollection().setQuadraturePosition(0, 10);
-    elevatorSubsystem.elevatorWinch.setNeutralMode(NeutralMode.Coast);
+
+
   }
 
   @Override

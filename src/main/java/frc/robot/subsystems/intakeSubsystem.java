@@ -15,10 +15,10 @@ import frc.robot.Constants.intakeConstants;
 
 public class intakeSubsystem extends SubsystemBase {
 
-  public static TalonSRX intake = new TalonSRX(intakeConstants.intakeMotor);
+  private TalonSRX intake = new TalonSRX(intakeConstants.intakeMotor);
   
   public intakeSubsystem() {
-    intakeSubsystem.intake.configSupplyCurrentLimit(Robot.m_currentlimitSecondary);
+    intake.configSupplyCurrentLimit(Robot.m_currentlimitSecondary);
   }
 
   @Override

@@ -19,19 +19,25 @@ import frc.robot.commands.shooterCommand;
 import frc.robot.commands.turretHomingCommand;
 import frc.robot.subsystems.driveSubsystem;
 import frc.robot.subsystems.elevatorSubsystem;
+import frc.robot.subsystems.indexerSubsystem;
 import frc.robot.subsystems.turretSubsystem;
 import frc.robot.subsystems.shooterSubsystem;
 import frc.robot.subsystems.controlPanelSubsystem;
 
 public class RobotContainer {
-  public final static driveSubsystem m_driveSubsystem = new driveSubsystem();
+  // Subsystems
+  private final driveSubsystem m_driveSubsystem = new driveSubsystem();
   private final turretSubsystem m_turretSubsystem = new turretSubsystem();
+  private final shooterSubsystem m_shooter = new shooterSubsystem();
+  private final indexerSubsystem m_indexer = new indexerSubsystem();
+  private final elevatorSubsystem m_elevatorSubsystem = new elevatorSubsystem();
+  private final controlPanelSubsystem m_controlPanelMotors = new controlPanelSubsystem();
+
+  // Commands
+  //public static final shooterCommand m_shooterCommand = new shooterCommand(m_shooter, m_indexer);
   //private final limelightTurretVisionCommand m_turretVisionCommand = new limelightTurretVisionCommand(m_turretSubsystem);
   //private final driveCommand m_driveCommand = new driveCommand(m_driveSubsystem);
-  public static final shooterSubsystem m_shooter = new shooterSubsystem();
-  public static final shooterCommand m_shooterCommand = new shooterCommand(m_shooter);
-  public static final elevatorSubsystem m_elevatorSubsystem = new elevatorSubsystem();
-  private final controlPanelSubsystem m_controlPanelMotors = new controlPanelSubsystem();
+  
   /**
    * The container for the robot.  Contains subsystems, OI devices, and commands.
    */
@@ -49,11 +55,11 @@ public class RobotContainer {
     final JoystickButton xbutton = new JoystickButton(m_driveController, Button.kX.value);
     final JoystickButton opBbutton = new JoystickButton(m_operatorController, Button.kBumperRight.value);
     final JoystickButton ybutton = new JoystickButton(m_driveController, Button.kBumperLeft.value);
-    bbutton.toggleWhenPressed(new shooterCommand(m_shooter));
+    bbutton.toggleWhenPressed(new shooterCommand(m_shooter, m_indexer));
     final JoystickButton opAbutton = new JoystickButton(m_driveController, Button.kA.value);
     opAbutton.whenPressed(new manualMode());
     opBbutton.whenPressed(new turretHomingCommand());
-    ybutton.toggleWhenPressed(new indexStage1Command());
+    ybutton.toggleWhenPressed(new indexStage1Command(m_indexer));
     ybutton.whenPressed(() -> m_controlPanelMotors.setPosition(0), m_controlPanelMotors);
     xbutton.whenPressed(() -> m_controlPanelMotors.setPosition(1 * 4096), m_controlPanelMotors);
   }

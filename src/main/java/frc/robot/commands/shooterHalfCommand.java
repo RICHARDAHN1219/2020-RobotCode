@@ -7,11 +7,13 @@ import frc.robot.subsystems.shooterSubsystem;
 
 public class shooterHalfCommand extends CommandBase {
 
-  public final shooterSubsystem m_shooterSubsystem;
+  private shooterSubsystem m_shooterSubsystem;
+  private indexerSubsystem m_indexer;
 
-  public shooterHalfCommand(shooterSubsystem subsystem) {
+  public shooterHalfCommand(shooterSubsystem subsystem, indexerSubsystem indexer) {
     m_shooterSubsystem = subsystem;
-    addRequirements(subsystem);
+    m_indexer = indexer;
+    addRequirements(subsystem, indexer);
   }
 
   @Override
@@ -23,13 +25,15 @@ public class shooterHalfCommand extends CommandBase {
   @Override
   public void execute() {
     m_shooterSubsystem.setShooterRPM(3190);
-    indexerSubsystem.indexKicker.set(ControlMode.PercentOutput, .7);
+    //indexerSubsystem.indexKicker.set(ControlMode.PercentOutput, .7);
+    m_indexer.setKickerPercentOutput(0.7);
+  
   }
 
   @Override
   public void end(boolean interrupted) {
-    shooterSubsystem.shooter1.set(ControlMode.PercentOutput, 0);
-    indexerSubsystem.indexKicker.set(ControlMode.PercentOutput, 0);
+    m_shooterSubsystem.setPerentOutput(0.0);
+    m_indexer.setKickerPercentOutput(0.0);
   }
 
   @Override

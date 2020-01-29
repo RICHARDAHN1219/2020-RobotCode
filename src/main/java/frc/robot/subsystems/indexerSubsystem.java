@@ -18,17 +18,17 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 //TODO work on conditions where we run or don't run the kicker motor
 public class indexerSubsystem extends SubsystemBase {
 
-  public static WPI_TalonFX indexStage1_1 = new WPI_TalonFX(indexConstants.index1_1);
-  public static WPI_TalonFX indexStage1_2 = new WPI_TalonFX(indexConstants.index1_2);
-  public static WPI_TalonFX indexKicker = new WPI_TalonFX(indexConstants.indexKicker);
-  public static DigitalInput Sensor1 = new DigitalInput(0);
-  public static DigitalInput Sensor2 = new DigitalInput(1);
-  public static DigitalInput Sensor3 = new DigitalInput(2);
-  boolean ballReady4IndexerLast = false;
-  boolean ballStagedLast = false;
-  boolean ballExitingLast = false;
-  int stateChangeCount = 0;
-  int ballCount = 0;
+  private WPI_TalonFX indexStage1_1 = new WPI_TalonFX(indexConstants.index1_1);
+  private WPI_TalonFX indexStage1_2 = new WPI_TalonFX(indexConstants.index1_2);
+  private WPI_TalonFX indexKicker = new WPI_TalonFX(indexConstants.indexKicker);
+  private DigitalInput Sensor1 = new DigitalInput(0);
+  private DigitalInput Sensor2 = new DigitalInput(1);
+  private DigitalInput Sensor3 = new DigitalInput(2);
+  private boolean ballReady4IndexerLast = false;
+  private boolean ballStagedLast = false;
+  private boolean ballExitingLast = false;
+  private int stateChangeCount = 0;
+  private int ballCount = 0;
 
   public indexerSubsystem() {
     indexStage1_2.follow(indexStage1_1);
@@ -105,4 +105,13 @@ public class indexerSubsystem extends SubsystemBase {
     }
     ballExitingLast = ballExiting;
   }
+
+  public void setStage1PercentOutput(double percent) {
+    indexStage1_1.set(ControlMode.PercentOutput, percent);
+  }
+  
+  public void setKickerPercentOutput(double percent) {
+    indexKicker.set(ControlMode.PercentOutput, percent);
+  }
+
 }
