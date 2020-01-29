@@ -32,22 +32,11 @@ public class shooterCommand extends CommandBase {
 
   @Override
   public void execute() {
-    System.out.println("Spooling Flywheel");
-    /*
-    double ta = NetworkTableInstance.getDefault().getTable("limelight-one").getEntry("ta").getDouble(0);
-    if (ta == 0) {
-      shooterSubsystem.shooter1.set(ControlMode.PercentOutput, 0);
-    } 
-    else {
-      shooterSubsystem.shooter1.set(ControlMode.PercentOutput, 1-(100/ta));
-    }
-    System.out.println(1*100/ta);
-    */
-    
+    System.out.println("Spooling Flywheel");    
     //m_shooterSubsystem.setPosition(2048);    // TODO: This needs to be a speed not a position
     //new WaitCommand(0.5);
     //Use 1500 for testing purposes, as it is exactly half speed.
-    //m_shooterSubsystem.setShooterRPM(1500);
+    m_shooterSubsystem.setShooterRPM(6000);
     // System.out.println("Starting Kicker Wheel");
     //IndexerSubsystem.indexLoad.set(ControlMode.PercentOutput, 1);
   }
