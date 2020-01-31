@@ -16,14 +16,14 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
 import frc.robot.Constants.driveConstants;
 public class driveSubsystem extends SubsystemBase {
-  public static WPI_TalonFX falcon1 = new WPI_TalonFX(driveConstants.falcon1);
-  public static WPI_TalonFX falcon2 = new WPI_TalonFX(driveConstants.falcon2);
-  public static WPI_TalonFX falcon3 = new WPI_TalonFX(driveConstants.falcon3);
-  public static WPI_TalonFX falcon4 = new WPI_TalonFX(driveConstants.falcon4);
+  public static final WPI_TalonFX falcon1 = new WPI_TalonFX(driveConstants.falcon1);
+  public static final WPI_TalonFX falcon2 = new WPI_TalonFX(driveConstants.falcon2);
+  public static final WPI_TalonFX falcon3 = new WPI_TalonFX(driveConstants.falcon3);
+  public static final WPI_TalonFX falcon4 = new WPI_TalonFX(driveConstants.falcon4);
   public PigeonIMU m_pigeon = new PigeonIMU(11);
   public static SpeedController leftSide;
   public static SpeedController rightSide;
-  DifferentialDrive drive;
+  public static DifferentialDrive drive;
 
   public driveSubsystem() {
     driveSubsystem.falcon1.configSupplyCurrentLimit(Robot.m_currentlimitMain);

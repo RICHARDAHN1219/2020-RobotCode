@@ -27,7 +27,7 @@ public class RobotContainer {
   public final static driveSubsystem m_driveSubsystem = new driveSubsystem();
   private final turretSubsystem m_turretSubsystem = new turretSubsystem();
   //private final limelightTurretVisionCommand m_turretVisionCommand = new limelightTurretVisionCommand(m_turretSubsystem);
-  //private final driveCommand m_driveCommand = new driveCommand(m_driveSubsystem);
+  private final driveCommand m_driveCommand = new driveCommand(m_driveSubsystem);
   public static final shooterSubsystem m_shooter = new shooterSubsystem();
   public static final shooterCommand m_shooterCommand = new shooterCommand(m_shooter);
   public static final elevatorSubsystem m_elevatorSubsystem = new elevatorSubsystem();
