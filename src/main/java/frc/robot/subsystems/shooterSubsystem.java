@@ -16,32 +16,33 @@ import frc.robot.Constants.shooterConstants;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 
 public class shooterSubsystem extends SubsystemBase {
 
   private WPI_TalonFX shooter1 = new WPI_TalonFX(shooterConstants.shooter1);
   private WPI_TalonFX shooter2 = new WPI_TalonFX(shooterConstants.shooter2);
+  public double shooterRPM = 2500;
 
   public shooterSubsystem() {
-    shooter1.configFactoryDefault();
-    shooter2.configFactoryDefault();
     shooter2.follow(shooter1);
     shooter2.setInverted(true);
     shooter1.configSupplyCurrentLimit(Robot.m_currentlimitMain);
     shooter2.configSupplyCurrentLimit(Robot.m_currentlimitMain);
     shooter1.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor, shooterConstants.shooterSlotIdx, shooterConstants.shooterTimeout);
     shooter1.setSensorPhase(true);
-    shooter1.configNominalOutputForward(0, shooterConstants.shooterTimeout);
-    shooter1.configNominalOutputReverse(0, shooterConstants.shooterTimeout);
-    shooter1.configPeakOutputForward(1, shooterConstants.shooterTimeout);
-    shooter1.configPeakOutputReverse(-1, shooterConstants.shooterTimeout);
     shooter1.setNeutralMode(NeutralMode.Coast);
     shooter2.setNeutralMode(NeutralMode.Coast);
   }
 
   @Override
   public void periodic() {
+    shooter1.configNominalOutputForward(0, shooterConstants.shooterTimeout);
+    shooter1.configNominalOutputReverse(0, shooterConstants.shooterTimeout);
+    shooter1.configPeakOutputForward(1, shooterConstants.shooterTimeout);
+    shooter1.configPeakOutputReverse(-1, shooterConstants.shooterTimeout);
     SmartDashboard.putNumber("ShooterRPM", (int) (shooter1.getSelectedSensorVelocity() * 600 / 4096));
+    setShooterPID(0.1, 0, 0, 0);
   }
 
   public void setShooterRPM (double desiredRPM) {
@@ -60,11 +61,11 @@ public class shooterSubsystem extends SubsystemBase {
   }
 
   public void disableCurrentLimit() {
-    shooter1.configGetSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(false, 35, 35, 1));
+    //shooter1.configGetSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(false, 35, 35, 1));
   }
 
   public void enableCurrentLimit() {
-    shooter1.configGetSupplyCurrentLimit(Robot.m_currentlimitMain);
+   // shooter1.configGetSupplyCurrentLimit(Robot.m_currentlimitMain);
   }
 
 }

@@ -54,7 +54,7 @@ public class RobotContainer {
     final JoystickButton bbutton = new JoystickButton(m_driveController, Button.kBumperRight.value);
     final JoystickButton xbutton = new JoystickButton(m_driveController, Button.kX.value);
     final JoystickButton opBbutton = new JoystickButton(m_operatorController, Button.kBumperRight.value);
-    final JoystickButton ybutton = new JoystickButton(m_driveController, Button.kBumperLeft.value);
+    final JoystickButton ybutton = new JoystickButton(m_driveController, Button.kY.value);
     bbutton.toggleWhenPressed(new shooterCommand(m_shooter, m_indexer));
     final JoystickButton opAbutton = new JoystickButton(m_driveController, Button.kA.value);
     opAbutton.whenPressed(new manualMode());
@@ -62,9 +62,9 @@ public class RobotContainer {
     //ybutton.toggleWhenPressed(new indexStage1Command(m_indexer));
     //ybutton.whenPressed(() -> m_controlPanelMotors.setPosition(0), m_controlPanelMotors);
     //xbutton.whenPressed(() -> m_controlPanelMotors.setPosition(1 * 4096), m_controlPanelMotors);
-    abutton.whenPressed(() -> m_shooter.setShooterRPM(1000));
-    xbutton.whenPressed(() -> m_shooter.setShooterRPM(3000));
-    ybutton.whenPressed(() -> m_shooter.setShooterRPM(5000));
+    abutton.whenPressed(() -> m_shooter.setShooterRPM(2000));
+    xbutton.whenPressed(() -> m_shooter.setShooterRPM(2500));
+    ybutton.whenPressed(() -> m_shooter.setShooterRPM(3000));
   }
   /*
   public Command getAutonomousCommand() {
