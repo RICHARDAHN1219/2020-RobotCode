@@ -31,18 +31,18 @@ public class shooterSubsystem extends SubsystemBase {
     shooter2.configSupplyCurrentLimit(Robot.m_currentlimitMain);
     shooter1.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor, shooterConstants.shooterSlotIdx, shooterConstants.shooterTimeout);
     shooter1.setSensorPhase(true);
-    shooter1.setNeutralMode(NeutralMode.Coast);
-    shooter2.setNeutralMode(NeutralMode.Coast);
-  }
-
-  @Override
-  public void periodic() {
     shooter1.configNominalOutputForward(0, shooterConstants.shooterTimeout);
     shooter1.configNominalOutputReverse(0, shooterConstants.shooterTimeout);
     shooter1.configPeakOutputForward(1, shooterConstants.shooterTimeout);
     shooter1.configPeakOutputReverse(-1, shooterConstants.shooterTimeout);
-    SmartDashboard.putNumber("ShooterRPM", (int) (shooter1.getSelectedSensorVelocity() * 600 / 4096));
+    shooter1.setNeutralMode(NeutralMode.Coast);
+    shooter2.setNeutralMode(NeutralMode.Coast);
     setShooterPID(0.1, 0, 0, 0);
+  }
+
+  @Override
+  public void periodic() {
+    SmartDashboard.putNumber("ShooterRPM", (int) (shooter1.getSelectedSensorVelocity() * 600 / 4096));
   }
 
   public void setShooterRPM (double desiredRPM) {
