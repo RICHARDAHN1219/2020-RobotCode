@@ -25,13 +25,12 @@ public static final class driveConstants {
 
     public static final boolean kGyroReversed = true;
 
-    // Actual Minibot width (wheel-to-wheel) 15.625 inches or 0.396875 meters
-    public static final double kTrackwidthMeters = 0.396875;
+    // Comp bot track width (center of wheel to center of wheel) is 0.627m
+    public static final double kTrackwidthMeters = 0.627;
     public static final DifferentialDriveKinematics kDriveKinematics =
             new DifferentialDriveKinematics(kTrackwidthMeters);
 
-    // Determined using frc-characterization tool
-    // old: 0.16,  4.66,  0.486
+    // TODO: Determined using frc-characterization tool
     public static final double ksVolts = 0.138;
     public static final double kvVoltSecondsPerMeter = 4.5;
     public static final double kaVoltSecondsSquaredPerMeter = 0.444;
@@ -40,16 +39,17 @@ public static final class driveConstants {
     public static final double kPDriveVel = 12.0;
     public static final double kDDriveVel = 0.0;
 
+    // TalonFX encoders have 2048, Rev Robitics have 4096
     public static final int kEncoderCPR = 2048;
 
     // Aprox 6 inch (0.1524 meters) traction wheels, measured 0.15836 m 
-    // Measured circumference = 0.4975 m
-    public static final double kWheelDiameterMeters = 0.15836;
-    public static final double kDistancePerWheelRevolutionMeters =
-            kWheelDiameterMeters * Math.PI;
+    // Measured circumference = 0.509 m
+    public static final double kDistancePerWheelRevolutionMeters = 0.509;
+    public static final double kWheelDiameterMeters = kDistancePerWheelRevolutionMeters / Math.PI;
 
-    // gear reduction from NEO to wheels 18:1
-    public static final double kGearReduction = 1.0 / 18.0;
+    // gear reduction from Falcon Gearbox:
+    // Two stages 11:60 then 16:31 for a total gear reduction of 11:120
+    public static final double kGearReduction = 11.0 / 120.0;
 
     // Assumes the encoders are directly mounted on the motor shafts
     public static final double kEncoderDistancePerPulseMeters =
