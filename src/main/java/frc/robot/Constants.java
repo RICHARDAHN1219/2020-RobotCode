@@ -92,7 +92,7 @@ public static final class indexConstants {
     public static final int indexKicker = 10;
 }
 public static final class controlPanelConstants {
-    public static final int motor = 4;
+    public static final int motor = 13;
     public static final int controlPanelSlotIdx = 0;
     public static final int PIDLoopIdx = 0;
     public static final int timeoutMs = 30;

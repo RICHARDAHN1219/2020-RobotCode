@@ -16,9 +16,12 @@ import frc.robot.RobotContainer;
 import frc.robot.subsystems.turretSubsystem;
 
 public class limelightTurretVisionCommand extends CommandBase {
-  
+  turretSubsystem m_turret;
+
+
   public limelightTurretVisionCommand(turretSubsystem subsystem) {
     addRequirements(subsystem);
+    m_turret = subsystem;
   }
 
   @Override
@@ -41,7 +44,7 @@ public class limelightTurretVisionCommand extends CommandBase {
         //m_LimelightHasValidTarget = false;
         //m_LimelightDriveCommand = 0.0;
         m_LimelightSteerCommand = 0.0;
-        turretSubsystem.turretDrive.set(ControlMode.PercentOutput, RobotContainer.m_operatorController.getX(Hand.kLeft));
+        m_turret.setPercentOutput(RobotContainer.m_operatorController.getX(Hand.kLeft));
         return;
       }
 
@@ -60,15 +63,15 @@ public class limelightTurretVisionCommand extends CommandBase {
       }
       m_LimelightDriveCommand = drive_cmd;
       */
-      turretSubsystem.turretDrive.set(ControlMode.PercentOutput, m_LimelightSteerCommand);
+      m_turret.setPercentOutput(m_LimelightSteerCommand);
     }
     
     else if (Robot.manualMode = true) {
-      turretSubsystem.turretDrive.set(ControlMode.PercentOutput, RobotContainer.m_operatorController.getX(Hand.kLeft));
+      m_turret.setPercentOutput(RobotContainer.m_operatorController.getX(Hand.kLeft));
     }
     
     else if (Robot.turretHome = true){
-      turretSubsystem.turretHome();
+      m_turret.turretHome();
     }
   }
 

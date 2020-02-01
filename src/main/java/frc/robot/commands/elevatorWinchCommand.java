@@ -13,18 +13,21 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.elevatorSubsystem;
 
 public class elevatorWinchCommand extends CommandBase {
+  private elevatorSubsystem m_elevator;
 
-  public elevatorWinchCommand() {
+  public elevatorWinchCommand(elevatorSubsystem elevator) {
+    addRequirements(elevator);
+    m_elevator = elevator;
   }
 
   @Override
   public void initialize() {
-    elevatorSubsystem.elevatorWinch.setNeutralMode(NeutralMode.Brake);
+    m_elevator.setNeutralMode();
   }
 
   @Override
   public void execute() {
-    elevatorSubsystem.elevatorWinch.set(ControlMode.PercentOutput, 1);
+    //m_elevator.elevatorWinch.set(ControlMode.PercentOutput, 1);
   }
 
   @Override

@@ -15,11 +15,13 @@ import frc.robot.subsystems.shooterSubsystem;
 
 public class shooterCommand extends CommandBase {
   
-  public final shooterSubsystem m_shooterSubsystem;
+  private shooterSubsystem m_shooterSubsystem;
+  private indexerSubsystem m_indexer;
 
-  public shooterCommand(shooterSubsystem subsystem) {
+  public shooterCommand(shooterSubsystem subsystem, indexerSubsystem indexer) {
     m_shooterSubsystem = subsystem;
-    addRequirements(subsystem);
+    m_indexer = indexer;
+    addRequirements(subsystem, indexer);
   }
 
   @Override
@@ -30,31 +32,20 @@ public class shooterCommand extends CommandBase {
 
   @Override
   public void execute() {
-    System.out.println("Spooling Flywheel");
-    /*
-    double ta = NetworkTableInstance.getDefault().getTable("limelight-one").getEntry("ta").getDouble(0);
-    if (ta == 0) {
-      shooterSubsystem.shooter1.set(ControlMode.PercentOutput, 0);
-    } 
-    else {
-      shooterSubsystem.shooter1.set(ControlMode.PercentOutput, 1-(100/ta));
-    }
-    System.out.println(1*100/ta);
-    */
-    
-    shooterSubsystem.shooter1.set(ControlMode.Position, 2048);
-    new WaitCommand(0.5);
+    System.out.println("Spooling Flywheel");    
+    //m_shooterSubsystem.setPosition(2048);    // TODO: This needs to be a speed not a position
+    //new WaitCommand(0.5);
     //Use 1500 for testing purposes, as it is exactly half speed.
-    //m_shooterSubsystem.setShooterRPM(1500);
-    System.out.println("Starting Kicker Wheel");
+    m_shooterSubsystem.setShooterRPM(6000);
+    // System.out.println("Starting Kicker Wheel");
     //IndexerSubsystem.indexLoad.set(ControlMode.PercentOutput, 1);
   }
   
   @Override
   public void end(boolean interrupted) {
     System.out.println("Stopping Flywheel/Kicker Wheel");
-    shooterSubsystem.shooter1.set(ControlMode.PercentOutput, 0);
-    indexerSubsystem.indexKicker.set(ControlMode.PercentOutput, 0);
+    m_shooterSubsystem.setPercentOutput(0.0);
+    m_indexer.setKickerPercentOutput(0.0);
   }
 
   @Override

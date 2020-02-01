@@ -12,8 +12,11 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.indexerSubsystem;
 
 public class indexStage1Command extends CommandBase {
+  indexerSubsystem m_indexer;
 
-  public indexStage1Command() {
+  public indexStage1Command(indexerSubsystem indexer) {
+    addRequirements(indexer);
+    m_indexer = indexer;
   }
 
   @Override
@@ -22,12 +25,14 @@ public class indexStage1Command extends CommandBase {
 
   @Override
   public void execute() {
-    indexerSubsystem.indexStage1_1.set(ControlMode.PercentOutput, 0.75);
+    //indexStage1_1.set(ControlMode.PercentOutput, 0.75);
+    m_indexer.setStage1PercentOutput(0.75);
   }
 
   @Override
   public void end(boolean interrupted) {
-    indexerSubsystem.indexStage1_1.set(ControlMode.PercentOutput, 0);
+    //indexStage1_1.set(ControlMode.PercentOutput, 0);
+    m_indexer.setStage1PercentOutput(0.0);
   }
 
   @Override
