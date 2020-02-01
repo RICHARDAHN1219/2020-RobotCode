@@ -51,12 +51,12 @@ public class RobotContainer {
 
   private void configureButtonBindings() {
     final JoystickButton abutton = new JoystickButton(m_driveController, Button.kA.value);
-    final JoystickButton bbutton = new JoystickButton(m_driveController, Button.kBumperRight.value);
+    final JoystickButton bbutton = new JoystickButton(m_driveController, Button.kB.value);
     final JoystickButton xbutton = new JoystickButton(m_driveController, Button.kX.value);
-    final JoystickButton opBbutton = new JoystickButton(m_operatorController, Button.kBumperRight.value);
     final JoystickButton ybutton = new JoystickButton(m_driveController, Button.kY.value);
     bbutton.toggleWhenPressed(new shooterCommand(m_shooter, m_indexer));
-    final JoystickButton opAbutton = new JoystickButton(m_driveController, Button.kA.value);
+    final JoystickButton opAbutton = new JoystickButton(m_operatorController, Button.kA.value);
+    final JoystickButton opBbutton = new JoystickButton(m_operatorController, Button.kB.value);
     opAbutton.whenPressed(new manualMode());
     opBbutton.whenPressed(new turretHomingCommand());
     //ybutton.toggleWhenPressed(new indexStage1Command(m_indexer));
