@@ -18,6 +18,7 @@ import static frc.robot.Constants.driveConstants.kGearReduction;
 import static frc.robot.Constants.driveConstants.kGyroReversed;
 import static frc.robot.Constants.driveConstants.driveTimeout;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.TalonFXSensorCollection;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.sensors.PigeonIMU;
@@ -72,17 +73,23 @@ public class driveSubsystem extends SubsystemBase {
     falcon2_leftFollow.configSupplyCurrentLimit(Robot.m_currentlimitMain);
     falcon4_rightFollow.configSupplyCurrentLimit(Robot.m_currentlimitMain);
 
+    // set brake mode
+    falcon1_leftLead.setNeutralMode(NeutralMode.Brake);
+    falcon2_leftFollow.setNeutralMode(NeutralMode.Brake);
+    falcon3_rightLead.setNeutralMode(NeutralMode.Brake);
+    falcon4_rightFollow.setNeutralMode(NeutralMode.Brake);
+    
     // default feed
     falcon1_leftLead.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor, 0, driveTimeout);
     falcon3_rightLead.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor, 0, driveTimeout);
 
-    // set Lead/Follow 
-    falcon2_leftFollow.follow(falcon1_leftLead);
-    falcon4_rightFollow.follow(falcon3_rightLead);
-
     // TODO: do we need to invert both right motors?
     falcon3_rightLead.setInverted(true);
     falcon4_rightFollow.setInverted(true);
+
+    // set Lead/Follow 
+    falcon2_leftFollow.follow(falcon1_leftLead);
+    falcon4_rightFollow.follow(falcon3_rightLead);
  
     m_leftEncoder = falcon1_leftLead.getSensorCollection();
     m_rightEncoder = falcon3_rightLead.getSensorCollection();
