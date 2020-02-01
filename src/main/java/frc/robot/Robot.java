@@ -30,8 +30,6 @@ public class Robot extends TimedRobot {
     m_robotContainer = new RobotContainer();
     NetworkTableInstance.getDefault().getTable("limelight").getEntry("camMode").setNumber(1);
     NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").setNumber(1);
-
-
   }
 
   @Override
