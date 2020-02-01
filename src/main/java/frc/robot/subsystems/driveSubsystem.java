@@ -17,6 +17,7 @@ import static frc.robot.Constants.driveConstants.kDistancePerWheelRevolutionMete
 import static frc.robot.Constants.driveConstants.kGearReduction;
 import static frc.robot.Constants.driveConstants.kGyroReversed;
 import static frc.robot.Constants.driveConstants.driveTimeout;
+import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.TalonFXSensorCollection;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.sensors.PigeonIMU;
@@ -65,19 +66,24 @@ public class driveSubsystem extends SubsystemBase {
     falcon3_rightLead.configFactoryDefault();
     falcon4_rightFollow.configFactoryDefault();
 
+    // Current limiting
     falcon1_leftLead.configSupplyCurrentLimit(Robot.m_currentlimitMain);
     falcon2_leftFollow.configSupplyCurrentLimit(Robot.m_currentlimitMain);
     falcon2_leftFollow.configSupplyCurrentLimit(Robot.m_currentlimitMain);
     falcon4_rightFollow.configSupplyCurrentLimit(Robot.m_currentlimitMain);
 
-    // TODO: find out if we need to invert both right motors
+    // default feed
+    falcon1_leftLead.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor, 0, driveTimeout);
+    falcon3_rightLead.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor, 0, driveTimeout);
+
+    // set Lead/Follow 
     falcon2_leftFollow.follow(falcon1_leftLead);
     falcon4_rightFollow.follow(falcon3_rightLead);
 
+    // TODO: do we need to invert both right motors?
     falcon3_rightLead.setInverted(true);
     falcon4_rightFollow.setInverted(true);
  
-    // TODO: do we need to config falcon sensor
     m_leftEncoder = falcon1_leftLead.getSensorCollection();
     m_rightEncoder = falcon3_rightLead.getSensorCollection();
 
@@ -107,7 +113,6 @@ public class driveSubsystem extends SubsystemBase {
     // report the wheel speed, position, and pose
     SmartDashboard.putNumber("left_wheel_Velocity",  getVelocity(m_rightEncoder));
     SmartDashboard.putNumber("right_wheel_Velocity", getVelocity(m_rightEncoder));
-
     SmartDashboard.putNumber("left_wheel_Distance", leftDist); // m_leftEncoder.getPosition());
     SmartDashboard.putNumber("right_wheel_Distance", rightDist); // m_rightEncoder.getPosition());
 
