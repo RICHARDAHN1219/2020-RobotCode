@@ -13,6 +13,8 @@ import static frc.robot.Constants.AutoConstants.kRamseteB;
 import static frc.robot.Constants.AutoConstants.kRamseteZeta;
 import static frc.robot.Constants.driveConstants.kDriveKinematics;
 import java.util.List;
+
+import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj.controller.RamseteController;
@@ -43,11 +45,11 @@ import frc.robot.subsystems.controlPanelSubsystem;
 public class RobotContainer {
   // Subsystems
   private final driveSubsystem m_drive = new driveSubsystem();
-  private final turretSubsystem m_turretSubsystem = new turretSubsystem();
-  private final shooterSubsystem m_shooter = new shooterSubsystem();
-  private final indexerSubsystem m_indexer = new indexerSubsystem();
-  private final elevatorSubsystem m_elevatorSubsystem = new elevatorSubsystem();
-  private final controlPanelSubsystem m_controlPanelMotors = new controlPanelSubsystem();
+  // private final turretSubsystem m_turretSubsystem = new turretSubsystem();
+  // private final shooterSubsystem m_shooter = new shooterSubsystem();
+  // private final indexerSubsystem m_indexer = new indexerSubsystem();
+  //  private final elevatorSubsystem m_elevatorSubsystem = new elevatorSubsystem();
+  // private final controlPanelSubsystem m_controlPanelMotors = new controlPanelSubsystem();
 
   // Commands
   //public static final shooterCommand m_shooterCommand = new shooterCommand(m_shooter, m_indexer);
@@ -58,11 +60,18 @@ public class RobotContainer {
    * The container for the robot.  Contains subsystems, OI devices, and commands.
    */
   public static XboxController m_driveController = new XboxController(driveConstants.driveController);
-  public static XboxController m_operatorController = new XboxController(driveConstants.operatorController);
+  // public static XboxController m_operatorController = new XboxController(driveConstants.operatorController);
   public RobotContainer() {
     configureButtonBindings();
-    m_drive.setDefaultCommand(new driveCommand(m_drive));
-    m_turretSubsystem.setDefaultCommand(new limelightTurretVisionCommand(m_turretSubsystem));
+
+    // default command is arcade drive command
+    m_drive.setDefaultCommand(
+        // A split-stick arcade command, with forward/backward controlled by the left
+        // hand, and turning controlled by the right.
+        new RunCommand(() -> m_drive.arcadeDrive(0.5 * -m_driveController.getY(GenericHID.Hand.kLeft),
+            0.6 * m_driveController.getX(GenericHID.Hand.kRight)), m_drive));
+
+    //m_turretSubsystem.setDefaultCommand(new limelightTurretVisionCommand(m_turretSubsystem));
   }
 
   private void configureButtonBindings() {
@@ -70,17 +79,17 @@ public class RobotContainer {
     final JoystickButton bbutton = new JoystickButton(m_driveController, Button.kB.value);
     final JoystickButton xbutton = new JoystickButton(m_driveController, Button.kX.value);
     final JoystickButton ybutton = new JoystickButton(m_driveController, Button.kY.value);
-    bbutton.toggleWhenPressed(new shooterCommand(m_shooter, m_indexer));
-    final JoystickButton opAbutton = new JoystickButton(m_operatorController, Button.kA.value);
-    final JoystickButton opBbutton = new JoystickButton(m_operatorController, Button.kB.value);
-    opAbutton.whenPressed(new manualMode());
-    opBbutton.whenPressed(new turretHomingCommand());
-    //ybutton.toggleWhenPressed(new indexStage1Command(m_indexer));
-    //ybutton.whenPressed(() -> m_controlPanelMotors.setPosition(0), m_controlPanelMotors);
-    //xbutton.whenPressed(() -> m_controlPanelMotors.setPosition(1 * 4096), m_controlPanelMotors);
-    abutton.whenPressed(() -> m_shooter.setShooterRPM(2000));
-    xbutton.whenPressed(() -> m_shooter.setShooterRPM(2500));
-    ybutton.whenPressed(() -> m_shooter.setShooterRPM(3000));
+    //bbutton.toggleWhenPressed(new shooterCommand(m_shooter, m_indexer));
+    // final JoystickButton opAbutton = new JoystickButton(m_operatorController, Button.kA.value);
+    // final JoystickButton opBbutton = new JoystickButton(m_operatorController, Button.kB.value);
+    // opAbutton.whenPressed(new manualMode());
+    // opBbutton.whenPressed(new turretHomingCommand());
+    // ybutton.toggleWhenPressed(new indexStage1Command(m_indexer));
+    // ybutton.whenPressed(() -> m_controlPanelMotors.setPosition(0), m_controlPanelMotors);
+    // xbutton.whenPressed(() -> m_controlPanelMotors.setPosition(1 * 4096), m_controlPanelMotors);
+    //abutton.whenPressed(() -> m_shooter.setShooterRPM(2000));
+    //xbutton.whenPressed(() -> m_shooter.setShooterRPM(2500));
+    //ybutton.whenPressed(() -> m_shooter.setShooterRPM(3000));
   }
   
   public Command getNoAutonomousCommand() {
