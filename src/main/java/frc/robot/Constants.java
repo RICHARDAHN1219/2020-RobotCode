@@ -50,5 +50,6 @@ public static final class controlPanelConstants {
 }
 public static final class intakeConstants {
     public static final int intakeMotor = 20;
+    public static final int intakeSolenoid = 1;
 }
 }
