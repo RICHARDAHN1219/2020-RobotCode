@@ -56,6 +56,7 @@ public class RobotContainer {
     final JoystickButton xbutton = new JoystickButton(m_driveController, Button.kX.value);
     final JoystickButton ybutton = new JoystickButton(m_driveController, Button.kY.value);
     final JoystickButton startbutton = new JoystickButton(m_driveController, Button.kStart.value);
+    final JoystickButton selectbutton = new JoystickButton(m_driveController, Button.kBack.value);
     //bbutton.toggleWhenPressed(new shooterCommand(m_shooter, m_indexer));
     final JoystickButton opAbutton = new JoystickButton(m_operatorController, Button.kA.value);
     final JoystickButton opBbutton = new JoystickButton(m_operatorController, Button.kB.value);
@@ -71,6 +72,7 @@ public class RobotContainer {
     xbutton.whenPressed(() -> m_shooter.setShooterRPM(2500));
     ybutton.whenPressed(() -> m_shooter.setShooterRPM(3000));
     startbutton.toggleWhenPressed(new indexerEjectCommand());
+    selectbutton.whenPressed(() -> m_shooter.testMode());
   }
   /*
   public Command getAutonomousCommand() {

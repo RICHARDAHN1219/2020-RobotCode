@@ -43,7 +43,7 @@ public class limelightTurretVisionCommand extends CommandBase {
         //m_LimelightHasValidTarget = false;
         //m_LimelightDriveCommand = 0.0;
         m_LimelightSteerCommand = 0.0;
-        m_turret.setPercentOutput(RobotContainer.m_driveController.getX(Hand.kLeft));
+        m_turret.setPercentOutput(RobotContainer.m_driveController.getX(Hand.kLeft) * 0.25);
         return;
       }
 
@@ -70,7 +70,7 @@ public class limelightTurretVisionCommand extends CommandBase {
     }
     
     else if (Robot.turretHome = true){
-      //m_turret.turretHome();
+      m_turret.turretHome();
     }
   }
 
