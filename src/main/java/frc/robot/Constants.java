@@ -30,14 +30,14 @@ public static final class driveConstants {
     public static final DifferentialDriveKinematics kDriveKinematics =
             new DifferentialDriveKinematics(kTrackwidthMeters);
 
-    // TODO: Determined using frc-characterization tool
-    public static final double ksVolts = 0.138;
-    public static final double kvVoltSecondsPerMeter = 4.5;
-    public static final double kaVoltSecondsSquaredPerMeter = 0.444;
+    // Determined using frc-characterization tool
+    public static final double ksVolts = 0.0491;
+    public static final double kvVoltSecondsPerMeter = 2.36;
+    public static final double kaVoltSecondsSquaredPerMeter = 0.127;
 
     // Determined using frc-characterization
-    public static final double kPDriveVel = 12.0;
-    public static final double kDDriveVel = 0.0;
+    public static final double kPDriveVel = 14.4;
+    public static final double kDDriveVel = 5.16;
 
     // TalonFX encoders have 2048, Rev Robitics have 4096
     public static final int kEncoderCPR = 2048;
