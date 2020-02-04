@@ -16,7 +16,6 @@ import frc.robot.commands.indexStage1Command;
 import frc.robot.commands.indexerEjectCommand;
 import frc.robot.commands.limelightTurretVisionCommand;
 import frc.robot.commands.manualMode;
-import frc.robot.commands.shooterCommand;
 import frc.robot.commands.turretHomingCommand;
 import frc.robot.subsystems.driveSubsystem;
 import frc.robot.subsystems.elevatorSubsystem;
