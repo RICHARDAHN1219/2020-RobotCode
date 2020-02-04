@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 public class turretSubsystem extends SubsystemBase {
@@ -26,13 +27,14 @@ public class turretSubsystem extends SubsystemBase {
   
   public turretSubsystem() {
     turretDrive.configSelectedFeedbackSensor(FeedbackDevice.Analog, 0, 10);
-    turretDrive.configForwardSoftLimitEnable(true);
-    turretDrive.configReverseSoftLimitEnable(true);
+    turretDrive.configForwardSoftLimitEnable(false);
+    turretDrive.configReverseSoftLimitEnable(false);
     turretDrive.configForwardSoftLimitThreshold((int) (Constants.turretConstants.kSoftMaxTurretAngle / (360.0 * Constants.turretConstants.kTurretRotationsPerTick)));
     turretDrive.configReverseSoftLimitThreshold((int) (Constants.turretConstants.kSoftMinTurretAngle / (360.0 * Constants.turretConstants.kTurretRotationsPerTick)));
     turretDrive.configContinuousCurrentLimit(25);
     turretDrive.setSelectedSensorPosition(0, 0, 10); 
     turretDrive.getSensorCollection().setQuadraturePosition(0, 10);
+    turretDrive.setNeutralMode(NeutralMode.Brake);
   }
   
   public void turretHome() {

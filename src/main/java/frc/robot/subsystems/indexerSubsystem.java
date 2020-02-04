@@ -8,6 +8,7 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
@@ -18,8 +19,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 //TODO work on conditions where we run or don't run the kicker motor
 public class indexerSubsystem extends SubsystemBase {
 
-  private WPI_TalonFX indexStage1_1 = new WPI_TalonFX(indexConstants.index1_1);
-  private WPI_TalonFX indexStage1_2 = new WPI_TalonFX(indexConstants.index1_2);
+  private WPI_TalonFX indexBelts = new WPI_TalonFX(indexConstants.indexBelts);
   private WPI_TalonFX indexKicker = new WPI_TalonFX(indexConstants.indexKicker);
   private DigitalInput Sensor1 = new DigitalInput(0);
   private DigitalInput Sensor2 = new DigitalInput(1);
@@ -27,15 +27,16 @@ public class indexerSubsystem extends SubsystemBase {
   private boolean ballReady4IndexerLast = false;
   private boolean ballStagedLast = false;
   private boolean ballExitingLast = false;
+  public boolean ballStaged;
+  public boolean eject = false;
   private int stateChangeCount = 0;
   private int ballCount = 0;
 
   public indexerSubsystem() {
-    indexStage1_2.follow(indexStage1_1);
-    indexStage1_1.setInverted(true);
-    indexStage1_1.configSupplyCurrentLimit(Robot.m_currentlimitSecondary);
-    indexStage1_2.configSupplyCurrentLimit(Robot.m_currentlimitSecondary);
+    indexBelts.configSupplyCurrentLimit(Robot.m_currentlimitSecondary);
     indexKicker.configSupplyCurrentLimit(Robot.m_currentlimitSecondary);
+    indexBelts.setNeutralMode(NeutralMode.Brake);
+    indexKicker.setNeutralMode(NeutralMode.Brake);
   }
 
   @Override
@@ -47,28 +48,33 @@ public class indexerSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("state change count", stateChangeCount);
     
     //set the current limit to prevent jamming and unnecessary battery draw
-    if (indexStage1_1.getSupplyCurrent() <= 20 || indexStage1_2.getSupplyCurrent() <= 20){
-      indexStage1_1.set(ControlMode.PercentOutput, -0.5);
+    if (indexBelts.getSupplyCurrent() >= 20) {
+      setBeltsPercentOutput(-0.5);
     }
 
     //prevent intake of new balls when we already have 5
-    if (ballCount == 5){
-      return;
-    }
+    //EDIT: We are aiming for 4 balls by week 1 until 5 is figured out
+    
+    if (eject == true){
+      setBeltsPercentOutput(1);
+      setKickerPercentOutput(1);
 
+    } else{
     //move indexer when a new ball is ready to enter the system
     if (ballReady4Indexer == true) {
-      indexStage1_1.set(ControlMode.PercentOutput, 0.75);
-      indexKicker.set(ControlMode.PercentOutput, 0.75);
+      setBeltsPercentOutput(1);
+      setKickerPercentOutput(0.3);
     } 
-    
+    //if (ballCount == 4){
+      //return;
+    //}
     //stop indexer when balls are properly staged
     else if (ballStaged == true) {
-      indexStage1_1.set(ControlMode.PercentOutput, 0);
+      setBeltsPercentOutput(0);
     }
 
     //increase ball count as balls enter the indexer
-    if (ballReady4Indexer != ballReady4IndexerLast && ballReady4Indexer == false) {
+    if (ballReady4Indexer != ballReady4IndexerLast && ballReady4Indexer == true) {
       ballCount += 1;  
     }
     ballReady4IndexerLast = ballReady4Indexer;
@@ -81,37 +87,55 @@ public class indexerSubsystem extends SubsystemBase {
     
     //finish staging balls when this error state occurs
     if ((-1 + (ballCount * 2)) != stateChangeCount) {
-      indexStage1_1.set(ControlMode.PercentOutput, 0.75);
+      setBeltsPercentOutput(1);
+      setKickerPercentOutput(0.3);
     }
     
     //finish staging balls when this error state occurs
     if ((ballCount >= 1) && ballReady4Indexer == false && ballStaged == false) {
-      indexStage1_1.set(ControlMode.PercentOutput, 0.75);
+      setBeltsPercentOutput(1);
+      setKickerPercentOutput(0.3);
     }
     
     //automatically stage the balls for shooting when we have 5
-    if (ballCount == 5 && ballExiting != true) {
-      indexStage1_1.set(ControlMode.PercentOutput, 0.75);
+    if (ballCount == 4 && ballExiting == false) {
+      setBeltsPercentOutput(1);
     }
     
     //stop indexer when all 5 balls are staged for shooting
-    if (ballCount == 5 && ballExiting == true) {
-      indexStage1_1.set(ControlMode.PercentOutput, 0);
+    else if (ballCount == 4 && ballExiting == true) {
+      setBeltsPercentOutput(0);
+    }
+    if (ballExiting == true) {
+      setBeltsPercentOutput(0);
+      setKickerPercentOutput(0);
     }
 
+  }
+  
     //decrease ballCount as balls leave the indexer
     if (ballExiting != ballExitingLast && ballExiting == false) {
-      ballCount -= 1; 
+      ballCount -= 1;
+      stateChangeCount = stateChangeCount - 2;
     }
     ballExitingLast = ballExiting;
+    
+    if (stateChangeCount < 0) {
+      stateChangeCount = 0;
+    }
+
+    if (ballCount == 0) {
+      stateChangeCount = 0;
+    }
   }
 
-  public void setStage1PercentOutput(double percent) {
-    indexStage1_1.set(ControlMode.PercentOutput, percent);
+  
+
+  public void setBeltsPercentOutput(double percent) {
+    indexBelts.set(ControlMode.PercentOutput, percent);
   }
   
   public void setKickerPercentOutput(double percent) {
     indexKicker.set(ControlMode.PercentOutput, percent);
   }
-
 }

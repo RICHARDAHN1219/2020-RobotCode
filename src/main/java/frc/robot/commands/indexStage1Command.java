@@ -26,13 +26,13 @@ public class indexStage1Command extends CommandBase {
   @Override
   public void execute() {
     //indexStage1_1.set(ControlMode.PercentOutput, 0.75);
-    m_indexer.setStage1PercentOutput(0.75);
+    m_indexer.setBeltsPercentOutput(0.75);
   }
 
   @Override
   public void end(boolean interrupted) {
     //indexStage1_1.set(ControlMode.PercentOutput, 0);
-    m_indexer.setStage1PercentOutput(0.0);
+    m_indexer.setBeltsPercentOutput(0.0);
   }
 
   @Override
