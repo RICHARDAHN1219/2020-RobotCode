@@ -16,7 +16,7 @@ public static final class driveConstants {
     public static final int falcon3_rightLead   = 0;
     public static final int falcon4_rightFollow = 2;
     public static final int driveTimeout = 30;
-    public static final int pigeonCANid = 0;
+    public static final int pigeonCANid = 15;
     public static final int driveController = 0;
     public static final int operatorController = 1;
 
