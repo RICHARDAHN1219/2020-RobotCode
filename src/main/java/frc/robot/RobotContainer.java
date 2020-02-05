@@ -12,7 +12,6 @@ import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.driveConstants;
 import frc.robot.commands.driveCommand;
-import frc.robot.commands.indexStage1Command;
 import frc.robot.commands.indexerEjectCommand;
 import frc.robot.commands.limelightTurretVisionCommand;
 import frc.robot.commands.manualMode;
