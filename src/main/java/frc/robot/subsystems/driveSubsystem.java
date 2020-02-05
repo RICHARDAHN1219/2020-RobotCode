@@ -68,7 +68,7 @@ public class driveSubsystem extends SubsystemBase {
   // Stall:      257A  (more than the battery can supply)
   // Battery can at best supply around 250A
   private SupplyCurrentLimitConfiguration m_limit =
-     new SupplyCurrentLimitConfiguration(true, 35, 20, 0.5);
+     new SupplyCurrentLimitConfiguration(true, 30, 20, 0.5);
 
   public driveSubsystem() {
 
@@ -120,7 +120,7 @@ public class driveSubsystem extends SubsystemBase {
   
   @Override
   public void periodic() {
-        // Note: periodic() is run by the scheduler, always. No matter what.
+    // Note: periodic() is run by the scheduler, always. No matter what.
     // Update the odometry in the periodic block
     double leftDist = getLeftPosition(); 
     double rightDist = getRightPosition();
@@ -382,7 +382,8 @@ public class driveSubsystem extends SubsystemBase {
    * Disablecurrent limiting for drivetrain.
    */
   public void disableCurrentLimit() {
-    setCurrentLimit(new SupplyCurrentLimitConfiguration(false, 100, 100, 1));
+    // not completely disabled, 4x80 amps is 240Amps, wich is almost 100% of the battery output
+    setCurrentLimit(new SupplyCurrentLimitConfiguration(true, 80, 60, 1));
   }
 
 }
