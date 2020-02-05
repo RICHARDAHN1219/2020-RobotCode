@@ -116,8 +116,8 @@ public class driveSubsystem extends SubsystemBase {
   public void periodic() {
         // Note: periodic() is run by the scheduler, always. No matter what.
     // Update the odometry in the periodic block
-    double leftDist = getPosition(m_leftEncoder); 
-    double rightDist = getPosition(m_rightEncoder);
+    double leftDist = getLeftPosition(); 
+    double rightDist = getRightPosition();
     m_odometry.update(Rotation2d.fromDegrees(getHeading()), leftDist, rightDist);
 
     // log drive train and data to Smartdashboard
@@ -126,11 +126,11 @@ public class driveSubsystem extends SubsystemBase {
     // NOTE: call getFusedHeading(FusionStatus) to detect gyro errors
 
     // report the wheel speed, position, and pose
-    SmartDashboard.putNumber("left_wheel_Velocity",  getVelocity(m_leftEncoder));
-    SmartDashboard.putNumber("right_wheel_Velocity", getVelocity(m_rightEncoder));
-    SmartDashboard.putNumber("left_wheel_Distance", leftDist); // m_leftEncoder.getPosition());
-    SmartDashboard.putNumber("right_wheel_Distance", rightDist); // m_rightEncoder.getPosition());
-
+    SmartDashboard.putNumber("left_wheel_Velocity", getLeftVelocity());
+    SmartDashboard.putNumber("right_wheel_Velocity", getRightVelocity());
+    SmartDashboard.putNumber("left_wheel_Distance", leftDist); 
+    SmartDashboard.putNumber("right_wheel_Distance", rightDist);
+    
     Pose2d currentPose = m_odometry.getPoseMeters();
     SmartDashboard.putNumber("pose_x",currentPose.getTranslation().getX());
     SmartDashboard.putNumber("pose_y",currentPose.getTranslation().getY());
@@ -142,20 +142,36 @@ public class driveSubsystem extends SubsystemBase {
    *
    * @return distance in meters
    */
-   double getPosition(TalonFXSensorCollection encoder) {
+  private double getPosition(TalonFXSensorCollection encoder) {
      // Native units are encoder ticks (2048 ticks per revolution)
     return encoder.getIntegratedSensorPosition() * kDistancePerWheelRevolutionMeters * kGearReduction / kEncoderCPR;
-   }
+  }
+
+  double getLeftPosition() {
+    return getPosition(m_leftEncoder);
+  }
+
+  double getRightPosition() {
+    return -getPosition(m_rightEncoder);
+  }
 
   /**
    * Returns the velocity of a given wheel in meters per second
    *
    * @return velocity in meters/second
    */
-  double getVelocity(TalonFXSensorCollection encoder) {
+  private double getVelocity(TalonFXSensorCollection encoder) {
     // Native units are encoder ticks per 100ms
     return encoder.getIntegratedSensorVelocity() * kDistancePerWheelRevolutionMeters * kGearReduction / (kEncoderCPR * 10.0);
-   }
+  }
+
+  double getLeftVelocity() {
+    return getVelocity(m_leftEncoder);
+  }
+
+  double getRightVelocity() {
+    return -getVelocity(m_rightEncoder);
+  }
 
   /**
    * Returns the currently-estimated pose of the robot.
@@ -182,8 +198,8 @@ public class driveSubsystem extends SubsystemBase {
    */
   public DifferentialDriveWheelSpeeds getWheelSpeeds() {
     return new DifferentialDriveWheelSpeeds(
-        getVelocity(m_leftEncoder),
-        getVelocity(m_rightEncoder));
+        getLeftVelocity(),
+        getRightVelocity());
   }
 
   /**
