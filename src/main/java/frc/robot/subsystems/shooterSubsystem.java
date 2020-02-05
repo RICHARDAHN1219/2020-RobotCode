@@ -14,6 +14,7 @@ import com.revrobotics.CANEncoder;
 import com.revrobotics.CANPIDController;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.ControlType;
+import com.revrobotics.EncoderType;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import frc.robot.Robot;
@@ -48,15 +49,16 @@ public class shooterSubsystem extends SubsystemBase {
     shooter1.setNeutralMode(NeutralMode.Coast);
     shooter2.setNeutralMode(NeutralMode.Coast);
     setShooterPID(0.1, 0, 0, 0); */
-    neo_shooter1.setSmartCurrentLimit(35);
-    neo_shooter2.setSmartCurrentLimit(35);
+    //neo_shooter1.setSmartCurrentLimit(35);
+    //neo_shooter2.setSmartCurrentLimit(35);
     neo_shooter2.setInverted(true);
     neo_shooter2.follow(neo_shooter1);
     m_pidController = neo_shooter1.getPIDController();
-    m_encoder = neo_shooter1.getEncoder();
+    m_encoder = neo_shooter1.getEncoder(EncoderType.kHallSensor, 2048);
     kMaxOutput = 1; 
     kMinOutput = -1;
     m_pidController.setOutputRange(kMinOutput, kMaxOutput);
+    SmartDashboard.putNumber("RPM", rpm);
 
 
   }
@@ -65,8 +67,7 @@ public class shooterSubsystem extends SubsystemBase {
   public void periodic() {
     //SmartDashboard.putNumber("ShooterRPM", (int) (shooter1.getSelectedSensorVelocity() * 600 / 4096));
     SmartDashboard.putNumber("ShooterRPM", (int) (m_encoder.getVelocity() * 600 / 4096));
-    setShooterPID(0.1, 0, 0, 0);
-    double rpm = SmartDashboard.getNumber("RPM", 0);
+    setShooterPID(0.005, 0, 0, 0);
   }
 
   public void setShooterRPM (double desiredRPM) {
@@ -74,7 +75,10 @@ public class shooterSubsystem extends SubsystemBase {
     m_pidController.setReference(desiredRPM, ControlType.kVelocity);
   }
   public void testMode(){
+    double rpm = SmartDashboard.getNumber("RPM", 0);
+    System.out.println(rpm);
     m_pidController.setReference(rpm, ControlType.kVelocity);
+    System.out.println("Activating Test Mode");
   }
   public void setShooterPID (double P, double I, double D, double F) {
     m_pidController.setP(P);

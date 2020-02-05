@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.subsystems.elevatorSubsystem;
+import frc.robot.subsystems.shooterSubsystem;
 import frc.robot.subsystems.turretSubsystem;
 import com.ctre.phoenix.motorcontrol.*;
 
@@ -71,6 +72,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopPeriodic() {
+    RobotContainer.m_shooter.testMode();
   }
 
   @Override
