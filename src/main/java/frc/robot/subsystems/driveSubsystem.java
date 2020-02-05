@@ -82,19 +82,20 @@ public class driveSubsystem extends SubsystemBase {
     falcon3_rightLead.setNeutralMode(NeutralMode.Brake);
     falcon4_rightFollow.setNeutralMode(NeutralMode.Brake);
     
-    // TODO: do we need to invert both right motors?
+    // No need to invert Follow Motors
     falcon3_rightLead.setInverted(false);
     falcon1_leftLead.setInverted(true);
     falcon2_leftFollow.setInverted(InvertType.FollowMaster);
     falcon4_rightFollow.setInverted(InvertType.FollowMaster);
+
+    // NOTE: setSensorPhase() does nothing on TalonFX motors as the encoders 
+    // are integrated, and can cannot be out of phase with the motor. 
     falcon1_leftLead.setSensorPhase(true);
     falcon3_rightLead.setSensorPhase(true);
-    // falcon3_rightLead.setSensorPhase(false);
 
-    // default feed
+    // default feedback sensor
     falcon1_leftLead.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor, 0, driveTimeout);
     falcon3_rightLead.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor, 0, driveTimeout);
-
 
     // set Lead/Follow 
     falcon2_leftFollow.follow(falcon1_leftLead);
