@@ -20,6 +20,7 @@ import static frc.robot.Constants.driveConstants.driveTimeout;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.InvertType;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.TalonFXSensorCollection;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.sensors.PigeonIMU;
@@ -41,11 +42,14 @@ public class driveSubsystem extends SubsystemBase {
   private WPI_TalonFX falcon2_leftFollow  = new WPI_TalonFX(driveConstants.falcon2_leftFollow);
   private WPI_TalonFX falcon3_rightLead   = new WPI_TalonFX(driveConstants.falcon3_rightLead);
   private WPI_TalonFX falcon4_rightFollow = new WPI_TalonFX(driveConstants.falcon4_rightFollow);
-  //private final AHRS m_gyro = new AHRS(SPI.Port.kMXP);
+
+  // OLD Gyro, NAVX:
+  //    private final AHRS m_gyro = new AHRS(SPI.Port.kMXP);
+
+  // New Gyro, pigeon IMU on the CAN bus
   private PigeonIMU m_gyro = new PigeonIMU(driveConstants.pigeonCANid);
 
-  //private static SpeedController m_leftMotors;
-  //private static SpeedController m_rightMotors;
+  // Note: We do not use SpeedController. We use CAN based Lead/Follow. 
 
   private final DifferentialDrive m_drive;
   private final TalonFXSensorCollection m_leftEncoder;
@@ -55,12 +59,16 @@ public class driveSubsystem extends SubsystemBase {
 
   private PIDController left_PIDController = new PIDController(kPDriveVel, 0.0, kDDriveVel);
   private PIDController right_PIDController =  new PIDController(kPDriveVel, 0.0, kDDriveVel);
-
-  // The gyro sensor
-  // private final Gyro m_gyro = new ADXRS450_Gyro();
  
   // Odometry class for tracking robot pose
   private final DifferentialDriveOdometry m_odometry;
+
+  // http://www.ctr-electronics.com/downloads/pdf/Falcon%20500%20User%20Guide.pdf
+  // Peak power: 140A
+  // Stall:      257A  (more than the battery can supply)
+  // Battery can at best supply around 250A
+  private SupplyCurrentLimitConfiguration m_limit =
+     new SupplyCurrentLimitConfiguration(true, 35, 20, 0.5);
 
   public driveSubsystem() {
 
@@ -71,11 +79,8 @@ public class driveSubsystem extends SubsystemBase {
     falcon4_rightFollow.configFactoryDefault();
 
     // Current limiting
-    falcon1_leftLead.configSupplyCurrentLimit(Robot.m_currentlimitMain);
-    falcon2_leftFollow.configSupplyCurrentLimit(Robot.m_currentlimitMain);
-    falcon2_leftFollow.configSupplyCurrentLimit(Robot.m_currentlimitMain);
-    falcon4_rightFollow.configSupplyCurrentLimit(Robot.m_currentlimitMain);
-
+    setCurrentLimit(m_limit);
+    
     // set brake mode
     falcon1_leftLead.setNeutralMode(NeutralMode.Brake);
     falcon2_leftFollow.setNeutralMode(NeutralMode.Brake);
@@ -148,11 +153,23 @@ public class driveSubsystem extends SubsystemBase {
     return encoder.getIntegratedSensorPosition() * kDistancePerWheelRevolutionMeters * kGearReduction / kEncoderCPR;
   }
 
+  /**
+   * Returns the distance in Meteres the left wheel has travelled
+   *
+   * @return distance in meters
+   */
   double getLeftPosition() {
     return getPosition(m_leftEncoder);
   }
 
+  /**
+   * Returns the distance in Meteres the right wheel has travelled
+   *
+   * @return distance in meters
+   */
   double getRightPosition() {
+    // NOTE: We invert the sign, as the right motor and encoder are turning in the opposite
+    // direction as the left motors.
     return -getPosition(m_rightEncoder);
   }
 
@@ -166,11 +183,23 @@ public class driveSubsystem extends SubsystemBase {
     return encoder.getIntegratedSensorVelocity() * kDistancePerWheelRevolutionMeters * kGearReduction / (kEncoderCPR * 10.0);
   }
 
+  /**
+   * Returns the velocity of the left wheel in meters per second
+   *
+   * @return velocity in meters/second
+   */
   double getLeftVelocity() {
     return getVelocity(m_leftEncoder);
   }
 
+  /**
+   * Returns the velocity of the right wheel in meters per second
+   *
+   * @return velocity in meters/second
+   */
   double getRightVelocity() {
+    // NOTE: We invert the sign, as the right motor and encoder are turning in the opposite
+    // direction as the left motors.
     return -getVelocity(m_rightEncoder);
   }
 
@@ -329,4 +358,31 @@ public class driveSubsystem extends SubsystemBase {
     m_gyro.getRawGyro(xyz_dps);
     return xyz_dps[2] * (kGyroReversed ? -1.0 : 1.0);
   }
+
+  /**
+   * Enable current limiting.
+   *
+   * @param current limit
+   */
+  public void setCurrentLimit(SupplyCurrentLimitConfiguration limit) {
+    falcon1_leftLead.configSupplyCurrentLimit(limit);
+    falcon2_leftFollow.configSupplyCurrentLimit(limit);
+    falcon2_leftFollow.configSupplyCurrentLimit(limit);
+    falcon4_rightFollow.configSupplyCurrentLimit(limit);
+  }
+
+  /**
+   * Enable default current limiting for drivetrain.
+   */
+  public void enableCurrentLimit() {
+    setCurrentLimit(m_limit);
+  }
+
+  /**
+   * Disablecurrent limiting for drivetrain.
+   */
+  public void disableCurrentLimit() {
+    setCurrentLimit(new SupplyCurrentLimitConfiguration(false, 100, 100, 1));
+  }
+
 }
