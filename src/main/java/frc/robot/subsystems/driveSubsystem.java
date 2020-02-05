@@ -18,6 +18,7 @@ import static frc.robot.Constants.driveConstants.kGearReduction;
 import static frc.robot.Constants.driveConstants.kGyroReversed;
 import static frc.robot.Constants.driveConstants.driveTimeout;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
+import com.ctre.phoenix.motorcontrol.InvertType;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.TalonFXSensorCollection;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
@@ -63,6 +64,7 @@ public class driveSubsystem extends SubsystemBase {
 
   public driveSubsystem() {
 
+    m_drive = new DifferentialDrive(falcon1_leftLead, falcon3_rightLead);
     falcon1_leftLead.configFactoryDefault();
     falcon2_leftFollow.configFactoryDefault();
     falcon3_rightLead.configFactoryDefault();
@@ -81,8 +83,12 @@ public class driveSubsystem extends SubsystemBase {
     falcon4_rightFollow.setNeutralMode(NeutralMode.Brake);
     
     // TODO: do we need to invert both right motors?
-    falcon3_rightLead.setInverted(true);
-    falcon4_rightFollow.setInverted(true);
+    falcon3_rightLead.setInverted(false);
+    falcon1_leftLead.setInverted(true);
+    falcon2_leftFollow.setInverted(InvertType.FollowMaster);
+    falcon4_rightFollow.setInverted(InvertType.FollowMaster);
+    falcon1_leftLead.setSensorPhase(true);
+    falcon3_rightLead.setSensorPhase(true);
     // falcon3_rightLead.setSensorPhase(false);
 
     // default feed
@@ -97,7 +103,6 @@ public class driveSubsystem extends SubsystemBase {
     m_leftEncoder = falcon1_leftLead.getSensorCollection();
     m_rightEncoder = falcon3_rightLead.getSensorCollection();
 
-    m_drive = new DifferentialDrive(falcon1_leftLead, falcon3_rightLead);
     m_drive.setRightSideInverted(false);
 
     m_gyro.configFactoryDefault();
