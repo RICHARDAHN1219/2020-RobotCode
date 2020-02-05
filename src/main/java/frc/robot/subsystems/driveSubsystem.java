@@ -80,13 +80,15 @@ public class driveSubsystem extends SubsystemBase {
     falcon3_rightLead.setNeutralMode(NeutralMode.Brake);
     falcon4_rightFollow.setNeutralMode(NeutralMode.Brake);
     
+    // TODO: do we need to invert both right motors?
+    falcon3_rightLead.setInverted(true);
+    falcon4_rightFollow.setInverted(true);
+    // falcon3_rightLead.setSensorPhase(false);
+
     // default feed
     falcon1_leftLead.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor, 0, driveTimeout);
     falcon3_rightLead.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor, 0, driveTimeout);
 
-    // TODO: do we need to invert both right motors?
-    falcon3_rightLead.setInverted(true);
-    falcon4_rightFollow.setInverted(true);
 
     // set Lead/Follow 
     falcon2_leftFollow.follow(falcon1_leftLead);
@@ -119,7 +121,7 @@ public class driveSubsystem extends SubsystemBase {
     // NOTE: call getFusedHeading(FusionStatus) to detect gyro errors
 
     // report the wheel speed, position, and pose
-    SmartDashboard.putNumber("left_wheel_Velocity",  getVelocity(m_rightEncoder));
+    SmartDashboard.putNumber("left_wheel_Velocity",  getVelocity(m_leftEncoder));
     SmartDashboard.putNumber("right_wheel_Velocity", getVelocity(m_rightEncoder));
     SmartDashboard.putNumber("left_wheel_Distance", leftDist); // m_leftEncoder.getPosition());
     SmartDashboard.putNumber("right_wheel_Distance", rightDist); // m_rightEncoder.getPosition());
