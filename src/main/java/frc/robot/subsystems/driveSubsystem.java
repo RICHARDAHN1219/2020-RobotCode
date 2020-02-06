@@ -68,9 +68,13 @@ public class driveSubsystem extends SubsystemBase {
   // Stall:      257A  (more than the battery can supply)
   // Battery can at best supply around 250A
   private SupplyCurrentLimitConfiguration m_limit =
-     new SupplyCurrentLimitConfiguration(true, 30, 20, 0.5);
+    // temperary, super low current limit until we sort out speed limits
+    new SupplyCurrentLimitConfiguration(true, 5, 2, 0.5);
+     // new SupplyCurrentLimitConfiguration(true, 30, 20, 0.5);
 
   public driveSubsystem() {
+
+    m_gyro.configFactoryDefault();
 
     m_drive = new DifferentialDrive(falcon1_leftLead, falcon3_rightLead);
     falcon1_leftLead.configFactoryDefault();
@@ -88,10 +92,14 @@ public class driveSubsystem extends SubsystemBase {
     falcon4_rightFollow.setNeutralMode(NeutralMode.Brake);
     
     // No need to invert Follow Motors
-    falcon3_rightLead.setInverted(false);
-    falcon1_leftLead.setInverted(true);
+    falcon1_leftLead.setInverted(false);
+    falcon3_rightLead.setInverted(true);
     falcon2_leftFollow.setInverted(InvertType.FollowMaster);
     falcon4_rightFollow.setInverted(InvertType.FollowMaster);
+
+    // set Lead/Follow 
+    falcon2_leftFollow.follow(falcon1_leftLead);
+    falcon4_rightFollow.follow(falcon3_rightLead);
 
     // NOTE: setSensorPhase() does nothing on TalonFX motors as the encoders 
     // are integrated, and can cannot be out of phase with the motor. 
@@ -102,16 +110,10 @@ public class driveSubsystem extends SubsystemBase {
     falcon1_leftLead.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor, 0, driveTimeout);
     falcon3_rightLead.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor, 0, driveTimeout);
 
-    // set Lead/Follow 
-    falcon2_leftFollow.follow(falcon1_leftLead);
-    falcon4_rightFollow.follow(falcon3_rightLead);
- 
     m_leftEncoder = falcon1_leftLead.getSensorCollection();
     m_rightEncoder = falcon3_rightLead.getSensorCollection();
 
     m_drive.setRightSideInverted(false);
-
-    m_gyro.configFactoryDefault();
 
     resetEncoders();
     m_odometry = new DifferentialDriveOdometry(Rotation2d.fromDegrees(getHeading()));
