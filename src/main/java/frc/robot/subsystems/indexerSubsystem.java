@@ -10,6 +10,8 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
 import frc.robot.Constants.indexConstants;
@@ -19,25 +21,32 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 //TODO work on conditions where we run or don't run the kicker motor
 public class indexerSubsystem extends SubsystemBase {
 
+  private WPI_TalonSRX indexIntake = new WPI_TalonSRX(indexConstants.indexIntake);
   private WPI_TalonFX indexBelts = new WPI_TalonFX(indexConstants.indexBelts);
   private WPI_TalonFX indexKicker = new WPI_TalonFX(indexConstants.indexKicker);
-  private DigitalInput Sensor1 = new DigitalInput(0);
-  private DigitalInput Sensor2 = new DigitalInput(1);
+  public DigitalInput Sensor1 = new DigitalInput(0);
+  public DigitalInput Sensor2 = new DigitalInput(1);
   private DigitalInput Sensor3 = new DigitalInput(2);
   private boolean ballReady4IndexerLast = false;
   private boolean ballStagedLast = false;
   private boolean ballExitingLast = false;
+  public boolean ballReady4Indexer;
   public boolean ballStaged;
   public boolean eject = false;
-  private int stateChangeCount = 0;
+  public int stateChangeCount = 0;
   private int exitStateChangeCount = 0;
   public int ballCount = 0;
+  public int restageState = 0;
+  public boolean periodic = true;
+  public int restageEndBallCount;
 
   public indexerSubsystem() {
     indexBelts.configSupplyCurrentLimit(Robot.m_currentlimitSecondary);
     indexKicker.configSupplyCurrentLimit(Robot.m_currentlimitSecondary);
+    indexIntake.configSupplyCurrentLimit(Robot.m_currentlimitSecondary);
     indexBelts.setNeutralMode(NeutralMode.Brake);
     indexKicker.setNeutralMode(NeutralMode.Brake);
+    indexIntake.setNeutralMode(NeutralMode.Brake);
   }
 
   @Override
@@ -47,23 +56,21 @@ public class indexerSubsystem extends SubsystemBase {
     boolean ballExiting = ! Sensor3.get();
     SmartDashboard.putNumber("ball count", ballCount);
     SmartDashboard.putNumber("state change count", stateChangeCount);
+    SmartDashboard.putNumber("restage state", restageState);
     
     //set the current limit to prevent jamming and unnecessary battery draw
     if (indexBelts.getSupplyCurrent() >= 20) {
-      setBeltsPercentOutput(-0.5);
+      //setIntakePercentOutput(-0.5);
+      //setBeltsPercentOutput(-0.5);
+      //setKickerPercentOutput(-0.5);
     }
     else {
     //prevent intake of new balls when we already have 5
     //EDIT: We are aiming for 4 balls by week 1 until 5 is figured out
-    
-    if (eject == true){
-      setBeltsPercentOutput(1);
-      setKickerPercentOutput(1);
-    } 
-    else {
-    
-    //move indexer when a new ball is ready to enter the system
+    if (periodic == true) {
+      //move indexer when a new ball is ready to enter the system
     if (ballReady4Indexer == true) {
+      setIntakePercentOutput(0.6);
       setBeltsPercentOutput(1);
       setKickerPercentOutput(0.3);
     } 
@@ -72,6 +79,46 @@ public class indexerSubsystem extends SubsystemBase {
     else if (ballStaged == true) {
       setBeltsPercentOutput(0);
     }
+    //finish staging balls when this error state occurs
+    if ((-1 + (ballCount * 2)) != stateChangeCount) {
+      setIntakePercentOutput(0.6);
+      setBeltsPercentOutput(1);
+      setKickerPercentOutput(0.3);
+    }
+    
+    //finish staging balls when this error state occurs
+    if ((ballCount >= 1) && ballReady4Indexer == false && ballStaged == false) {
+      setIntakePercentOutput(0.6);
+      setBeltsPercentOutput(1);
+      setKickerPercentOutput(0.3);
+    }
+    
+    //automatically stage the balls for shooting when we have 4
+    if (ballCount == 4 && ballExiting == false) {
+      setIntakePercentOutput(0.6);
+      setBeltsPercentOutput(1);
+    }
+    
+    //stop indexer when all 4 balls are staged for shooting
+    else if (ballCount == 4 && ballExiting == true) {
+      setIntakePercentOutput(0);
+      setBeltsPercentOutput(0);
+    }
+    if (ballExiting == true) {
+      setIntakePercentOutput(0);
+      setBeltsPercentOutput(0);
+      setKickerPercentOutput(0);
+    }
+    }
+
+    if (eject == true){
+      setBeltsPercentOutput(1);
+      setKickerPercentOutput(1);
+      setIntakePercentOutput(1);
+    } 
+    else {
+    
+    
 
     //increase ball count as balls enter the indexer
     if (ballReady4Indexer != ballReady4IndexerLast && ballReady4Indexer == true) {
@@ -85,33 +132,8 @@ public class indexerSubsystem extends SubsystemBase {
       ballStagedLast = ballStaged;
     }
     
-    //finish staging balls when this error state occurs
-    if ((-1 + (ballCount * 2)) != stateChangeCount) {
-      setBeltsPercentOutput(1);
-      setKickerPercentOutput(0.3);
-    }
     
-    //finish staging balls when this error state occurs
-    if ((ballCount >= 1) && ballReady4Indexer == false && ballStaged == false) {
-      setBeltsPercentOutput(1);
-      setKickerPercentOutput(0.3);
-    }
-    
-    //automatically stage the balls for shooting when we have 4
-    if (ballCount == 4 && ballExiting == false) {
-      setBeltsPercentOutput(1);
-    }
-    
-    //stop indexer when all 4 balls are staged for shooting
-    else if (ballCount == 4 && ballExiting == true) {
-      setBeltsPercentOutput(0);
-    }
-    if (ballExiting == true) {
-      setBeltsPercentOutput(0);
-      setKickerPercentOutput(0);
-    }
   }
-  
     //decrease ballCount as balls leave the indexer
     if (ballExiting != ballExitingLast && ballExiting == false) {
       ballCount -= 1;
@@ -139,6 +161,7 @@ public class indexerSubsystem extends SubsystemBase {
     final int singleFeedExitStateCount = singleFeedInitialStateCount + 2;
 
     if (exitStateChangeCount != singleFeedExitStateCount) {
+      setIntakePercentOutput(0.6);
       setBeltsPercentOutput(1);
       setKickerPercentOutput(1);
     }
@@ -152,29 +175,38 @@ public class indexerSubsystem extends SubsystemBase {
     final int restageState0FinishedCount = restageInitialCount + 2;
     final int restageState1FinishedCount = restageState0FinishedCount + 1;
     final int restageEndBallCount = ballCount;
-    int restageState = 0;
 
-    if (restageState == 0) {
-      if (stateChangeCount != restageState0FinishedCount) {
-      setBeltsPercentOutput(-1);
-      setKickerPercentOutput(-0.3);
-      }
+    if (restageState == 0 && ! Sensor1.get() == false) {
+      periodic = false;
+      //setIntakePercentOutput(-0.6);
+      //setBeltsPercentOutput(-1);
+      //setKickerPercentOutput(-0.3);
+      setIntakePercentOutput(0);
+      setBeltsPercentOutput(0);
+      setKickerPercentOutput(0);
     }
-    else {
+    
+    if (restageState == 0 && ! Sensor1.get() == true) {
+      //setIntakePercentOutput(0);
+      //setBeltsPercentOutput(0);
+      //setKickerPercentOutput(0);
       restageState = 1;
     }
-
+    
+    /*
     if (restageState == 1) {
-      if (stateChangeCount != restageState1FinishedCount) {
+      if (ballStaged != true) {
+        setIntakePercentOutput(0.6);
         setBeltsPercentOutput(1);
         setKickerPercentOutput(0.3);
       }
-      else {
+      else if (ballStaged == true) {
         ballCount = restageEndBallCount;
         stateChangeCount = -1 + (2 * restageEndBallCount);
+        periodic = true;
         return;
       }
-    }
+    } */
   }
 
   public void setBeltsPercentOutput(double percent) {
@@ -183,5 +215,9 @@ public class indexerSubsystem extends SubsystemBase {
   
   public void setKickerPercentOutput(double percent) {
     indexKicker.set(ControlMode.PercentOutput, percent);
+  }
+
+  public void setIntakePercentOutput(double percent) {
+    indexIntake.set(ControlMode.PercentOutput, percent);
   }
 }

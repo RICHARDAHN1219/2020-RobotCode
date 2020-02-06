@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.driveConstants;
 import frc.robot.commands.driveCommand;
+import frc.robot.commands.indexStage1Command;
 import frc.robot.commands.indexerEjectCommand;
 import frc.robot.commands.limelightTurretVisionCommand;
 import frc.robot.commands.manualMode;
@@ -67,8 +68,8 @@ public class RobotContainer {
     //xbutton.whenPressed(() -> m_controlPanelMotors.setPosition(1 * 4096), m_controlPanelMotors);
     // abutton.whenPressed(() -> m_shooter.setShooterRPM(2000));
     //abutton.whenPressed(() -> m_indexer.setBeltsPercentOutput(0.5));
-    bbutton.whenPressed(() -> m_shooter.setShooterRPM(0));
-    abutton.whenPressed(() -> m_shooter.setShooterRPM(2000));
+    bbutton.whenPressed(() -> m_indexer.feedOneBall());
+    abutton.whenPressed(new indexStage1Command(m_indexer));
     xbutton.whenPressed(() -> m_shooter.setShooterRPM(2500));
     ybutton.whenPressed(() -> m_shooter.setShooterRPM(3000));
     startbutton.toggleWhenPressed(new indexerEjectCommand());

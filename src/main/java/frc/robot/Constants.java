@@ -38,6 +38,7 @@ public static final class elevatorConstants {
 public static final class indexConstants {
     public static final int indexBelts = 8;
     public static final int indexKicker = 10;
+    public static final int indexIntake = 9;
 }
 public static final class controlPanelConstants {
     public static final int motor = 13;

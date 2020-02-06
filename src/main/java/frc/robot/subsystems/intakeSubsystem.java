@@ -30,14 +30,16 @@ public class intakeSubsystem extends SubsystemBase {
     if (current >= 20) {
       intake.set(ControlMode.PercentOutput, -0.5);
     }
-    else {
-      if (RobotContainer.m_indexer.ballCount >= 4) {
-        retractIntake();
-      }
-      else{
-        deployIntake();
-      }
-    }
+
+    setIntakePercentOutput(0.75);
+    // else {
+    //   if (RobotContainer.m_indexer.ballCount >= 4) {
+    //     retractIntake();
+    //   }
+    //   else{
+    //     deployIntake();
+    //   }
+    // }
   }
 
   public void setIntakePercentOutput(double percent) {
