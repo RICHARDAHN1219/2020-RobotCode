@@ -68,7 +68,7 @@ public class RobotContainer {
     m_drive.setDefaultCommand(
         // A split-stick arcade command, with forward/backward controlled by the left
         // hand, and turning controlled by the right.
-        new RunCommand(() -> m_drive.arcadeDrive(0.5 * -m_driveController.getY(GenericHID.Hand.kLeft),
+        new RunCommand(() -> m_drive.arcadeDrive(0.5 * m_driveController.getY(GenericHID.Hand.kLeft),
             0.6 * m_driveController.getX(GenericHID.Hand.kRight)), m_drive));
 
     //m_turretSubsystem.setDefaultCommand(new limelightTurretVisionCommand(m_turretSubsystem));
@@ -102,7 +102,7 @@ public class RobotContainer {
     RamseteCommand ramseteCommand = createTrajectoryCommand(
       new Pose2d(0, 0, new Rotation2d(0)),
       List.of(),
-      new Pose2d(1.0, 0.0, new Rotation2d(0)));
+      new Pose2d(0.2, 0.0, new Rotation2d(0)));
 
     return ramseteCommand.andThen(() -> m_drive.tankDriveVolts(0, 0));
   }

@@ -180,7 +180,7 @@ public class driveSubsystem extends SubsystemBase {
    */
   private double getVelocity(TalonFXSensorCollection encoder) {
     // Native units are encoder ticks per 100ms
-    return encoder.getIntegratedSensorVelocity() * kDistancePerWheelRevolutionMeters * kGearReduction / (kEncoderCPR * 10.0);
+    return (encoder.getIntegratedSensorVelocity() * kDistancePerWheelRevolutionMeters * kGearReduction * 10.0 / kEncoderCPR );
   }
 
   /**
