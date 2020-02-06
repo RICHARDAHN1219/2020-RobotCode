@@ -36,8 +36,8 @@ public static final class driveConstants {
     public static final double kaVoltSecondsSquaredPerMeter = 0.127;
 
     // Determined using frc-characterization
-    public static final double kPDriveVel = 14.4;
-    public static final double kDDriveVel = 5.16;
+    public static final double kPDriveVel = 2.0;  // frc-characterization 14.4
+    public static final double kDDriveVel = 0.0;  // frc-characterization 5.16
 
     // TalonFX encoders have 2048, Rev Robitics have 4096
     public static final int kEncoderCPR = 2048;
@@ -54,10 +54,6 @@ public static final class driveConstants {
     // Assumes the encoders are directly mounted on the motor shafts
     public static final double kEncoderDistancePerPulseMeters =
             (kDistancePerWheelRevolutionMeters * kGearReduction) / (double) kEncoderCPR;
-
-    // Reasonable baseline values for a RAMSETE follower in units of meters and seconds
-    public static final double kRamseteB = 2;
-    public static final double kRamseteZeta = 0.7;
 }
 public static final class AutoConstants {
     public static final double kMaxSpeedMetersPerSecond =  .5;
