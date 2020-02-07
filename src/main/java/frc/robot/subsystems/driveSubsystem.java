@@ -52,8 +52,6 @@ public class driveSubsystem extends SubsystemBase {
   // Note: We do not use SpeedController. We use CAN based Lead/Follow. 
 
   private final DifferentialDrive m_drive;
-  private final TalonFXSensorCollection m_leftEncoder;
-  private final TalonFXSensorCollection m_rightEncoder;
   private final SimpleMotorFeedforward  m_feedforward = 
       new SimpleMotorFeedforward(ksVolts, kvVoltSecondsPerMeter, kaVoltSecondsSquaredPerMeter);
 
@@ -69,7 +67,7 @@ public class driveSubsystem extends SubsystemBase {
   // Battery can at best supply around 250A
   private SupplyCurrentLimitConfiguration m_limit =
     // temperary, super low current limit until we sort out speed limits
-    new SupplyCurrentLimitConfiguration(true, 10,10, 0.5);
+    new SupplyCurrentLimitConfiguration(true, 10, 10, 0.5);
      // new SupplyCurrentLimitConfiguration(true, 30, 20, 0.5);
 
   public driveSubsystem() {
@@ -110,9 +108,6 @@ public class driveSubsystem extends SubsystemBase {
     falcon1_leftLead.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor, 0, driveTimeout);
     falcon3_rightLead.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor, 0, driveTimeout);
 
-    m_leftEncoder = falcon1_leftLead.getSensorCollection();
-    m_rightEncoder = falcon3_rightLead.getSensorCollection();
-
     m_drive.setRightSideInverted(false);
 
     resetEncoders();
@@ -146,22 +141,13 @@ public class driveSubsystem extends SubsystemBase {
   }
   
   /**
-   * Returns the distance in Meteres wheel has travelled
-   *
-   * @return distance in meters
-   */
-  private double getPosition(TalonFXSensorCollection encoder) {
-     // Native units are encoder ticks (2048 ticks per revolution)
-    return encoder.getIntegratedSensorPosition() * kDistancePerWheelRevolutionMeters * kGearReduction / kEncoderCPR;
-  }
-
-  /**
    * Returns the distance in Meteres the left wheel has travelled
    *
    * @return distance in meters
    */
   double getLeftPosition() {
-    return getPosition(m_leftEncoder);
+     // Native units are encoder ticks (2048 ticks per revolution)
+    return falcon1_leftLead.getSelectedSensorPosition() * kDistancePerWheelRevolutionMeters * kGearReduction / kEncoderCPR;
   }
 
   /**
@@ -170,19 +156,8 @@ public class driveSubsystem extends SubsystemBase {
    * @return distance in meters
    */
   double getRightPosition() {
-    // NOTE: We invert the sign, as the right motor and encoder are turning in the opposite
-    // direction as the left motors.
-    return -getPosition(m_rightEncoder);
-  }
-
-  /**
-   * Returns the velocity of a given wheel in meters per second
-   *
-   * @return velocity in meters/second
-   */
-  private double getVelocity(TalonFXSensorCollection encoder) {
-    // Native units are encoder ticks per 100ms
-    return (encoder.getIntegratedSensorVelocity() * kDistancePerWheelRevolutionMeters * kGearReduction * 10.0 / kEncoderCPR );
+    // Native units are encoder ticks (2048 ticks per revolution)
+    return falcon3_rightLead.getSelectedSensorPosition() * kDistancePerWheelRevolutionMeters * kGearReduction / kEncoderCPR;
   }
 
   /**
@@ -191,7 +166,8 @@ public class driveSubsystem extends SubsystemBase {
    * @return velocity in meters/second
    */
   double getLeftVelocity() {
-    return getVelocity(m_leftEncoder);
+    // Native units are encoder ticks per 100ms
+    return falcon1_leftLead.getSelectedSensorVelocity() * kDistancePerWheelRevolutionMeters * kGearReduction * 10.0 / kEncoderCPR ;
   }
 
   /**
@@ -200,9 +176,8 @@ public class driveSubsystem extends SubsystemBase {
    * @return velocity in meters/second
    */
   double getRightVelocity() {
-    // NOTE: We invert the sign, as the right motor and encoder are turning in the opposite
-    // direction as the left motors.
-    return -getVelocity(m_rightEncoder);
+    // Native units are encoder ticks per 100ms
+    return falcon3_rightLead.getSelectedSensorVelocity() * kDistancePerWheelRevolutionMeters * kGearReduction * 10.0 / kEncoderCPR ;
   }
 
   /**
@@ -288,8 +263,8 @@ public class driveSubsystem extends SubsystemBase {
    * Resets the drive encoders to currently read a position of 0.
    */
   public void resetEncoders() {
-    m_leftEncoder.setIntegratedSensorPosition(0.0, driveTimeout);
-    m_rightEncoder.setIntegratedSensorPosition(0.0, driveTimeout);
+    falcon1_leftLead.setSelectedSensorPosition(0);
+    falcon3_rightLead.setSelectedSensorPosition(0);
   }
 
   /**
@@ -298,27 +273,7 @@ public class driveSubsystem extends SubsystemBase {
    * @return the average of the two encoder readings
    */
   public double getAverageEncoderDistance() {
-    // Was Encoder.getDistance()
-    return ((m_leftEncoder.getIntegratedSensorPosition() + 
-             m_rightEncoder.getIntegratedSensorPosition()) / 2.0);
-  }
-
-  /**
-   * Gets the left drive encoder.
-   *
-   * @return the left drive encoder
-   */
-  public TalonFXSensorCollection getLeftEncoder() {
-    return m_leftEncoder;
-  }
-
-  /**
-   * Gets the right drive encoder.
-   *
-   * @return the right drive encoder
-   */
-  public TalonFXSensorCollection getRightEncoder() {
-    return m_rightEncoder;
+    return ((getLeftPosition() + getRightPosition()) / 2.0);
   }
 
   /**
