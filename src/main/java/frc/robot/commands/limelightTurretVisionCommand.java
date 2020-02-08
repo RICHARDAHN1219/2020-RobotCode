@@ -14,6 +14,8 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Robot;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.turretSubsystem;
+import frc.robot.library.motion.MotionProfileGenerator;
+import frc.robot.library.Util.Util;
 
 public class limelightTurretVisionCommand extends CommandBase {
   turretSubsystem m_turret;
@@ -44,7 +46,7 @@ public class limelightTurretVisionCommand extends CommandBase {
         //m_LimelightHasValidTarget = false;
         //m_LimelightDriveCommand = 0.0;
         m_LimelightSteerCommand = 0.0;
-        m_turret.setPercentOutput(RobotContainer.m_operatorController.getX(Hand.kLeft));
+        m_turret.turretDrive.set(ControlMode.Position, Util.angleCorrection);
         return;
       }
 
@@ -65,6 +67,7 @@ public class limelightTurretVisionCommand extends CommandBase {
       */
       m_turret.setPercentOutput(m_LimelightSteerCommand);
     }
+
     
     else if (Robot.manualMode = true) {
       m_turret.setPercentOutput(RobotContainer.m_operatorController.getX(Hand.kLeft));

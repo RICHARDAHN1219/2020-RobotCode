@@ -17,7 +17,7 @@ import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 public class turretSubsystem extends SubsystemBase {
 
-  private TalonSRX turretDrive = new TalonSRX(Constants.turretConstants.turret);
+  public TalonSRX turretDrive = new TalonSRX(Constants.turretConstants.turret);
   private DigitalInput limit1 = new DigitalInput(7);
   private DigitalInput limit2 = new DigitalInput(8);
   private DigitalInput limit3 = new DigitalInput(9);

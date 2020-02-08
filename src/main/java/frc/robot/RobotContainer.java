@@ -26,7 +26,7 @@ import frc.robot.subsystems.controlPanelSubsystem;
 
 public class RobotContainer {
   // Subsystems
-  private final driveSubsystem m_driveSubsystem = new driveSubsystem();
+  public final static driveSubsystem m_driveSubsystem = new driveSubsystem();
   private final turretSubsystem m_turretSubsystem = new turretSubsystem();
   private final shooterSubsystem m_shooter = new shooterSubsystem();
   private final indexerSubsystem m_indexer = new indexerSubsystem();

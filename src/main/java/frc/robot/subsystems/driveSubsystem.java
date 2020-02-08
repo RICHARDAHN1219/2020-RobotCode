@@ -46,7 +46,7 @@ public class driveSubsystem extends SubsystemBase {
   //private static SpeedController m_leftMotors;
   //private static SpeedController m_rightMotors;
 
-  private final DifferentialDrive m_drive;
+  public final DifferentialDrive m_drive;
   private final TalonFXSensorCollection m_leftEncoder;
   private final TalonFXSensorCollection m_rightEncoder;
   private final SimpleMotorFeedforward  m_feedforward = 
