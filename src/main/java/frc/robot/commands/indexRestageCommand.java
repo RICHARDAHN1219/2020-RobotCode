@@ -10,10 +10,10 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.indexerSubsystem;
 
-public class indexStage1Command extends CommandBase {
+public class indexRestageCommand extends CommandBase {
   indexerSubsystem m_indexer;
 
-  public indexStage1Command(indexerSubsystem indexer) {
+  public indexRestageCommand(indexerSubsystem indexer) {
     addRequirements(indexer);
     m_indexer = indexer; 
   }
@@ -56,7 +56,7 @@ public class indexStage1Command extends CommandBase {
   @Override
   public void end(boolean interrupted) {
     m_indexer.ballCount = m_indexer.restageEndBallCount;
-    m_indexer.stateChangeCount = -1 + (2 * m_indexer.restageEndBallCount);
+    m_indexer.stateChangeCount = 2 * m_indexer.restageEndBallCount;
     m_indexer.periodic = true;
   }
 

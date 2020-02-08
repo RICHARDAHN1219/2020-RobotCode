@@ -11,12 +11,13 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
-
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
 import frc.robot.Constants.indexConstants;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.RobotContainer;
+import edu.wpi.first.wpilibj.GenericHID.Hand;
 
 //TODO work on conditions where we run or don't run the kicker motor
 public class indexerSubsystem extends SubsystemBase {
@@ -58,17 +59,17 @@ public class indexerSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("state change count", stateChangeCount);
     SmartDashboard.putNumber("restage state", restageState);
     
-    //set the current limit to prevent jamming and unnecessary battery draw
-    if (indexBelts.getSupplyCurrent() >= 20) {
-      //setIntakePercentOutput(-0.5);
-      //setBeltsPercentOutput(-0.5);
-      //setKickerPercentOutput(-0.5);
-    }
-    else {
     //prevent intake of new balls when we already have 5
     //EDIT: We are aiming for 4 balls by week 1 until 5 is figured out
     if (periodic == true) {
-      //move indexer when a new ball is ready to enter the system
+    if (Robot.manualMode == true) {
+      setIntakePercentOutput((RobotContainer.m_operatorController.getTriggerAxis(Hand.kRight) - RobotContainer.m_operatorController.getTriggerAxis(Hand.kLeft)) * 0.6);
+      setBeltsPercentOutput(RobotContainer.m_operatorController.getTriggerAxis(Hand.kRight) - RobotContainer.m_operatorController.getTriggerAxis(Hand.kLeft));
+      setKickerPercentOutput(RobotContainer.m_operatorController.getTriggerAxis(Hand.kRight) - RobotContainer.m_operatorController.getTriggerAxis(Hand.kLeft));
+    }
+    else {
+
+    //move indexer when a new ball is ready to enter the system
     if (ballReady4Indexer == true) {
       setIntakePercentOutput(0.6);
       setBeltsPercentOutput(1);
@@ -79,6 +80,7 @@ public class indexerSubsystem extends SubsystemBase {
     else if (ballStaged == true) {
       setBeltsPercentOutput(0);
     }
+
     //finish staging balls when this error state occurs
     if ((-1 + (ballCount * 2)) != stateChangeCount) {
       setIntakePercentOutput(0.6);
@@ -104,22 +106,22 @@ public class indexerSubsystem extends SubsystemBase {
       setIntakePercentOutput(0);
       setBeltsPercentOutput(0);
     }
+
     if (ballExiting == true) {
       setIntakePercentOutput(0);
       setBeltsPercentOutput(0);
       setKickerPercentOutput(0);
-    }
-    }
-
+      
     if (eject == true){
       setBeltsPercentOutput(1);
       setKickerPercentOutput(1);
-      setIntakePercentOutput(1);
-    } 
+      setIntakePercentOutput(0.6);
+    }
+    }
+    }
+    }
     else {
     
-    
-
     //increase ball count as balls enter the indexer
     if (ballReady4Indexer != ballReady4IndexerLast && ballReady4Indexer == true) {
       ballCount += 1;  
@@ -131,9 +133,8 @@ public class indexerSubsystem extends SubsystemBase {
       stateChangeCount += 1;
       ballStagedLast = ballStaged;
     }
-    
-    
   }
+    
     //decrease ballCount as balls leave the indexer
     if (ballExiting != ballExitingLast && ballExiting == false) {
       ballCount -= 1;
@@ -141,19 +142,21 @@ public class indexerSubsystem extends SubsystemBase {
     }
     ballExitingLast = ballExiting;
 
+    //count number of state changes as balls leave the system
     if (ballExiting != ballExitingLast) {
       exitStateChangeCount += 1;
       ballExitingLast = ballExiting;
     }
     
+    //don't let state changes go below zero
     if (stateChangeCount < 0) {
       stateChangeCount = 0;
     }
 
+    //can't have negative balls in the robot
     if (ballCount == 0) {
       stateChangeCount = 0;
     }
-  }
   }
 
   public void feedOneBall() {
@@ -168,45 +171,6 @@ public class indexerSubsystem extends SubsystemBase {
     else {
       return;
     }
-  }
-
-  public void restageBalls() {
-    final int restageInitialCount = stateChangeCount;
-    final int restageState0FinishedCount = restageInitialCount + 2;
-    final int restageState1FinishedCount = restageState0FinishedCount + 1;
-    final int restageEndBallCount = ballCount;
-
-    if (restageState == 0 && ! Sensor1.get() == false) {
-      periodic = false;
-      //setIntakePercentOutput(-0.6);
-      //setBeltsPercentOutput(-1);
-      //setKickerPercentOutput(-0.3);
-      setIntakePercentOutput(0);
-      setBeltsPercentOutput(0);
-      setKickerPercentOutput(0);
-    }
-    
-    if (restageState == 0 && ! Sensor1.get() == true) {
-      //setIntakePercentOutput(0);
-      //setBeltsPercentOutput(0);
-      //setKickerPercentOutput(0);
-      restageState = 1;
-    }
-    
-    /*
-    if (restageState == 1) {
-      if (ballStaged != true) {
-        setIntakePercentOutput(0.6);
-        setBeltsPercentOutput(1);
-        setKickerPercentOutput(0.3);
-      }
-      else if (ballStaged == true) {
-        ballCount = restageEndBallCount;
-        stateChangeCount = -1 + (2 * restageEndBallCount);
-        periodic = true;
-        return;
-      }
-    } */
   }
 
   public void setBeltsPercentOutput(double percent) {
