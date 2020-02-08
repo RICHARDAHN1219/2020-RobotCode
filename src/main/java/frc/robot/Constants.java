@@ -26,9 +26,9 @@ public static final class driveConstants {
     public static final boolean kGyroReversed = true;
 
     // Comp bot track width (center of wheel to center of wheel) is 0.627m
-    public static final double kTrackwidthMeters = 0.627;
+    public static final double kTrackWidthMeters = 0.627;
     public static final DifferentialDriveKinematics kDriveKinematics =
-            new DifferentialDriveKinematics(kTrackwidthMeters);
+            new DifferentialDriveKinematics(kTrackWidthMeters);
 
     // Determined using frc-characterization tool
     public static final double ksVolts = 0.0491;
@@ -102,5 +102,9 @@ public static final class controlPanelConstants {
 }
 public static final class intakeConstants {
     public static final int intakeMotor = 20;
+}
+public static final class TrajectoryConstants {
+    public static final double m_x = 0;
+    public static final double m_y = 0;
 }
 }
