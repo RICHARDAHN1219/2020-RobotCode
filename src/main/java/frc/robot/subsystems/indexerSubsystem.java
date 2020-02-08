@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.RobotContainer;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
+import frc.robot.subsystems.blinkin;
 
 //TODO work on conditions where we run or don't run the kicker motor
 public class indexerSubsystem extends SubsystemBase {
@@ -40,6 +41,7 @@ public class indexerSubsystem extends SubsystemBase {
   public int restageState = 0;
   public boolean periodic = true;
   public int restageEndBallCount;
+  private blinkin m_blinkin = RobotContainer.m_blinkin;
 
   public indexerSubsystem() {
     indexBelts.configSupplyCurrentLimit(Robot.m_currentlimitSecondary);
@@ -74,11 +76,13 @@ public class indexerSubsystem extends SubsystemBase {
       setIntakePercentOutput(0.6);
       setBeltsPercentOutput(1);
       setKickerPercentOutput(0.3);
+      m_blinkin.solid_blue();
     } 
 
     //stop indexer when balls are properly staged
     else if (ballStaged == true) {
       setBeltsPercentOutput(0);
+      m_blinkin.solid_red();
     }
 
     //finish staging balls when this error state occurs
@@ -86,6 +90,7 @@ public class indexerSubsystem extends SubsystemBase {
       setIntakePercentOutput(0.6);
       setBeltsPercentOutput(1);
       setKickerPercentOutput(0.3);
+      m_blinkin.solid_blue();
     }
     
     //finish staging balls when this error state occurs
@@ -93,30 +98,35 @@ public class indexerSubsystem extends SubsystemBase {
       setIntakePercentOutput(0.6);
       setBeltsPercentOutput(1);
       setKickerPercentOutput(0.3);
+      m_blinkin.solid_blue();
     }
     
     //automatically stage the balls for shooting when we have 4
     if (ballCount == 4 && ballExiting == false) {
       setIntakePercentOutput(0.6);
       setBeltsPercentOutput(1);
+      m_blinkin.solid_green_lime();
     }
     
     //stop indexer when all 4 balls are staged for shooting
     else if (ballCount == 4 && ballExiting == true) {
       setIntakePercentOutput(0);
       setBeltsPercentOutput(0);
+      m_blinkin.solid_pink();
     }
 
     if (ballExiting == true) {
       setIntakePercentOutput(0);
       setBeltsPercentOutput(0);
       setKickerPercentOutput(0);
-      
+      m_blinkin.solid_red();
+    }
+
     if (eject == true){
       setBeltsPercentOutput(1);
       setKickerPercentOutput(1);
       setIntakePercentOutput(0.6);
-    }
+      m_blinkin.solid_green();
     }
     }
     }

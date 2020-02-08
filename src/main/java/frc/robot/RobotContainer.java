@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.driveConstants;
+import frc.robot.Constants.pwmConstants;
 import frc.robot.commands.driveCommand;
 import frc.robot.commands.indexRestageCommand;
 import frc.robot.commands.indexerEjectCommand;
@@ -24,6 +25,7 @@ import frc.robot.subsystems.intakeSubsystem;
 import frc.robot.subsystems.turretSubsystem;
 import frc.robot.subsystems.shooterSubsystem;
 import frc.robot.subsystems.controlPanelSubsystem;
+import frc.robot.subsystems.blinkin;
 
 public class RobotContainer {
   // Subsystems
@@ -34,6 +36,7 @@ public class RobotContainer {
   private final elevatorSubsystem m_elevatorSubsystem = new elevatorSubsystem();
   private final controlPanelSubsystem m_controlPanelMotors = new controlPanelSubsystem();
   private final intakeSubsystem m_intake = new intakeSubsystem();
+  public static final blinkin m_blinkin = new blinkin(pwmConstants.blinkin);
 
   // Commands
   //public static final shooterCommand m_shooterCommand = new shooterCommand(m_shooter, m_indexer);
