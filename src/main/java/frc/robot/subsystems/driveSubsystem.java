@@ -67,7 +67,7 @@ public class driveSubsystem extends SubsystemBase {
   // Battery can at best supply around 250A
   private SupplyCurrentLimitConfiguration m_limit =
     // temperary, super low current limit until we sort out speed limits
-    new SupplyCurrentLimitConfiguration(true, 10, 10, 0.5);
+    new SupplyCurrentLimitConfiguration(true, 20, 10, 0.5);
      // new SupplyCurrentLimitConfiguration(true, 30, 20, 0.5);
 
   public driveSubsystem() {

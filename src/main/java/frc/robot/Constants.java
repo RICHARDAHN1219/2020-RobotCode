@@ -31,12 +31,12 @@ public static final class driveConstants {
             new DifferentialDriveKinematics(kTrackwidthMeters);
 
     // Determined using frc-characterization tool
-    public static final double ksVolts = 0.0491;
-    public static final double kvVoltSecondsPerMeter = 2.36;
+    public static final double ksVolts = 0.05;   // 0.0491;  
+    public static final double kvVoltSecondsPerMeter =  2.36;    // 2.36;
     public static final double kaVoltSecondsSquaredPerMeter = 0.127;
 
     // Determined using frc-characterization
-    public static final double kPDriveVel = 2.0;  // frc-characterization 14.4
+    public static final double kPDriveVel = 5.0;  // frc-characterization 14.4
     public static final double kDDriveVel = 0.0;  // frc-characterization 5.16
 
     // TalonFX encoders have 2048, Rev Robitics have 4096
@@ -62,7 +62,7 @@ public static final class AutoConstants {
     // Reasonable baseline values for a RAMSETE follower in units of meters and seconds
     public static final double kRamseteB = 2;
     public static final double kRamseteZeta = 0.7;
-}
+ }
 public static final class turretConstants {
     public static final int turret = 11;
     public static final int kSoftMaxTurretAngle = 1;
