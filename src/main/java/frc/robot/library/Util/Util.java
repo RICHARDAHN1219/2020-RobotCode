@@ -7,6 +7,9 @@
 
 package frc.robot.library.Util;
 
+import edu.wpi.first.wpilibj.geometry.Pose2d;
+import edu.wpi.first.wpilibj.geometry.Translation2d;
+
 /**
  * Add your docs here.
  */
@@ -73,7 +76,46 @@ public class Util {
     angleCorrection = (angleRobotToField - angleToObjective);  
     return angleCorrection;
   }
-         
+
+  /**
+   *  Distance from robot to a given point on the field
+   * 
+   * @param pose of the robot
+   * @param location of the target
+   * 
+   * @return distance in meters
+   **/
+  public static double distance2Target(Pose2d robotPose, Translation2d target) {
+    return robotPose.getTranslation().getDistance(target);
+  }
+
+  /**
+   *  Angle between robot pose and target
+   * 
+   * @param pose of the robot
+   * @param location of the target
+   * 
+   * @return angle to target in Radians
+   **/
+  public static double angle2TargetRadians(Pose2d robotPose, Translation2d target) {
+    double robot_angle_to_field = robotPose.getRotation().getRadians();
+    double angle_to_target = Math.atan2(
+        robotPose.getTranslation().getX() - target.getX(),
+        robotPose.getTranslation().getY() - target.getY());
+    return robot_angle_to_field - angle_to_target;
+  }
+
+  /**
+   *  Angle between robot pose and target
+   * 
+   * @param pose of the robot
+   * @param location of the target
+   * 
+   * @return angle to target in Degrees
+   **/
+  public static double angle2TargetDegrees(Pose2d robotPose, Translation2d target) {
+    return Math.toDegrees(angle2TargetRadians(robotPose, target));
+  } 
 
 /**
  * Below is the raw formulas of the different constants used for the MotionProfileGenerator
