@@ -18,7 +18,6 @@ public class controlPanelSubsystem extends SubsystemBase {
   private WPI_TalonSRX colorWheelMotor = new WPI_TalonSRX(controlPanelConstants.motor);
 
   public controlPanelSubsystem() {
-
     colorWheelMotor.configFactoryDefault();
     colorWheelMotor.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor, controlPanelConstants.PIDLoopIdx, controlPanelConstants.timeoutMs);
     colorWheelMotor.setSensorPhase(controlPanelConstants.sensorPhase);
@@ -32,6 +31,7 @@ public class controlPanelSubsystem extends SubsystemBase {
     colorWheelMotor.config_kP(controlPanelConstants.PIDLoopIdx, controlPanelConstants.gains.kP, controlPanelConstants.timeoutMs);
     colorWheelMotor.config_kI(controlPanelConstants.PIDLoopIdx, controlPanelConstants.gains.kI, controlPanelConstants.timeoutMs);
     colorWheelMotor.config_kD(controlPanelConstants.PIDLoopIdx, controlPanelConstants.gains.kD, controlPanelConstants.timeoutMs);
+    @SuppressWarnings("unused")
     int absolutePosition = colorWheelMotor.getSelectedSensorPosition();
     absolutePosition &= 0xFFF;
     

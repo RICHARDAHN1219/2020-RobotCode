@@ -30,7 +30,6 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.driveConstants;
 import frc.robot.commands.driveCommand;
-import frc.robot.commands.indexStage1Command;
 import frc.robot.commands.limelightTurretVisionCommand;
 import frc.robot.commands.manualMode;
 import frc.robot.commands.shooterCommand;
@@ -40,16 +39,18 @@ import frc.robot.subsystems.elevatorSubsystem;
 import frc.robot.subsystems.indexerSubsystem;
 import frc.robot.subsystems.turretSubsystem;
 import frc.robot.subsystems.shooterSubsystem;
-import frc.robot.subsystems.controlPanelSubsystem;
+//import frc.robot.subsystems.controlPanelSubsystem;
 
 public class RobotContainer {
+  @SuppressWarnings("unused")
   // Subsystems
   private final driveSubsystem m_drive = new driveSubsystem();
-  // private final turretSubsystem m_turretSubsystem = new turretSubsystem();
-  // private final shooterSubsystem m_shooter = new shooterSubsystem();
-  // private final indexerSubsystem m_indexer = new indexerSubsystem();
-  // private final elevatorSubsystem m_elevatorSubsystem = new elevatorSubsystem();
-  // private final controlPanelSubsystem m_controlPanelMotors = new controlPanelSubsystem();
+  private final turretSubsystem m_turretSubsystem = new turretSubsystem();
+  private final shooterSubsystem m_shooter = new shooterSubsystem();
+  private final indexerSubsystem m_indexer = new indexerSubsystem();
+  @SuppressWarnings("unused")
+  private final elevatorSubsystem m_elevatorSubsystem = new elevatorSubsystem();
+  //private final controlPanelSubsystem m_controlPanelMotors = new controlPanelSubsystem();
 
   // Commands
   //public static final shooterCommand m_shooterCommand = new shooterCommand(m_shooter, m_indexer);
@@ -60,7 +61,7 @@ public class RobotContainer {
    * The container for the robot.  Contains subsystems, OI devices, and commands.
    */
   public static XboxController m_driveController = new XboxController(driveConstants.driveController);
-  // public static XboxController m_operatorController = new XboxController(driveConstants.operatorController);
+  public static XboxController m_operatorController = new XboxController(driveConstants.operatorController);
   public RobotContainer() {
     configureButtonBindings();
 

@@ -1,6 +1,5 @@
 package frc.robot;
 
-import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.sensors.PigeonIMU;
 
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -8,8 +7,6 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.subsystems.elevatorSubsystem;
-import frc.robot.subsystems.turretSubsystem;
 import com.ctre.phoenix.motorcontrol.*;
 
 public class Robot extends TimedRobot {
@@ -19,7 +16,8 @@ public class Robot extends TimedRobot {
   public static double IMUHeading;
   public static double temp; 
   // TODO: fix me, PigeonIMU(turretSubsystem.turretDrive) can't go here;
-  // @SuppressWarnings("unused")
+  public static PigeonIMU m_pigeon = new PigeonIMU(20);
+  @SuppressWarnings("unused")
   private RobotContainer m_robotContainer;
   public static SupplyCurrentLimitConfiguration m_currentlimitMain = new SupplyCurrentLimitConfiguration(true, 35, 1, 1);
   public static SupplyCurrentLimitConfiguration m_currentlimitSecondary = new SupplyCurrentLimitConfiguration(true, 25, 1, 1);
@@ -29,11 +27,18 @@ public class Robot extends TimedRobot {
     m_robotContainer = new RobotContainer();
     NetworkTableInstance.getDefault().getTable("limelight").getEntry("camMode").setNumber(1);
     NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").setNumber(1);
+
+
   }
 
   @Override
   public void robotPeriodic() {
     CommandScheduler.getInstance().run();
+    temp = m_pigeon.getTemp();
+    IMUHeading = m_pigeon.getFusedHeading();
+    SmartDashboard.putNumber("CompassFieldStrength", m_pigeon.getCompassFieldStrength());
+    SmartDashboard.putNumber("IMU Fused Heading", IMUHeading);
+    SmartDashboard.putNumber("Temperature (VERY IMPORTANT)", temp);
   }
 
   @Override
@@ -44,19 +49,12 @@ public class Robot extends TimedRobot {
   public void disabledPeriodic() {
   }
 
-  /**
-   * This autonomous runs the autonomous command selected by your {@link RobotContainer} class.
-   */
   @Override
   public void autonomousInit() {
-    m_autonomousCommand = m_robotContainer.getAutonomousCommand();
-    
-    // schedule the autonomous command (example)
     if (m_autonomousCommand != null) {
-      System.out.println("Scheduling Autonomous Command");
       m_autonomousCommand.schedule();
-      System.out.println("Finished Autonomous Command");
     }
+    m_pigeon.setFusedHeadingToCompass();
   }
 
   @Override
@@ -66,7 +64,6 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopInit() {
     if (m_autonomousCommand != null) {
-      System.out.println("Cancelling Autonomous Command");
       m_autonomousCommand.cancel();
     }
   }
