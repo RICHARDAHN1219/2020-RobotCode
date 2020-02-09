@@ -48,7 +48,7 @@ public class RobotContainer {
   // private final turretSubsystem m_turretSubsystem = new turretSubsystem();
   // private final shooterSubsystem m_shooter = new shooterSubsystem();
   // private final indexerSubsystem m_indexer = new indexerSubsystem();
-  //  private final elevatorSubsystem m_elevatorSubsystem = new elevatorSubsystem();
+  // private final elevatorSubsystem m_elevatorSubsystem = new elevatorSubsystem();
   // private final controlPanelSubsystem m_controlPanelMotors = new controlPanelSubsystem();
 
   // Commands
@@ -65,6 +65,7 @@ public class RobotContainer {
     configureButtonBindings();
 
     // default command is arcade drive command
+    // TODO: un-NERF the drive command.
     m_drive.setDefaultCommand(
         // A split-stick arcade command, with forward/backward controlled by the left
         // hand, and turning controlled by the right.
