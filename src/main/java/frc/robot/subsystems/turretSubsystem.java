@@ -13,16 +13,12 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
-import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 public class turretSubsystem extends SubsystemBase {
 
-  private TalonSRX turretDrive = new TalonSRX(Constants.turretConstants.turret);
+  private WPI_TalonSRX turretDrive = new WPI_TalonSRX(Constants.turretConstants.turret);
   private DigitalInput limit1 = new DigitalInput(7);
-  private DigitalInput limit2 = new DigitalInput(8);
-  private DigitalInput limit3 = new DigitalInput(9);
-  private boolean turretLimit1;
-  private boolean turretLimit2;
   
   public turretSubsystem() {
     turretDrive.configSelectedFeedbackSensor(FeedbackDevice.Analog, 0, 10);
@@ -42,20 +38,21 @@ public class turretSubsystem extends SubsystemBase {
   public void setPercentOutput(double percent) {
     turretDrive.set(ControlMode.PercentOutput, percent);
   }
+  public void setPosition(double position){
+    turretDrive.set(ControlMode.Position, position);
+  }
 
   @Override
   public void periodic() {
     boolean turretLimit1 = limit1.get();
-    boolean turretLimit2 = limit2.get();
     if (turretLimit1 == true) {
-      turretDrive.set(ControlMode.PercentOutput, -.5);
-      DriverStation.reportError("Limit Reached on turret, going back to safe position.", false);
+      turretDrive.set(ControlMode.PercentOutput, 0);
+      DriverStation.reportError("Limit Reached on turret", false);
     }
-    
-    if (turretLimit2 == true) {
-      turretDrive.set(ControlMode.PercentOutput, .5);
-      DriverStation.reportError("Limit Reached on turret, going back to safe position.", false);
+    if (turretDrive.getSelectedSensorPosition() <= 180 || turretDrive.getSelectedSensorPosition() <= -180){
+      turretDrive.set(ControlMode.Disabled, 0);
+      turretDrive.setSafetyEnabled(true);
+      DriverStation.reportError("FINAL Limit Reached on turret, shutting down to prevent damage", false);
     }
-    
   }
 }
