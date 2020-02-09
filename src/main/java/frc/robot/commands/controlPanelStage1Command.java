@@ -8,14 +8,12 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.colorSensorSubsystem;
 import frc.robot.subsystems.controlPanelSubsystem;
 
 public class controlPanelStage1Command extends CommandBase {
   /**
    * Creates a new controlPanelStage1Command.
    */
-  private colorSensorSubsystem m_colorSensorSubsystem;
   private controlPanelSubsystem m_controlPanelSubsystem;
 
   public controlPanelStage1Command(controlPanelSubsystem colorWheelSubsystem) {
@@ -41,7 +39,7 @@ public class controlPanelStage1Command extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if (m_colorSensorSubsystem.getRotationCount() >= 3) {
+    if (m_controlPanelSubsystem.getRotationCount() >= 3) {
       return true;
     }
 

@@ -17,7 +17,7 @@ public class controlPanelCommand extends CommandBase {
   /**
    * Creates a new controlPanelCommand.
    */
-  private WPI_TalonSRX colorWheelMotor = new WPI_TalonSRX(controlPanelConstants.motor);
+  private WPI_TalonSRX controlPanelMotor = new WPI_TalonSRX(controlPanelConstants.motor);
   
   public void setPosition(double position) {
   

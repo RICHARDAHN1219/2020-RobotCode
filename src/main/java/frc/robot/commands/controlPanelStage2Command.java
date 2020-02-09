@@ -8,31 +8,28 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.*;
-import frc.robot.subsystems.colorSensorSubsystem;
 import frc.robot.subsystems.controlPanelSubsystem;
-import edu.wpi.first.wpilibj.DriverStation;
 
 
 public class controlPanelStage2Command extends CommandBase {
   /**
    * Creates a new controlPanelStage2Command.
    */
-  colorSensorSubsystem m_colorSensorSubsystem;
   controlPanelSubsystem m_controlPanelSubsystem;
   String gameData;
-  String currentColor = m_colorSensorSubsystem.getColor();
+  String currentColor = m_controlPanelSubsystem.getColor();
 
-  public controlPanelStage2Command(colorSensorSubsystem controlPanelSubsystem) {
+  public controlPanelStage2Command(controlPanelSubsystem cp) {
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(m_colorSensorSubsystem, m_controlPanelSubsystem);
+    m_controlPanelSubsystem = cp;
+    addRequirements (m_controlPanelSubsystem);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
     m_controlPanelSubsystem.setSpeed(0.2);
-    String currentColor = m_colorSensorSubsystem.getColor();
+    String currentColor = m_controlPanelSubsystem.getColor();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
