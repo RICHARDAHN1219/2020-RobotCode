@@ -102,7 +102,17 @@ public class Util {
     double angle_to_target = Math.atan2(
         robotPose.getTranslation().getX() - target.getX(),
         robotPose.getTranslation().getY() - target.getY());
-    return robot_angle_to_field - angle_to_target;
+    double theta = robot_angle_to_field - angle_to_target;
+
+    // make sure resulting angle is between -pi and pi (or -180 and 180 degrees)
+    if (theta < -Math.PI) {
+      theta = theta + 2 * Math.PI;
+    }
+    else if (theta > Math.PI) {
+      theta = theta - 2 * Match.PI;
+    }
+
+    return theta;
   }
 
   /**
