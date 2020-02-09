@@ -20,6 +20,8 @@ public class controlPanelStage2Command extends CommandBase {
    */
   colorSensorSubsystem m_colorSensorSubsystem;
   controlPanelSubsystem m_controlPanelSubsystem;
+  String gameData;
+  String currentColor = m_colorSensorSubsystem.getColor();
 
   public controlPanelStage2Command(colorSensorSubsystem controlPanelSubsystem) {
     // Use addRequirements() here to declare subsystem dependencies.
@@ -29,15 +31,42 @@ public class controlPanelStage2Command extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    m_controlPanelSubsystem.setSpeed(0.2);
     String currentColor = m_colorSensorSubsystem.getColor();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+  
+}
+      
 
-  }
-
+ /*
+  String gameData;
+    gameData = DriverStation.getInstance().getGameSpecificMessage();
+    if (gameData.length() > 0) {
+      switch (gameData.charAt(0)) {
+      case 'B':
+        // Blue case code
+        break;
+      case 'G':
+        // Green case code
+        break;
+      case 'R':
+        // Red case code
+        break;
+      case 'Y':
+        // Yellow case code
+        break;
+      default:
+        // This is corrupt data
+        break;
+      }
+    } else {
+      // Code for no data received yet
+    }
+*/
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {

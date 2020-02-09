@@ -15,6 +15,8 @@ import edu.wpi.first.wpilibj.util.Color;
 import com.revrobotics.ColorSensorV3;
 import com.revrobotics.ColorMatchResult;
 import com.revrobotics.ColorMatch;
+import edu.wpi.first.wpilibj.DriverStation;
+import frc.robot.Constants.controlPanelConstants;
 
 public class colorSensorSubsystem extends SubsystemBase {
   // space for variables
@@ -22,6 +24,7 @@ public class colorSensorSubsystem extends SubsystemBase {
   private final ColorSensorV3 m_colorSensor = new ColorSensorV3(i2cPort);
   private final ColorMatch m_colorMatcher = new ColorMatch();
   String lastSeenColor = "Unknown";
+  String gameData;
   private int count = 0;
   /*
    * Color Wheel Blue CMY: 100,0,0 RGB: #00FFFF Green CMY: 100,0,100 RGB: #00FF00
@@ -83,15 +86,6 @@ public class colorSensorSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Count", count);
 
     // TODO: Detect errors and unknown colors
-
-    // System.out.println("Color Change Count: " + count);
-
-    /*
-     * Print out for colorString
-     * 
-     * if (colorString != lastSeenColor) { System.out.println("Color: " +
-     * colorString); lastSeenColor = colorString; }
-     */
   }
 
   public String getColor() {
@@ -123,6 +117,83 @@ public class colorSensorSubsystem extends SubsystemBase {
     SmartDashboard.putString("Detected Color", colorString);
 
     return colorString;
+  }
+
+  public int colorNumbers() {
+    String currentColor = getColor();
+    char currentColorChar = currentColor.charAt(0);
+    char stage2ColorChar = gameData.charAt(0);
+
+    if (currentColorChar == 'B') {
+      return 0;
+    }
+    if (stage2ColorChar == 'B') {
+      return 0;
+    }
+    if (currentColorChar == 'Y') {
+      return 1;
+    }
+    if (stage2ColorChar == 'Y') {
+      return 1;
+    }
+    if (currentColorChar == 'R') {
+      return 2;
+    }
+    if (stage2ColorChar == 'R') {
+      return 2;
+    }
+    if (currentColorChar == 'G') {
+      return 3;
+    }
+    if (stage2ColorChar == 'G') {
+      return 3;
+    }
+    return ' ';
+  }
+
+  public void moveToGamePosition(char targetColorChar) {
+
+    String currentColor = getColor();
+    char currentColorChar = currentColor.charAt(0);
+    String gameData = DriverStation.getInstance().getGameSpecificMessage();
+    char stage2ColorChar = gameData.charAt(0);
+    controlPanelSubsystem m_controlPanelSubsystem;
+
+    if (stage2ColorChar == 'R' && currentColorChar == 'R') {
+      // move either clockwise 6 or counterclockwise 2 (game sees b, move 2 to r)
+      // isFinished when currentColorChar == 'B'
+      colorWheelMotor.setSpeed(0.2);
+     
+    }
+    if (stage2ColorChar == 'R' && currentColorChar == 'Y') {
+      // move counterclockwise 1 (game sees g, move to r)
+      // isFinished when currentColorChar == 'B'
+    }
+    if (stage2ColorChar == 'R' && currentColorChar == 'G') {
+      // move clockwise 1 (game sees g, move to r)
+      // isFinished when currentColorChar == 'B'
+    }
+    if (stage2ColorChar == 'R' && currentColorChar == 'B') {
+      // don't move
+    }
+
+    if (gameData.equals("R") && lastSeenColor.equals("Yellow")) {
+      // move counterclockwise until we see blue
+    }
+    if (gameData.equals("R") && lastSeenColor.equals("Green")) {
+      // move clockwise 1
+    }
+    if (gameData.equals("B") && lastSeenColor.equals("Blue")) {
+      // stay at color
+    }
+    if (gameData.equals("B") && lastSeenColor.equals("Green")) {
+      // move counterclockwise 1
+    }
+    if (gameData.equals("B") && lastSeenColor.equals("Yellow")) {
+      // move clockwise 1
+    }
+    // If they want r->b if they want y->g
+
   }
 
   public double getRotationCount() {
