@@ -109,7 +109,7 @@ public class Util {
       theta = theta + 2 * Math.PI;
     }
     else if (theta > Math.PI) {
-      theta = theta - 2 * Match.PI;
+      theta = theta - 2 * Math.PI;
     }
 
     return theta;
