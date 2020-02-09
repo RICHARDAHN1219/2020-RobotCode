@@ -7,7 +7,6 @@
 
 package frc.robot.subsystems;
 
-<<<<<<< HEAD
 import static frc.robot.Constants.driveConstants.kaVoltSecondsSquaredPerMeter;
 import static frc.robot.Constants.driveConstants.ksVolts;
 import static frc.robot.Constants.driveConstants.kvVoltSecondsPerMeter;
@@ -23,21 +22,8 @@ import com.ctre.phoenix.motorcontrol.InvertType;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.TalonFXSensorCollection;
-<<<<<<< HEAD
-=======
->>>>>>> 8514e8315f3dac0f769f274c0cb6f1becf4b276b
-=======
->>>>>>> parent of 2465461... add voltage limits, un-NERF current limit
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
-import com.ctre.phoenix.sensors.PigeonIMU;
-import edu.wpi.first.wpilibj.SpeedController;
-import edu.wpi.first.wpilibj.SpeedControllerGroup;
-import edu.wpi.first.wpilibj.drive.DifferentialDrive;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Robot;
-import frc.robot.Constants.driveConstants;
+
 public class driveSubsystem extends SubsystemBase {
-<<<<<<< HEAD
 
   private WPI_TalonFX falcon1_leftLead    = new WPI_TalonFX(driveConstants.falcon1_leftLead);
   private WPI_TalonFX falcon2_leftFollow  = new WPI_TalonFX(driveConstants.falcon2_leftFollow);
@@ -132,21 +118,6 @@ public class driveSubsystem extends SubsystemBase {
     leftSide = new SpeedControllerGroup(falcon1, falcon3);
     rightSide = new SpeedControllerGroup(falcon2, falcon4);
     drive = new DifferentialDrive(leftSide, rightSide);
->>>>>>> 8514e8315f3dac0f769f274c0cb6f1becf4b276b
-  }
-  
-  @Override
-  public void periodic() {
-  }
-  
-  public void arcadeDrive(double xSpeed, double zRotation) {
-    drive.arcadeDrive(xSpeed, zRotation);
-  }
-
-  public void tankDrive(double leftSpeed, double rightSpeed) {
-    drive.tankDrive(leftSpeed, rightSpeed);
-  }
-<<<<<<< HEAD
 
   /**
    * Zeroes the heading of the robot.
@@ -206,6 +177,4 @@ public class driveSubsystem extends SubsystemBase {
     setCurrentLimit(new SupplyCurrentLimitConfiguration(true, 80, 60, 1));
   }
 
-=======
->>>>>>> 8514e8315f3dac0f769f274c0cb6f1becf4b276b
 }
