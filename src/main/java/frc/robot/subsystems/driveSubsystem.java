@@ -21,6 +21,7 @@ import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.InvertType;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
+import com.ctre.phoenix.motorcontrol.TalonFXSensorCollection;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.sensors.PigeonIMU;
 import edu.wpi.first.wpilibj.controller.PIDController;
@@ -32,6 +33,7 @@ import edu.wpi.first.wpilibj.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Robot;
 import frc.robot.Constants.driveConstants;
 
 public class driveSubsystem extends SubsystemBase {
@@ -64,7 +66,9 @@ public class driveSubsystem extends SubsystemBase {
   // Stall:      257A  (more than the battery can supply)
   // Battery can at best supply around 250A
   private SupplyCurrentLimitConfiguration m_limit =
-      new SupplyCurrentLimitConfiguration(true, 30, 20, 0.5);
+    // temperary, super low current limit until we sort out speed limits
+    new SupplyCurrentLimitConfiguration(true, 20, 10, 0.5);
+     // new SupplyCurrentLimitConfiguration(true, 30, 20, 0.5);
 
   public driveSubsystem() {
 
@@ -78,9 +82,6 @@ public class driveSubsystem extends SubsystemBase {
 
     // Current limiting
     setCurrentLimit(m_limit);
-
-    // Voltage limits
-    setVoltageLimit(11);
     
     // set brake mode
     falcon1_leftLead.setNeutralMode(NeutralMode.Brake);
@@ -313,29 +314,6 @@ public class driveSubsystem extends SubsystemBase {
     // getRawGyro returns in degrees/second
     m_gyro.getRawGyro(xyz_dps);
     return xyz_dps[2] * (kGyroReversed ? -1.0 : 1.0);
-  }
-
-
-  /**
-   * Enable current limiting.
-   *
-   * @param current limit
-   */
-  public void setVoltageLimit(double maxV) {
-    if (maxV > 12.0) {
-      maxV = 12.0;
-    }
-    if (maxV < 0.0) {
-      maxV = 0.0;
-    }
-    falcon1_leftLead.configVoltageCompSaturation(maxV);
-    falcon1_leftLead.enableVoltageCompensation(true);
-    falcon2_leftFollow.configVoltageCompSaturation(maxV);
-    falcon2_leftFollow.enableVoltageCompensation(true);
-    falcon3_rightLead.configVoltageCompSaturation(maxV);
-    falcon3_rightLead.enableVoltageCompensation(true);
-    falcon4_rightFollow.configVoltageCompSaturation(maxV);
-    falcon4_rightFollow.enableVoltageCompensation(true);
   }
 
   /**
