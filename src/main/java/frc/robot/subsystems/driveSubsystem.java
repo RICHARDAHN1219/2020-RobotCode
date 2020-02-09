@@ -23,8 +23,11 @@ import com.ctre.phoenix.motorcontrol.InvertType;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.TalonFXSensorCollection;
+<<<<<<< HEAD
 =======
 >>>>>>> 8514e8315f3dac0f769f274c0cb6f1becf4b276b
+=======
+>>>>>>> parent of 2465461... add voltage limits, un-NERF current limit
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.sensors.PigeonIMU;
 import edu.wpi.first.wpilibj.SpeedController;
