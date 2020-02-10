@@ -53,6 +53,11 @@ public class turretSubsystem extends SubsystemBase {
     turretDrive.set(ControlMode.Position, 0);
   }
 
+  /**
+   * setAngleDegrees - turn turret to a given angle relative to robot
+   * 
+   * @param agnleDeg angle in degrees
+   */
   public void setAngleDegrees(double angleDeg) {
     if (angleDeg < kSoftMinTurretAngle) {
       angleDeg = kSoftMinTurretAngle;
@@ -64,12 +69,32 @@ public class turretSubsystem extends SubsystemBase {
     turretDrive.set(ControlMode.Position, angleDeg / kDegreesPerTick);
   }
 
+  /**
+   * setAngleRadians - turn turret to a given angle relative to robot
+   * 
+   * @param agnleRad angle in radians
+   */
   public void setAngleRadians(double angleRad) {
     setAngleDegrees(angleRad * 180.0 / Math.PI);
   }
 
+  /**
+   *  stop - stop the turret motor, disabling PID position control
+   */
+  public void stop() {
+    setPercentOutput(0);
+  }
+
   public void setPercentOutput(double percent) {
     turretDrive.set(ControlMode.PercentOutput, percent);
+  }
+
+  public double getAngleDegrees() {
+    return(turretDrive.getSelectedSensorPosition() * kDegreesPerTick);
+  }
+
+  public double getAngleRadians() {
+    return(getAngleDegrees() * Math.PI / 180.0);
   }
 
   @Override
