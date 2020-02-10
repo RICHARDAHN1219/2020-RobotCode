@@ -65,9 +65,12 @@ public static final class AutoConstants {
  }
 public static final class turretConstants {
     public static final int turret = 11;
-    public static final int kSoftMaxTurretAngle = 1;
-    public static final int kSoftMinTurretAngle = 1;
-    public static final int kTurretRotationsPerTick = 1;
+    public static final int kSoftMaxTurretAngle = 90;
+    public static final int kSoftMinTurretAngle = -90;
+    public static final int kEncoderCPR = 2048;
+    public static final int kGearRation = 1;   // TODO: fix me
+    public static final int kTurretRotationsPerTick =  1; // TODO: fixme
+    public static final int kDegreesPerTick = 1;  //TODO: fix me
 }
 public static final class shooterConstants {
     public static final int shooter1 = 4;
