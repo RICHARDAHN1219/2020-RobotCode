@@ -29,8 +29,7 @@ public class shooterSubsystem extends SubsystemBase {
   public shooterSubsystem() {
     //neo_shooter1.setSmartCurrentLimit(35);
     //neo_shooter2.setSmartCurrentLimit(35);
-    neo_shooter2.setInverted(true);
-    neo_shooter2.follow(neo_shooter1);
+    neo_shooter2.follow(neo_shooter1, true);
     m_pidController = neo_shooter1.getPIDController();
     m_encoder = neo_shooter1.getEncoder(EncoderType.kHallSensor, 2048);
     kMaxOutput = 1; 
@@ -42,7 +41,7 @@ public class shooterSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     SmartDashboard.putNumber("ShooterRPM", (int) (m_encoder.getVelocity() * 600 / 4096));
-    setShooterPID(0.005, 0, 0, 0);
+    setShooterPID(5e-5, 1e-6, 0, 0);
   }
 
   public void setShooterRPM (double desiredRPM) {

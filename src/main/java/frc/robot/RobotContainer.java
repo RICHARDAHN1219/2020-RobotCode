@@ -71,11 +71,11 @@ public class RobotContainer {
     //xbutton.whenPressed(() -> m_controlPanelMotors.setPosition(1 * 4096), m_controlPanelMotors);
     // abutton.whenPressed(() -> m_shooter.setShooterRPM(2000));
     //abutton.whenPressed(() -> m_indexer.setBeltsPercentOutput(0.5));
-    bbutton.whenPressed(() -> m_indexer.feedOneBall());
-    abutton.whenPressed(new indexRestageCommand(m_indexer));
+    //bbutton.whenPressed(() -> m_indexer.feedOneBall());
+    //abutton.whenPressed(new indexRestageCommand(m_indexer));
     xbutton.whenPressed(() -> m_shooter.setShooterRPM(2500));
     ybutton.whenPressed(() -> m_shooter.setShooterRPM(3000));
-    startbutton.toggleWhenPressed(new indexerEjectCommand());
+    //startbutton.toggleWhenPressed(new indexerEjectCommand());
     selectbutton.whenPressed(() -> m_shooter.testMode());
   }
   /*
