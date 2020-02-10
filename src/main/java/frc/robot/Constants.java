@@ -68,9 +68,15 @@ public static final class turretConstants {
     public static final int kSoftMaxTurretAngle = 90;
     public static final int kSoftMinTurretAngle = -90;
     public static final int kEncoderCPR = 2048;
-    public static final int kGearRation = 1;   // TODO: fix me
-    public static final int kTurretRotationsPerTick =  1; // TODO: fixme
-    public static final int kDegreesPerTick = 1;  //TODO: fix me
+
+    // BAG motor controlled by Talon
+    // Turret inner teeth = 264. * 360
+    // gear teeth = 20
+    // gearbox = 30:1
+    // Total motor to turret rotation ration:  1/396
+    public static final double kGearRation = 1 / 396.0;  // turret rotations per motor rotation
+    public static final double kTurretRotationsPerTick =  kGearRation / kEncoderCPR;
+    public static final double kDegreesPerTick = 360 * kTurretRotationsPerTick;
 }
 public static final class shooterConstants {
     public static final int shooter1 = 4;
