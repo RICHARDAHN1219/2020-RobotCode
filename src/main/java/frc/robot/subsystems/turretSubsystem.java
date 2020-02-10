@@ -1,8 +1,8 @@
 /*----------------------------------------------------------------------------*/
-/* Copyright (c) 2019 FIRST. All Rights Reserved.                             */
-/* Open Source Software - may be modified and shared by FRC teams. The code   */
+/* Copyright (c) 2019 FIRST. All Rights Reserved. */
+/* Open Source Software - may be modified and shared by FRC teams. The code */
 /* must be accompanied by the FIRST BSD license file in the root directory of */
-/* the project.                                                               */
+/* the project. */
 /*----------------------------------------------------------------------------*/
 
 package frc.robot.subsystems;
@@ -24,11 +24,11 @@ public class turretSubsystem extends SubsystemBase {
   private TalonSRX turretDrive = new TalonSRX(Constants.turretConstants.turret);
   private DigitalInput limit1 = new DigitalInput(7);
   private DigitalInput limit2 = new DigitalInput(8);
-  
+
   public turretSubsystem() {
     turretDrive.configFactoryDefault();
     turretDrive.configSelectedFeedbackSensor(FeedbackDevice.Analog, 0, 10);
-    
+
     // fix rotational direction
     turretDrive.setInverted(false);
     turretDrive.setSensorPhase(false);
@@ -41,15 +41,14 @@ public class turretSubsystem extends SubsystemBase {
 
     // TODO: set max speed, max voltage, max current
     turretDrive.configContinuousCurrentLimit(25);
-    
+
     // zero the position. start position becomes center
-    turretDrive.setSelectedSensorPosition(0, 0, 10); 
-    turretDrive.getSensorCollection().setQuadraturePosition(0, 10);
+    turretDrive.setSelectedSensorPosition(0, 0, 10);
 
     // TODO: make sure position is zerod correctly
     // TODO: set PID parameters
   }
-  
+
   public void turretHome() {
     turretDrive.set(ControlMode.Position, 0);
   }
@@ -66,7 +65,7 @@ public class turretSubsystem extends SubsystemBase {
   }
 
   public void setAngleRadians(double angleRad) {
-    setAngleDegrees(angleRad * 180.0 / Math.PI );
+    setAngleDegrees(angleRad * 180.0 / Math.PI);
   }
 
   public void setPercentOutput(double percent) {
@@ -77,23 +76,31 @@ public class turretSubsystem extends SubsystemBase {
   public void periodic() {
     boolean turretLimit1 = limit1.get();
     boolean turretLimit2 = limit2.get();
+    int pos = turretDrive.getSelectedSensorPosition();
 
     SmartDashboard.putBoolean("TurretLimit 1", turretLimit1);
     SmartDashboard.putBoolean("TurretLimit 2", turretLimit2);
-    SmartDashboard.putNumber("Turret Pos", turretDrive.getSelectedSensorPosition());
-    SmartDashboard.putNumber("Turret Angle", turretDrive.getSelectedSensorPosition() * 
-                                             kDegreesPerTick);
+    SmartDashboard.putNumber("Turret Pos", pos);
+    SmartDashboard.putNumber("Turret Angle", pos * kDegreesPerTick);
 
     if (turretLimit1 == true) {
       turretDrive.set(ControlMode.PercentOutput, 0.0);
       DriverStation.reportError("Min limit Reached on turret. motor stopped", false);
-      // TODO: check angle and reset position to kSoftMinTurretAngle if off by more than 1 deg
+      // check angle and reset position to kSoftMinTurretAngle if off by more than 1 deg
+      if (Math.abs(pos * kDegreesPerTick - kSoftMinTurretAngle) > 1.0) {
+        // TODO: magnetic limits switch may be outside software min/max set accourdingly
+        turretDrive.setSelectedSensorPosition((int) (kSoftMinTurretAngle / kDegreesPerTick), 0, 10);
+      }
     }
-    
+
     if (turretLimit2 == true) {
       turretDrive.set(ControlMode.PercentOutput, 0.0);
       DriverStation.reportError("Max limit Reached on turret, motor stopped", false);
-      // TODO: check angle and reset position to kSoftMaxTurretAngle if off by more than 1 deg
-    }    
+      // check angle and reset position to kSoftMaxTurretAngle if off by more than 1 deg
+      if (Math.abs(pos * kDegreesPerTick - kSoftMaxTurretAngle) > 1.0) {
+        // TODO: magnetic limits switch may be outside software min/max set accourdingly
+        turretDrive.setSelectedSensorPosition((int) (kSoftMaxTurretAngle / kDegreesPerTick), 0, 10);
+      }
+    }
   }
 }
