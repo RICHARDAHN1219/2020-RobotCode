@@ -16,9 +16,8 @@ public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
   public static boolean manualMode = false;
   public static boolean turretHome = false;
-  public static double IMUHeading;
   public static double temp; 
-  // TODO: fix me, PigeonIMU(turretSubsystem.turretDrive) can't go here;
+
   // @SuppressWarnings("unused")
   private RobotContainer m_robotContainer;
   public static SupplyCurrentLimitConfiguration m_currentlimitMain = new SupplyCurrentLimitConfiguration(true, 35, 1, 1);
