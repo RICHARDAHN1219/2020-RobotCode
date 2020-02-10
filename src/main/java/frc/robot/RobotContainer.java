@@ -31,12 +31,12 @@ public class RobotContainer {
   // Subsystems
   private final driveSubsystem m_driveSubsystem = new driveSubsystem();
   private final turretSubsystem m_turretSubsystem = new turretSubsystem();
-  final static shooterSubsystem m_shooter = new shooterSubsystem();
-  public final static indexerSubsystem m_indexer = new indexerSubsystem();
+  private final  shooterSubsystem m_shooter = new shooterSubsystem();
+  public final indexerSubsystem m_indexer = new indexerSubsystem();
   private final elevatorSubsystem m_elevatorSubsystem = new elevatorSubsystem();
   private final controlPanelSubsystem m_controlPanelMotors = new controlPanelSubsystem();
   private final intakeSubsystem m_intake = new intakeSubsystem();
-  public static final blinkin m_blinkin = new blinkin(pwmConstants.blinkin);
+  public final static blinkin m_blinkin = new blinkin(pwmConstants.blinkin);
 
   // Commands
   //public static final shooterCommand m_shooterCommand = new shooterCommand(m_shooter, m_indexer);
