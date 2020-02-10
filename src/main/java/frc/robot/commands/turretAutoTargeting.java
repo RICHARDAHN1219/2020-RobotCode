@@ -38,6 +38,7 @@ public class turretAutoTargeting extends CommandBase {
   @Override
   public void execute() {
     // TODO: get robot pose
+    // TODO: get distance and angle estimates from LimeLight
     // TODO: get robot velocity and direction
     // TODO: calculate position at time x (where x is how long it takes to shoot) in the future
     // TODO: calculate m_targetAngleDegrees from robot to target
