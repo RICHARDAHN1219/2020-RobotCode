@@ -47,19 +47,22 @@ public class shooterSubsystem extends SubsystemBase {
   public void setShooterRPM (double desiredRPM) {
     m_pidController.setReference(desiredRPM, ControlType.kVelocity);
   }
+  
   public void testMode(){
     double rpm = SmartDashboard.getNumber("RPM", 0);
     System.out.println(rpm);
     m_pidController.setReference(rpm, ControlType.kVelocity);
     System.out.println("Activating Test Mode");
   }
+
   public void setShooterPID (double P, double I, double D, double F) {
     m_pidController.setP(P);
     m_pidController.setI(I);
     m_pidController.setD(D);
     m_pidController.setFF(F);
   }
-//Current limiting on the fly switching removed due to the SparkMAX API not supporting that sort of switch.
+
+  //Current limiting on the fly switching removed due to the SparkMAX API not supporting that sort of switch.
   public void setPercentOutput(double percent) {
     neo_shooter1.set(percent);
   }
