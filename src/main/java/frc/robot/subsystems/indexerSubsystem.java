@@ -59,9 +59,9 @@ public class indexerSubsystem extends SubsystemBase {
     indexIntake.enableVoltageCompensation(true);
 
     // current limits
-    //indexBelts.configSupplyCurrentLimit(Robot.m_currentlimitSecondary);
-    //indexKicker.configSupplyCurrentLimit(Robot.m_currentlimitSecondary);
-    //indexIntake.configSupplyCurrentLimit(Robot.m_currentlimitSecondary);
+    indexBelts.configSupplyCurrentLimit(Robot.m_currentlimitSecondary);
+    indexKicker.configSupplyCurrentLimit(Robot.m_currentlimitSecondary);
+    indexIntake.configSupplyCurrentLimit(Robot.m_currentlimitSecondary);
 
     // Brake mode
     indexBelts.setNeutralMode(NeutralMode.Brake);
@@ -79,6 +79,11 @@ public class indexerSubsystem extends SubsystemBase {
 
     // TalonFX don't have sensor phase only TalonSRX
     indexIntake.setSensorPhase(false);
+    
+    //Set Ramp-Up
+    indexKicker.configClosedloopRamp(0.1);
+    indexBelts.configClosedloopRamp(0.1);
+    indexIntake.configClosedloopRamp(0.1);
 
 
     // Config PID values to control RPM
@@ -181,8 +186,8 @@ public class indexerSubsystem extends SubsystemBase {
           // setBeltsPercentOutput(1);
           // setKickerPercentOutput(1);
           setIntakePercentOutput(0.6);
-          setBeltsRPM(6380);
-          setKickerRPM(6380);
+          setBeltsRPM(4000);
+          setKickerRPM(4000);
           m_blinkin.solid_green();
         }
       }
