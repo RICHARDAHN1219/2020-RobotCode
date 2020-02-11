@@ -87,6 +87,10 @@ public class controlPanelSubsystem extends SubsystemBase {
     controlPanelMotor.set(ControlMode.Velocity, speed);
   }
 
+  /**
+   * senseColorWheelPos - detect current color, track the number of color transitions.
+   *   Eight (8) color transistions in one direction is a full rotation of the wheel.
+   */
   public void senseColorWheelPos() {
 
     String colorString = getColor();
@@ -281,6 +285,25 @@ public class controlPanelSubsystem extends SubsystemBase {
 
   public void setPosition(double position) {
     controlPanelMotor.set(ControlMode.Position, position);
+  }
+
+  /**
+   * getColorCount - return the number of color transtions seen
+   * 
+   * @return int count of color transtions
+   */
+  public int getColorCount() {
+    return count;
+  }
+
+  /**
+   * resetColorCount - reset the number of color transitions seen to zero. Useful if we have to
+   * start over or when we start Stage2 and need to zero out the count from Stage0.
+   * 
+   */
+  public void resetColorCount() {
+    count = 0;
+    lastSeenColor = "Unknown";
   }
 
   public double getRotationCount() {
