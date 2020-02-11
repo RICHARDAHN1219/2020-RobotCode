@@ -186,8 +186,8 @@ public class indexerSubsystem extends SubsystemBase {
           // setBeltsPercentOutput(1);
           // setKickerPercentOutput(1);
           setIntakePercentOutput(0.6);
-          setBeltsRPM(4000);
-          setKickerRPM(4000);
+          setBeltsRPM(6380);
+          setKickerRPM(6380);
           m_blinkin.solid_green();
         }
       }
