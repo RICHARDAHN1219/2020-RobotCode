@@ -163,40 +163,43 @@ public class controlPanelSubsystem extends SubsystemBase {
     return colorString;
   }
 
-  public int colorNumbers() {
-    String currentColor = getColor();
-    char currentColorChar = currentColor.charAt(0);
-    char stage2ColorChar = gameData.charAt(0);
 
-    if (currentColorChar == 'B') {
+  /**
+   * Given a String color name return the corresponding number.
+   *    B -> 0
+   *    Y -> 1
+   *    R -> 2
+   *    G -> 3
+   * and return -1 for anything else.
+   * 
+   * @param colorString
+   * @return int color number
+   */
+  public int colorNumbers(String colorString) {
+    if (colorString.length() == 0) {
+      // catch possible error if string is empty
+      return -1;
+    }
+
+    char colorChar = colorString.charAt(0);
+
+    if (colorChar == 'B') {
       return 0;
     }
-    if (stage2ColorChar == 'B') {
-      return 0;
-    }
-    if (currentColorChar == 'Y') {
+    if (colorChar == 'Y') {
       return 1;
     }
-    if (stage2ColorChar == 'Y') {
-      return 1;
-    }
-    if (currentColorChar == 'R') {
+    if (colorChar == 'R') {
       return 2;
     }
-    if (stage2ColorChar == 'R') {
-      return 2;
-    }
-    if (currentColorChar == 'G') {
-      return 3;
-    }
-    if (stage2ColorChar == 'G') {
+    if (colorChar == 'G') {
       return 3;
     }
 
     // Error: return an invalid integer
     return -1;
   }
-  
+
 //TODO: Actually make motors move and test if count is accurate
 
   public boolean moveToGamePosition() {
