@@ -24,35 +24,51 @@ public class shooterSubsystem extends SubsystemBase {
   private CANPIDController m_pidController;
   private CANEncoder m_encoder;
   private double kP, kI, kD, kIz, kFF, kMaxOutput, kMinOutput;
-  private double rpm;
+  private double m_desiredRPM = 0;
 
   public shooterSubsystem() {
+
+    neo_shooter1.restoreFactoryDefaults();
+    neo_shooter2.restoreFactoryDefaults();
+
     //neo_shooter1.setSmartCurrentLimit(35);
     //neo_shooter2.setSmartCurrentLimit(35);
+    
+    // Set coast mode
+    neo_shooter1.setIdleMode(CANSparkMax.IdleMode.kCoast);
+    neo_shooter2.setIdleMode(CANSparkMax.IdleMode.kCoast);
+
     neo_shooter2.follow(neo_shooter1, true);
     m_pidController = neo_shooter1.getPIDController();
-    m_encoder = neo_shooter1.getEncoder(EncoderType.kHallSensor, 2048);
+    m_encoder = neo_shooter1.getEncoder(EncoderType.kHallSensor, 4096);
     kMaxOutput = 1; 
     kMinOutput = -1;
     m_pidController.setOutputRange(kMinOutput, kMaxOutput);
-    SmartDashboard.putNumber("RPM", rpm);
+
+    setShooterPID(0.00005, 0.000001, 0, 0);
   }
 
   @Override
   public void periodic() {
-    SmartDashboard.putNumber("ShooterRPM", (int) (m_encoder.getVelocity() * 600 / 4096));
-    setShooterPID(5e-5, 1e-6, 0, 0);
+    SmartDashboard.putNumber("ShooterRPM", (int) m_encoder.getVelocity());
+    double rpm = SmartDashboard.getNumber("DesiredShooterRPM", 0);
+    if (m_desiredRPM != rpm ) {
+      m_desiredRPM = rpm;
+      System.out.println("Shoot er desired ROM: "  + m_desiredRPM);
+      m_pidController.setReference(m_desiredRPM, ControlType.kVelocity);
+    }
   }
 
   public void setShooterRPM (double desiredRPM) {
+    m_desiredRPM = desiredRPM;
     m_pidController.setReference(desiredRPM, ControlType.kVelocity);
   }
-  
+
   public void testMode(){
-    double rpm = SmartDashboard.getNumber("RPM", 0);
-    System.out.println(rpm);
-    m_pidController.setReference(rpm, ControlType.kVelocity);
-    System.out.println("Activating Test Mode");
+    //m_desiredRPM = SmartDashboard.getNumber("DesiredShooterRPM", 0);
+    //System.out.println("Shooter desired ROM: "  + m_desiredRPM);
+    //m_pidController.setReference(m_desiredRPM, ControlType.kVelocity);
+    //System.out.println("Activating Test Mode");
   }
 
   public void setShooterPID (double P, double I, double D, double F) {
@@ -65,5 +81,9 @@ public class shooterSubsystem extends SubsystemBase {
   //Current limiting on the fly switching removed due to the SparkMAX API not supporting that sort of switch.
   public void setPercentOutput(double percent) {
     neo_shooter1.set(percent);
+  }
+
+  public void stop() {
+    setPercentOutput(0.0);
   }
 }
