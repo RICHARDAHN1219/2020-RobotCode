@@ -18,15 +18,15 @@ public class controlPanelStage2Command extends CommandBase {
   controlPanelSubsystem m_controlPanelSubsystem;
   String gameData;
   String currentColor = m_controlPanelSubsystem.getColor();
-  
-  // use a public get method to make private variables visible to other classes
-  int count = m_controlPanelSubsystem.getColorCount();
-  
+  int count = 0;
 
   public controlPanelStage2Command(controlPanelSubsystem cp) {
     // Use addRequirements() here to declare subsystem dependencies.
     m_controlPanelSubsystem = cp;
     addRequirements(m_controlPanelSubsystem);
+
+    // use a public get method to make private variables visible to other classes
+    count = m_controlPanelSubsystem.getColorCount();
   }
 
   // Called when the command is initially scheduled.
