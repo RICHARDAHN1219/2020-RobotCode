@@ -17,7 +17,9 @@ public class controlPanelCommand extends CommandBase {
   /**
    * Creates a new controlPanelCommand.
    */
-  private WPI_TalonSRX controlPanelMotor = new WPI_TalonSRX(controlPanelConstants.motor);
+
+
+  // TODO: Jessica, I don't think you need this Command anymore. It doesn't do anything. Delete the file. -Bryn
   
   public void setPosition(double position) {
   
