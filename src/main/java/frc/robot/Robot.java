@@ -12,10 +12,7 @@ public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
   public static boolean manualMode = false;
   public static boolean turretHome = false;
-  public static double IMUHeading;
   public static double temp; 
-  // TODO: fix me, PigeonIMU(turretSubsystem.turretDrive) can't go here;
-  public static PigeonIMU m_pigeon = new PigeonIMU(20);
   @SuppressWarnings("unused")
   private RobotContainer m_robotContainer;
   public static SupplyCurrentLimitConfiguration m_currentlimitMain = new SupplyCurrentLimitConfiguration(true, 35, 1, 1);
@@ -31,11 +28,6 @@ public class Robot extends TimedRobot {
   @Override
   public void robotPeriodic() {
     CommandScheduler.getInstance().run();
-    temp = m_pigeon.getTemp();
-    IMUHeading = m_pigeon.getFusedHeading();
-    SmartDashboard.putNumber("CompassFieldStrength", m_pigeon.getCompassFieldStrength());
-    SmartDashboard.putNumber("IMU Fused Heading", IMUHeading);
-    SmartDashboard.putNumber("Temperature (VERY IMPORTANT)", temp);
   }
 
   @Override
@@ -51,7 +43,6 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
     }
-    m_pigeon.setFusedHeadingToCompass();
   }
 
   @Override
