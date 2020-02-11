@@ -41,27 +41,33 @@ public class controlPanelSubsystem extends SubsystemBase {
   private final Color kYellowTarget = ColorMatch.makeColor(0.361, 0.524, 0.113);
 
   public controlPanelSubsystem() {
-    //Restoring the motors to default settings
+    // Restoring the motors to default settings
     controlPanelMotor.configFactoryDefault();
-    controlPanelMotor.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor, controlPanelConstants.PIDLoopIdx, controlPanelConstants.timeoutMs);
+    controlPanelMotor.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor, controlPanelConstants.PIDLoopIdx,
+        controlPanelConstants.timeoutMs);
     controlPanelMotor.setSensorPhase(controlPanelConstants.sensorPhase);
     controlPanelMotor.setInverted(controlPanelConstants.motorInvert);
     controlPanelMotor.configNominalOutputForward(0, controlPanelConstants.timeoutMs);
     controlPanelMotor.configNominalOutputReverse(0, controlPanelConstants.timeoutMs);
     controlPanelMotor.configPeakOutputForward(.2, controlPanelConstants.timeoutMs);
     controlPanelMotor.configPeakOutputReverse(-.2, controlPanelConstants.timeoutMs);
-    controlPanelMotor.configAllowableClosedloopError(0, controlPanelConstants.PIDLoopIdx, controlPanelConstants.timeoutMs);
-    controlPanelMotor.config_kF(controlPanelConstants.PIDLoopIdx, controlPanelConstants.gains.kF, controlPanelConstants.timeoutMs);
-    controlPanelMotor.config_kP(controlPanelConstants.PIDLoopIdx, controlPanelConstants.gains.kP, controlPanelConstants.timeoutMs);
-    controlPanelMotor.config_kI(controlPanelConstants.PIDLoopIdx, controlPanelConstants.gains.kI, controlPanelConstants.timeoutMs);
-    controlPanelMotor.config_kD(controlPanelConstants.PIDLoopIdx, controlPanelConstants.gains.kD, controlPanelConstants.timeoutMs);
+    controlPanelMotor.configAllowableClosedloopError(0, controlPanelConstants.PIDLoopIdx,
+        controlPanelConstants.timeoutMs);
+    controlPanelMotor.config_kF(controlPanelConstants.PIDLoopIdx, controlPanelConstants.gains.kF,
+        controlPanelConstants.timeoutMs);
+    controlPanelMotor.config_kP(controlPanelConstants.PIDLoopIdx, controlPanelConstants.gains.kP,
+        controlPanelConstants.timeoutMs);
+    controlPanelMotor.config_kI(controlPanelConstants.PIDLoopIdx, controlPanelConstants.gains.kI,
+        controlPanelConstants.timeoutMs);
+    controlPanelMotor.config_kD(controlPanelConstants.PIDLoopIdx, controlPanelConstants.gains.kD,
+        controlPanelConstants.timeoutMs);
     int absolutePosition = controlPanelMotor.getSelectedSensorPosition();
     absolutePosition &= 0xFFF;
-    
+
     if (controlPanelConstants.sensorPhase) {
       absolutePosition *= -1;
     }
-    
+
     if (controlPanelConstants.motorInvert) {
       absolutePosition *= -1;
     }
@@ -186,6 +192,8 @@ public class controlPanelSubsystem extends SubsystemBase {
     return ' ';
   }
 
+  /* Is this type of thing supposed to go here or in the controlPanelStage2Command?
+
   public void moveToGamePosition(char targetColorChar) {
 
     String currentColor = getColor();
@@ -193,45 +201,75 @@ public class controlPanelSubsystem extends SubsystemBase {
     String gameData = DriverStation.getInstance().getGameSpecificMessage();
     char stage2ColorChar = gameData.charAt(0);
 
-    /*Beginnings of new way, needs to be reviewed still once it can be figured out 
-    how to move the motors the amount of one color panel*/
+    if (stage2ColorChar == 'B' && currentColorChar == 'B') {
+      // move counterclockwise 2
+      // isFinished when count == 2
+    }
+    if (stage2ColorChar == 'B' && currentColorChar == 'Y') {
+      // move counterclockwise 1
+      // isFinished when count == 1
+    }
+    if (stage2ColorChar == 'B' && currentColorChar == 'R') {
+      // don't move
+      // isFinished when count == 0
+    }
+    if (stage2ColorChar == 'B' && currentColorChar == 'G') {
+      // move clockwise 1
+      // isFinished when count == -1
+    }
+
+    if (stage2ColorChar == 'Y' && currentColorChar == 'B') {
+      // move counterclockwise 1
+      // isFinished when count == 1
+    }
+    if (stage2ColorChar == 'Y' && currentColorChar == 'Y') {
+      // move counterclockwise 2
+      // isFinished when count == 2
+    }
+    if (stage2ColorChar == 'Y' && currentColorChar == 'R') {
+      // move clockwise 1
+      // isFinished when count == -1
+    }
+    if (stage2ColorChar == 'Y' && currentColorChar == 'G') {
+      // don't move
+      // isFinished when count == 0
+    }
+
     if (stage2ColorChar == 'R' && currentColorChar == 'R') {
       // move either clockwise 6 or counterclockwise 2 (game sees b, move 2 to r)
-      // isFinished when currentColorChar == 'B'
+      // isFinished when count == 2 (currentColorChar == 'B')
     }
     if (stage2ColorChar == 'R' && currentColorChar == 'Y') {
       // move counterclockwise 1 (game sees g, move to r)
-      // isFinished when currentColorChar == 'B'
+      // isFinished when count == 1 (currentColorChar == 'B')
     }
     if (stage2ColorChar == 'R' && currentColorChar == 'G') {
       // move clockwise 1 (game sees g, move to r)
-      // isFinished when currentColorChar == 'B'
+      // isFinished when count == -1 (currentColorChar == 'B')
     }
     if (stage2ColorChar == 'R' && currentColorChar == 'B') {
       // don't move
+      // isFinished when count == 0 (currentColorChar == 'B')
     }
-
-    /* 
-    Old way that needs to be revised to new way
-
-    if (gameData.equals("R") && lastSeenColor.equals("Yellow")) {
-      // move counterclockwise until we see blue
-    }
-    if (gameData.equals("R") && lastSeenColor.equals("Green")) {
+      
+    if (stage2ColorChar == 'G' && currentColorChar == 'B') {
       // move clockwise 1
+      // isFinished when count == -1
     }
-    if (gameData.equals("B") && lastSeenColor.equals("Blue")) {
-      // stay at color
+    if (stage2ColorChar == 'G' && currentColorChar == 'Y') {
+      // don't move
+      // isFinished when count == 0
     }
-    if (gameData.equals("B") && lastSeenColor.equals("Green")) {
+    if (stage2ColorChar == 'G' && currentColorChar == 'R') {
       // move counterclockwise 1
+      // isFinished when count == 1
     }
-    if (gameData.equals("B") && lastSeenColor.equals("Yellow")) {
-      // move clockwise 1
+    if (stage2ColorChar == 'G' && currentColorChar == 'G') {
+      // move counterclockwise 2
+      // isFinished when count == 2
     }
-    */
-
   }
+  */
 
   public void setPosition(double position) {
     controlPanelMotor.set(ControlMode.Position, position);
