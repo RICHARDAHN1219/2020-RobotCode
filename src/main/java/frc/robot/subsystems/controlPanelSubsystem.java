@@ -219,6 +219,15 @@ public class controlPanelSubsystem extends SubsystemBase {
     String gameData = DriverStation.getInstance().getGameSpecificMessage();
     char stage2ColorChar = gameData.charAt(0);
 
+  // TODO: I think maybe you should split this into two functions.
+  //    One to get the number of color transtions we need to move
+  //    from the start position to the desired position.
+  //    Second to track when we've turned far enough. 
+  //    This will make controlPanelStage2Command look very similar to the
+  //    Stage1Command
+  // 
+  //  I like the comments like "move CCW 2" and "move CW 1" etc. very descriptive.
+
  //TODO:Figure out what actions to take if one of these options isn't the case
     if (stage2ColorChar == 'B' && currentColorChar == 'B' && count == 2) {
       return true;
