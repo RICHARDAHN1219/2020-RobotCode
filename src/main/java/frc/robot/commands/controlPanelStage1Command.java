@@ -17,7 +17,8 @@ public class controlPanelStage1Command extends CommandBase {
   private controlPanelSubsystem m_controlPanelSubsystem;
 
   public controlPanelStage1Command(controlPanelSubsystem colorWheelSubsystem) {
-    // Use addRequirements() here to declare subsystem dependencies.
+    m_controlPanelSubsystem = colorWheelSubsystem;
+    addRequirements(colorWheelSubsystem);
   }
 
   // Called when the command is initially scheduled.
