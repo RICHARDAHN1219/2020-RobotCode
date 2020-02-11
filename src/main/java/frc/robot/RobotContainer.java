@@ -29,6 +29,7 @@ import frc.robot.subsystems.blinkin;
 
 public class RobotContainer {
   // Subsystems
+  public final static blinkin m_blinkin = new blinkin(pwmConstants.blinkin);
   private final driveSubsystem m_driveSubsystem = new driveSubsystem();
   private final turretSubsystem m_turretSubsystem = new turretSubsystem();
   public static final shooterSubsystem m_shooter = new shooterSubsystem();
@@ -36,7 +37,7 @@ public class RobotContainer {
   private final elevatorSubsystem m_elevatorSubsystem = new elevatorSubsystem();
   private final controlPanelSubsystem m_controlPanelMotors = new controlPanelSubsystem();
   private final intakeSubsystem m_intake = new intakeSubsystem();
-  public final static blinkin m_blinkin = new blinkin(pwmConstants.blinkin);
+  
 
   // Commands
   //public static final shooterCommand m_shooterCommand = new shooterCommand(m_shooter, m_indexer);
