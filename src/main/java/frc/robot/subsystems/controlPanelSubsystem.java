@@ -191,6 +191,7 @@ public class controlPanelSubsystem extends SubsystemBase {
     }
     return ' ';
   }
+//TODO: Actually make motors move and test if count is accurate
 
   public boolean moveToGamePosition() {
     String currentColor = getColor();
