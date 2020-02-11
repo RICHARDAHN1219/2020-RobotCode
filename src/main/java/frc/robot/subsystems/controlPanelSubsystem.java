@@ -192,84 +192,82 @@ public class controlPanelSubsystem extends SubsystemBase {
     return ' ';
   }
 
-  /* Is this type of thing supposed to go here or in the controlPanelStage2Command?
-
-  public void moveToGamePosition(char targetColorChar) {
-
+  public boolean moveToGamePosition() {
     String currentColor = getColor();
     char currentColorChar = currentColor.charAt(0);
     String gameData = DriverStation.getInstance().getGameSpecificMessage();
     char stage2ColorChar = gameData.charAt(0);
 
-    if (stage2ColorChar == 'B' && currentColorChar == 'B') {
+ //TODO:Figure out what actions to take if one of these options isn't the case
+    if (stage2ColorChar == 'B' && currentColorChar == 'B' && count == 2) {
+      return true;
       // move counterclockwise 2
-      // isFinished when count == 2
     }
-    if (stage2ColorChar == 'B' && currentColorChar == 'Y') {
+    if (stage2ColorChar == 'B' && currentColorChar == 'Y' && count == 1) {
+      return true;
       // move counterclockwise 1
-      // isFinished when count == 1
     }
-    if (stage2ColorChar == 'B' && currentColorChar == 'R') {
+    if (stage2ColorChar == 'B' && currentColorChar == 'R' && count == 0) {
+      return true;
       // don't move
-      // isFinished when count == 0
     }
-    if (stage2ColorChar == 'B' && currentColorChar == 'G') {
+    if (stage2ColorChar == 'B' && currentColorChar == 'G' && count == -1) {
+      return true;
       // move clockwise 1
-      // isFinished when count == -1
     }
 
-    if (stage2ColorChar == 'Y' && currentColorChar == 'B') {
+    if (stage2ColorChar == 'Y' && currentColorChar == 'B' && count == 1) {
+      return true;
       // move counterclockwise 1
-      // isFinished when count == 1
     }
-    if (stage2ColorChar == 'Y' && currentColorChar == 'Y') {
+    if (stage2ColorChar == 'Y' && currentColorChar == 'Y' && count == 2) {
+      return true;
       // move counterclockwise 2
-      // isFinished when count == 2
     }
-    if (stage2ColorChar == 'Y' && currentColorChar == 'R') {
+    if (stage2ColorChar == 'Y' && currentColorChar == 'R' && count == -1) {
+      return true;
       // move clockwise 1
-      // isFinished when count == -1
     }
-    if (stage2ColorChar == 'Y' && currentColorChar == 'G') {
+    if (stage2ColorChar == 'Y' && currentColorChar == 'G' && count == 0) {
+      return true;
       // don't move
-      // isFinished when count == 0
     }
 
-    if (stage2ColorChar == 'R' && currentColorChar == 'R') {
-      // move either clockwise 6 or counterclockwise 2 (game sees b, move 2 to r)
-      // isFinished when count == 2 (currentColorChar == 'B')
-    }
-    if (stage2ColorChar == 'R' && currentColorChar == 'Y') {
-      // move counterclockwise 1 (game sees g, move to r)
-      // isFinished when count == 1 (currentColorChar == 'B')
-    }
-    if (stage2ColorChar == 'R' && currentColorChar == 'G') {
-      // move clockwise 1 (game sees g, move to r)
-      // isFinished when count == -1 (currentColorChar == 'B')
-    }
-    if (stage2ColorChar == 'R' && currentColorChar == 'B') {
-      // don't move
-      // isFinished when count == 0 (currentColorChar == 'B')
-    }
-      
-    if (stage2ColorChar == 'G' && currentColorChar == 'B') {
-      // move clockwise 1
-      // isFinished when count == -1
-    }
-    if (stage2ColorChar == 'G' && currentColorChar == 'Y') {
-      // don't move
-      // isFinished when count == 0
-    }
-    if (stage2ColorChar == 'G' && currentColorChar == 'R') {
-      // move counterclockwise 1
-      // isFinished when count == 1
-    }
-    if (stage2ColorChar == 'G' && currentColorChar == 'G') {
+    if (stage2ColorChar == 'R' && currentColorChar == 'R' && count == 2) {
+      return true;
       // move counterclockwise 2
-      // isFinished when count == 2
     }
+    if (stage2ColorChar == 'R' && currentColorChar == 'Y' && count == 1) {
+      return true;
+      // move counterclockwise 1
+    }
+    if (stage2ColorChar == 'R' && currentColorChar == 'G' && count == -1) {
+      return true;
+      // move clockwise 1
+    }
+    if (stage2ColorChar == 'R' && currentColorChar == 'B' && count == 0) {
+      return true;
+      // don't move
+    }
+
+    if (stage2ColorChar == 'G' && currentColorChar == 'B' && count == -1) {
+      return true;
+      // move clockwise 1
+    }
+    if (stage2ColorChar == 'G' && currentColorChar == 'Y' && count == 0) {
+      return true;
+      // don't move
+    }
+    if (stage2ColorChar == 'G' && currentColorChar == 'R' && count == 1) {
+      return true;
+      // move counterclockwise 1
+    }
+    if (stage2ColorChar == 'G' && currentColorChar == 'G' && count == 2) {
+      return true;
+      // move counterclockwise 2
+    }
+    return false;
   }
-  */
 
   public void setPosition(double position) {
     controlPanelMotor.set(ControlMode.Position, position);

@@ -51,79 +51,9 @@ public class controlPanelStage2Command extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    char currentColorChar = currentColor.charAt(0);
-    String gameData = DriverStation.getInstance().getGameSpecificMessage();
-    char stage2ColorChar = gameData.charAt(0);
-
-     //TODO:Figure out what actions to take if one of these options isn't the case
-    if (stage2ColorChar == 'B' && currentColorChar == 'B' && count == 2) {
+    if(m_controlPanelSubsystem.moveToGamePosition() == true){
       return true;
-      // move counterclockwise 2
     }
-    if (stage2ColorChar == 'B' && currentColorChar == 'Y' && count == 1) {
-      return true;
-      // move counterclockwise 1
-    }
-    if (stage2ColorChar == 'B' && currentColorChar == 'R' && count == 0) {
-      return true;
-      // don't move
-    }
-    if (stage2ColorChar == 'B' && currentColorChar == 'G' && count == -1) {
-      return true;
-      // move clockwise 1
-    }
-
-    if (stage2ColorChar == 'Y' && currentColorChar == 'B' && count == 1) {
-      return true;
-      // move counterclockwise 1
-    }
-    if (stage2ColorChar == 'Y' && currentColorChar == 'Y' && count == 2) {
-      return true;
-      // move counterclockwise 2
-    }
-    if (stage2ColorChar == 'Y' && currentColorChar == 'R' && count == -1) {
-      return true;
-      // move clockwise 1
-    }
-    if (stage2ColorChar == 'Y' && currentColorChar == 'G' && count == 0) {
-      return true;
-      // don't move
-    }
-
-    if (stage2ColorChar == 'R' && currentColorChar == 'R' && count == 2) {
-      return true;
-      // move counterclockwise 2
-    }
-    if (stage2ColorChar == 'R' && currentColorChar == 'Y' && count == 1) {
-      return true;
-      // move counterclockwise 1
-    }
-    if (stage2ColorChar == 'R' && currentColorChar == 'G' && count == -1) {
-      return true;
-      // move clockwise 1
-    }
-    if (stage2ColorChar == 'R' && currentColorChar == 'B' && count == 0) {
-      return true;
-      // don't move
-    }
-
-    if (stage2ColorChar == 'G' && currentColorChar == 'B' && count == -1) {
-      return true;
-      // move clockwise 1
-    }
-    if (stage2ColorChar == 'G' && currentColorChar == 'Y' && count == 0) {
-      return true;
-      // don't move
-    }
-    if (stage2ColorChar == 'G' && currentColorChar == 'R' && count == 1) {
-      return true;
-      // move counterclockwise 1
-    }
-    if (stage2ColorChar == 'G' && currentColorChar == 'G' && count == 2) {
-      return true;
-      // move counterclockwise 2
-    }
-
     return false;
   }
 }
