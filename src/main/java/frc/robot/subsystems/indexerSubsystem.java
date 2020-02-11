@@ -81,22 +81,22 @@ public class indexerSubsystem extends SubsystemBase {
     indexIntake.setSensorPhase(false);
     
     //Set Ramp-Up
-    indexKicker.configClosedloopRamp(0.1);
-    indexBelts.configClosedloopRamp(0.1);
-    indexIntake.configClosedloopRamp(0.1);
+    //indexKicker.configClosedloopRamp(0.1);
+    //indexBelts.configClosedloopRamp(0.1);
+    //indexIntake.configClosedloopRamp(0.1);
 
 
     // Config PID values to control RPM
     // TODO: test PID values
     indexBelts.config_kP(0, 0.15, 10);
     indexBelts.config_kI(0, 0.0, 10);
-    indexBelts.config_kD(0, 1, 10);
-    indexBelts.config_kF(0, 0.05, 10);
+    indexBelts.config_kD(0, 1.5, 10);
+    indexBelts.config_kF(0, 0.048, 10);
 
     indexKicker.config_kP(0, 0.15, 10);
     indexKicker.config_kI(0, 0.0, 10);
-    indexKicker.config_kD(0, 1, 10);
-    indexKicker.config_kF(0, 0.05, 10);
+    indexKicker.config_kD(0, 1.5, 10);
+    indexKicker.config_kF(0, 0.053, 10);
 
     indexIntake.config_kP(0, 0.1, 10);
     indexIntake.config_kI(0, 0.0, 10);
