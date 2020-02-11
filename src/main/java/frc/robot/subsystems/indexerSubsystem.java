@@ -79,19 +79,24 @@ public class indexerSubsystem extends SubsystemBase {
 
     // TalonFX don't have sensor phase only TalonSRX
     indexIntake.setSensorPhase(false);
+    
+    //Set Ramp-Up
+    //indexKicker.configClosedloopRamp(0.1);
+    //indexBelts.configClosedloopRamp(0.1);
+    //indexIntake.configClosedloopRamp(0.1);
 
 
     // Config PID values to control RPM
     // TODO: test PID values
-    indexBelts.config_kP(0, 0.1, 10);
+    indexBelts.config_kP(0, 0.15, 10);
     indexBelts.config_kI(0, 0.0, 10);
-    indexBelts.config_kD(0, 0.0, 10);
-    indexBelts.config_kF(0, 0.0, 10);
+    indexBelts.config_kD(0, 1.5, 10);
+    indexBelts.config_kF(0, 0.048, 10);
 
-    indexKicker.config_kP(0, 0.1, 10);
+    indexKicker.config_kP(0, 0.15, 10);
     indexKicker.config_kI(0, 0.0, 10);
-    indexKicker.config_kD(0, 0.0, 10);
-    indexKicker.config_kF(0, 0.0, 10);
+    indexKicker.config_kD(0, 1.5, 10);
+    indexKicker.config_kF(0, 0.053, 10);
 
     indexIntake.config_kP(0, 0.1, 10);
     indexIntake.config_kI(0, 0.0, 10);
@@ -129,8 +134,8 @@ public class indexerSubsystem extends SubsystemBase {
         // move indexer when a new ball is ready to enter the system
         if (ballReady4Indexer == true) {
           setIntakePercentOutput(0.6);
-          setBeltsPercentOutput(0.5);
-          setKickerPercentOutput(0.8);
+          setBeltsPercentOutput(1);
+          setKickerPercentOutput(0.3);
           m_blinkin.solid_blue();
         }
 
@@ -143,23 +148,23 @@ public class indexerSubsystem extends SubsystemBase {
         // finish staging balls when this error state occurs
         if ((-1 + (ballCount * 2)) != stateChangeCount) {
           setIntakePercentOutput(0.6);
-          setBeltsPercentOutput(0.5);
-          setKickerPercentOutput(0.8);
+          setBeltsPercentOutput(1);
+          setKickerPercentOutput(0.3);
           m_blinkin.solid_blue();
         }
 
         // finish staging balls when this error state occurs
         if ((ballCount >= 1) && ballReady4Indexer == false && ballStaged == false) {
           setIntakePercentOutput(0.6);
-          setBeltsPercentOutput(0.5);
-          setKickerPercentOutput(0.8);
+          setBeltsPercentOutput(1);
+          setKickerPercentOutput(0.3);
           m_blinkin.solid_blue();
         }
 
         // automatically stage the balls for shooting when we have 4
         if (ballCount == 4 && ballExiting == false) {
           setIntakePercentOutput(0.6);
-          setBeltsPercentOutput(0.5);
+          setBeltsPercentOutput(1);
           m_blinkin.solid_green_lime();
         }
 
@@ -178,9 +183,11 @@ public class indexerSubsystem extends SubsystemBase {
         }
 
         if (eject == true) {
-          setBeltsPercentOutput(1);
-          setKickerPercentOutput(1);
+          // setBeltsPercentOutput(1);
+          // setKickerPercentOutput(1);
           setIntakePercentOutput(0.6);
+          setBeltsRPM(6380);
+          setKickerRPM(6380);
           m_blinkin.solid_green();
         }
       }

@@ -38,7 +38,6 @@ public class RobotContainer {
   private final controlPanelSubsystem m_controlPanelMotors = new controlPanelSubsystem();
   private final intakeSubsystem m_intake = new intakeSubsystem();
   
-
   // Commands
   //public static final shooterCommand m_shooterCommand = new shooterCommand(m_shooter, m_indexer);
   //private final limelightTurretVisionCommand m_turretVisionCommand = new limelightTurretVisionCommand(m_turretSubsystem);
@@ -76,7 +75,7 @@ public class RobotContainer {
     //abutton.whenPressed(new indexRestageCommand(m_indexer));
     xbutton.whenPressed(() -> m_shooter.setShooterRPM(2500));
     ybutton.whenPressed(() -> m_shooter.setShooterRPM(3000));
-    //startbutton.toggleWhenPressed(new indexerEjectCommand());
+    startbutton.toggleWhenPressed(new indexerEjectCommand());
     selectbutton.whenPressed(() -> m_shooter.testMode());
   }
   /*
