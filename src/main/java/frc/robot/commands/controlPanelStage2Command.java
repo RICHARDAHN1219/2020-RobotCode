@@ -25,6 +25,10 @@ public class controlPanelStage2Command extends CommandBase {
     m_controlPanelSubsystem = cp;
     addRequirements(m_controlPanelSubsystem);
 
+    // Before we start, reset the count so old state from other stages or previous attempts
+    // don't mess up our count.
+    m_controlPanelSubsystem.resetColorCount();
+
     // use a public get method to make private variables visible to other classes
     count = m_controlPanelSubsystem.getColorCount();
   }

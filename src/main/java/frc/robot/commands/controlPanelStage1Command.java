@@ -19,6 +19,7 @@ public class controlPanelStage1Command extends CommandBase {
   public controlPanelStage1Command(controlPanelSubsystem colorWheelSubsystem) {
     m_controlPanelSubsystem = colorWheelSubsystem;
     addRequirements(colorWheelSubsystem);
+    m_controlPanelSubsystem.resetColorCount();
   }
 
   // Called when the command is initially scheduled.
