@@ -26,14 +26,13 @@ public class indexerEjectCommand extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    RobotContainer.m_indexer.eject = true;
-
+    RobotContainer.m_indexer.setEject(true);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    RobotContainer.m_indexer.eject = false;
+    RobotContainer.m_indexer.setEject(false);
   }
 
   // Returns true when the command should end.

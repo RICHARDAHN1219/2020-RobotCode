@@ -31,8 +31,8 @@ public class RobotContainer {
   // Subsystems
   private final driveSubsystem m_driveSubsystem = new driveSubsystem();
   private final turretSubsystem m_turretSubsystem = new turretSubsystem();
-  private final  shooterSubsystem m_shooter = new shooterSubsystem();
-  public final indexerSubsystem m_indexer = new indexerSubsystem();
+  public static final shooterSubsystem m_shooter = new shooterSubsystem();
+  public static final indexerSubsystem m_indexer = new indexerSubsystem();
   private final elevatorSubsystem m_elevatorSubsystem = new elevatorSubsystem();
   private final controlPanelSubsystem m_controlPanelMotors = new controlPanelSubsystem();
   private final intakeSubsystem m_intake = new intakeSubsystem();

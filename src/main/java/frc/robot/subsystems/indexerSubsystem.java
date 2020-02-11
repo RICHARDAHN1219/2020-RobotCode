@@ -8,6 +8,7 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
@@ -35,7 +36,7 @@ public class indexerSubsystem extends SubsystemBase {
   private boolean ballExitingLast = false;
   public boolean ballReady4Indexer;
   public boolean ballStaged;
-  public boolean eject = false;
+  public static boolean eject = false;
   public int stateChangeCount = 0;
   private int exitStateChangeCount = 0;
   public int ballCount = 0;
@@ -45,12 +46,60 @@ public class indexerSubsystem extends SubsystemBase {
   private blinkin m_blinkin = RobotContainer.m_blinkin;
 
   public indexerSubsystem() {
+    indexBelts.configFactoryDefault();
+    indexKicker.configFactoryDefault();
+    indexIntake.configFactoryDefault();
+
+    // Voltage limits, percent output is scaled to this new max
+    indexBelts.configVoltageCompSaturation(11);
+    indexBelts.enableVoltageCompensation(true);
+    indexKicker.configVoltageCompSaturation(11);
+    indexKicker.enableVoltageCompensation(true);
+    indexIntake.configVoltageCompSaturation(11);
+    indexIntake.enableVoltageCompensation(true);
+
+    // current limits
     indexBelts.configSupplyCurrentLimit(Robot.m_currentlimitSecondary);
     indexKicker.configSupplyCurrentLimit(Robot.m_currentlimitSecondary);
     indexIntake.configSupplyCurrentLimit(Robot.m_currentlimitSecondary);
+
+    // Brake mode
     indexBelts.setNeutralMode(NeutralMode.Brake);
     indexKicker.setNeutralMode(NeutralMode.Brake);
     indexIntake.setNeutralMode(NeutralMode.Brake);
+
+    // Invert
+    indexBelts.setInverted(false);
+    indexKicker.setInverted(false);
+    indexIntake.setInverted(false);
+
+    indexBelts.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor, 0, 10);
+    indexKicker.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor, 0, 10);
+    indexIntake.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 10);
+
+    // TalonFX don't have sensor phase only TalonSRX
+    indexIntake.setSensorPhase(false);
+
+
+    // Config PID values to control RPM
+    // TODO: test PID values
+    indexBelts.config_kP(0, 0.1, 10);
+    indexBelts.config_kI(0, 0.0, 10);
+    indexBelts.config_kD(0, 0.0, 10);
+    indexBelts.config_kF(0, 0.0, 10);
+
+    indexKicker.config_kP(0, 0.1, 10);
+    indexKicker.config_kI(0, 0.0, 10);
+    indexKicker.config_kD(0, 0.0, 10);
+    indexKicker.config_kF(0, 0.0, 10);
+
+    indexIntake.config_kP(0, 0.1, 10);
+    indexIntake.config_kI(0, 0.0, 10);
+    indexIntake.config_kD(0, 0.0, 10);
+    indexIntake.config_kF(0, 0.0, 10);
+
+    // Note: if we add position control, then we need to add a second set of PID parameters
+    // on PID index 1, and then swtich between the Talon PID index when setting RPM and Position
   }
 
   @Override
@@ -61,6 +110,9 @@ public class indexerSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("ball count", ballCount);
     SmartDashboard.putNumber("state change count", stateChangeCount);
     SmartDashboard.putNumber("restage state", restageState);
+    SmartDashboard.putNumber("Belt RPM", indexBelts.getSelectedSensorVelocity() * 600 / 2048);
+    SmartDashboard.putNumber("Kicker RPM", indexKicker.getSelectedSensorVelocity() * 600 / 2048);
+    SmartDashboard.putNumber("Intake RPM", indexIntake.getSelectedSensorVelocity() * 600 / 2048);
 
     // prevent intake of new balls when we already have 5
     // EDIT: We are aiming for 4 balls by week 1 until 5 is figured out
@@ -195,4 +247,21 @@ public class indexerSubsystem extends SubsystemBase {
   public void setIntakePercentOutput(double percent) {
     indexIntake.set(ControlMode.PercentOutput, percent);
   }
+
+  public void setBeltsRPM(double rpm) {
+    indexBelts.set(ControlMode.Velocity, rpm * 2048 / 600);
+  }
+
+  public void setKickerRPM(double rpm) {
+    indexKicker.set(ControlMode.Velocity, rpm * 2048 / 600);
+  }
+
+  public void setIntakeRPM(double rpm) {
+    indexIntake.set(ControlMode.Velocity, rpm * 2048 / 600);
+  }
+
+  public static void setEject(boolean e){
+    eject = e;
+  }
+
 }
