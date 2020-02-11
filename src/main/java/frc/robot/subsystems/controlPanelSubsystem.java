@@ -192,8 +192,11 @@ public class controlPanelSubsystem extends SubsystemBase {
     if (stage2ColorChar == 'G') {
       return 3;
     }
-    return ' ';
+
+    // Error: return an invalid integer
+    return -1;
   }
+  
 //TODO: Actually make motors move and test if count is accurate
 
   public boolean moveToGamePosition() {
