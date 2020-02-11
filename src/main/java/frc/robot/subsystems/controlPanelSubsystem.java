@@ -47,6 +47,8 @@ public class controlPanelSubsystem extends SubsystemBase {
         controlPanelConstants.timeoutMs);
     controlPanelMotor.setSensorPhase(controlPanelConstants.sensorPhase);
     controlPanelMotor.setInverted(controlPanelConstants.motorInvert);
+    controlPanelMotor.configVoltageCompSaturation(11);
+    controlPanelMotor.enableVoltageCompensation(true);
     controlPanelMotor.configNominalOutputForward(0, controlPanelConstants.timeoutMs);
     controlPanelMotor.configNominalOutputReverse(0, controlPanelConstants.timeoutMs);
     controlPanelMotor.configPeakOutputForward(.2, controlPanelConstants.timeoutMs);
