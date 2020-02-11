@@ -73,15 +73,16 @@ public class controlPanelSubsystem extends SubsystemBase {
     }
 
     controlPanelMotor.setSelectedSensorPosition(0, controlPanelConstants.PIDLoopIdx, controlPanelConstants.timeoutMs);
-  }
 
-  public void setSpeed(double speed) {
-    controlPanelMotor.set(ControlMode.Velocity, speed);
     // colors we want to match
     m_colorMatcher.addColorMatch(kBlueTarget);
     m_colorMatcher.addColorMatch(kGreenTarget);
     m_colorMatcher.addColorMatch(kRedTarget);
     m_colorMatcher.addColorMatch(kYellowTarget);
+  }
+
+  public void setSpeed(double speed) {
+    controlPanelMotor.set(ControlMode.Velocity, speed);
   }
 
   public void senseColorWheelPos() {
