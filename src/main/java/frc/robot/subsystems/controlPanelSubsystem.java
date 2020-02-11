@@ -88,6 +88,13 @@ public class controlPanelSubsystem extends SubsystemBase {
   }
 
   /**
+   * stop - stop the motor. 
+   */
+  public void stop() {
+    setSpeed(0.0);
+  }
+
+  /**
    * senseColorWheelPos - detect current color, track the number of color transitions.
    *   Eight (8) color transistions in one direction is a full rotation of the wheel.
    */
