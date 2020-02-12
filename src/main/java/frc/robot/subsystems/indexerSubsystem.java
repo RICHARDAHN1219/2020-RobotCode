@@ -274,7 +274,7 @@ public class indexerSubsystem extends SubsystemBase {
     setBeltsPercentOutput(0.0);
     setKickerPercentOutput(0.0);
     setIntakePercentOutput(0.0);
-    m_blinkin.solid_red();
+    m_blinkin.solid_orange());
   }
 
   /**
@@ -307,6 +307,26 @@ public class indexerSubsystem extends SubsystemBase {
   }
 
   /**
+   * runBelts() - run only the belts
+   */
+  public void runBelts() {
+    setBeltsRPM(6380);
+    setKickerRPM(0.0);
+    setIntakePercentOutput(0.0);
+    m_blinkin.solid_blue();
+  }
+
+  /**
+   * reverseIntake() - run intake in reverse
+   */
+  public void reverseIntake() {
+    setBeltsRPM(-6000);
+    setKickerRPM(0);
+    setIntakePercentOutput(-0.7);
+    m_blinkin.strobe_red();
+  }
+
+  /**
    * return true of ball is in the staged position
    * 
    * @return boolean
@@ -326,6 +346,15 @@ public class indexerSubsystem extends SubsystemBase {
 
   public static void setEject(boolean e){
     eject = e;
+  }
+
+  /**
+   * getBallCount() return the number of balls in the indexer
+   * 
+   * @return int ball count
+   */
+  public int getBallCount() {
+    return ballCount;
   }
 
 }
