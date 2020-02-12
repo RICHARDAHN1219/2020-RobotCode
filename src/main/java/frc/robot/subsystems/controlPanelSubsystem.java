@@ -200,6 +200,7 @@ public class controlPanelSubsystem extends SubsystemBase {
     char stage2ColorChar = gameData.charAt(0);
 
  //TODO:Figure out what actions to take if one of these options isn't the case
+ //Do I need to reset count on this before starting?
     if (stage2ColorChar == 'B' && currentColorChar == 'B' && count == 2) {
       return true;
       // move counterclockwise 2
