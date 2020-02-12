@@ -267,6 +267,63 @@ public class indexerSubsystem extends SubsystemBase {
     indexIntake.set(ControlMode.Velocity, rpm * 2048 / 600);
   }
 
+  /** 
+   * Stop all motors
+   */
+  public void stop() {
+    setBeltsPercentOutput(0.0);
+    setKickerPercentOutput(0.0);
+    setIntakePercentOutput(0.0);
+    m_blinkin.solid_red();
+  }
+
+  /**
+   * ballReadyForIndexer - monitor sensor 1 for a ball ready to be indexed.
+   * 
+   * @return true if a ball is waiting to be indexed
+   */
+  public boolean ballReadyForIndexer() {
+    return ! Sensor1.get();
+  }
+
+  /**
+   * runIntake() - pull a ball into the indexer
+   */
+  public void runIntake() {
+    setBeltsRPM(6380);
+    setKickerRPM(0);
+    setIntakePercentOutput(0.6);
+    m_blinkin.solid_green();
+  }
+
+  /**
+   * runKicker() - eject ball from indexer
+   */
+  public void runKicker() {
+    setBeltsRPM(6380);
+    setKickerRPM(6380);
+    setIntakePercentOutput(0.6);
+    m_blinkin.solid_pink();
+  }
+
+  /**
+   * return true of ball is in the staged position
+   * 
+   * @return boolean
+   */
+  public boolean ballIndexed() {
+    return ! Sensor2.get();
+  }
+
+  /**
+   * return true of ball waiting for 
+   * 
+   * @return boolean
+   */
+  public boolean indexerFull() {
+    return ! Sensor3.get();
+  }
+
   public static void setEject(boolean e){
     eject = e;
   }
