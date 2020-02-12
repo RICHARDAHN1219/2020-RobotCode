@@ -47,6 +47,8 @@ public class controlPanelSubsystem extends SubsystemBase {
         controlPanelConstants.timeoutMs);
     controlPanelMotor.setSensorPhase(controlPanelConstants.sensorPhase);
     controlPanelMotor.setInverted(controlPanelConstants.motorInvert);
+    controlPanelMotor.configVoltageCompSaturation(11);
+    controlPanelMotor.enableVoltageCompensation(true);
     controlPanelMotor.configNominalOutputForward(0, controlPanelConstants.timeoutMs);
     controlPanelMotor.configNominalOutputReverse(0, controlPanelConstants.timeoutMs);
     controlPanelMotor.configPeakOutputForward(.2, controlPanelConstants.timeoutMs);
@@ -73,10 +75,7 @@ public class controlPanelSubsystem extends SubsystemBase {
     }
 
     controlPanelMotor.setSelectedSensorPosition(0, controlPanelConstants.PIDLoopIdx, controlPanelConstants.timeoutMs);
-  }
 
-  public void setSpeed(double speed) {
-    controlPanelMotor.set(ControlMode.Velocity, speed);
     // colors we want to match
     m_colorMatcher.addColorMatch(kBlueTarget);
     m_colorMatcher.addColorMatch(kGreenTarget);
@@ -84,6 +83,21 @@ public class controlPanelSubsystem extends SubsystemBase {
     m_colorMatcher.addColorMatch(kYellowTarget);
   }
 
+  public void setSpeed(double speed) {
+    controlPanelMotor.set(ControlMode.Velocity, speed);
+  }
+
+  /**
+   * stop - stop the motor. 
+   */
+  public void stop() {
+    setSpeed(0.0);
+  }
+
+  /**
+   * senseColorWheelPos - detect current color, track the number of color transitions.
+   *   Eight (8) color transistions in one direction is a full rotation of the wheel.
+   */
   public void senseColorWheelPos() {
 
     String colorString = getColor();
@@ -160,37 +174,43 @@ public class controlPanelSubsystem extends SubsystemBase {
     return colorString;
   }
 
-  public int colorNumbers() {
-    String currentColor = getColor();
-    char currentColorChar = currentColor.charAt(0);
-    char stage2ColorChar = gameData.charAt(0);
 
-    if (currentColorChar == 'B') {
+  /**
+   * Given a String color name return the corresponding number.
+   *    B -> 0
+   *    Y -> 1
+   *    R -> 2
+   *    G -> 3
+   * and return -1 for anything else.
+   * 
+   * @param colorString
+   * @return int color number
+   */
+  public int colorNumbers(String colorString) {
+    if (colorString.length() == 0) {
+      // catch possible error if string is empty
+      return -1;
+    }
+
+    char colorChar = colorString.charAt(0);
+
+    if (colorChar == 'B') {
       return 0;
     }
-    if (stage2ColorChar == 'B') {
-      return 0;
-    }
-    if (currentColorChar == 'Y') {
+    if (colorChar == 'Y') {
       return 1;
     }
-    if (stage2ColorChar == 'Y') {
-      return 1;
-    }
-    if (currentColorChar == 'R') {
+    if (colorChar == 'R') {
       return 2;
     }
-    if (stage2ColorChar == 'R') {
-      return 2;
-    }
-    if (currentColorChar == 'G') {
+    if (colorChar == 'G') {
       return 3;
     }
-    if (stage2ColorChar == 'G') {
-      return 3;
-    }
-    return ' ';
+
+    // Error: return an invalid integer
+    return -1;
   }
+
 //TODO: Actually make motors move and test if count is accurate
 
   public boolean moveToGamePosition() {
@@ -198,6 +218,15 @@ public class controlPanelSubsystem extends SubsystemBase {
     char currentColorChar = currentColor.charAt(0);
     String gameData = DriverStation.getInstance().getGameSpecificMessage();
     char stage2ColorChar = gameData.charAt(0);
+
+  // TODO: I think maybe you should split this into two functions.
+  //    One to get the number of color transtions we need to move
+  //    from the start position to the desired position.
+  //    Second to track when we've turned far enough. 
+  //    This will make controlPanelStage2Command look very similar to the
+  //    Stage1Command
+  // 
+  //  I like the comments like "move CCW 2" and "move CW 1" etc. very descriptive.
 
  //TODO:Figure out what actions to take if one of these options isn't the case
  //Do I need to reset count on this before starting?
@@ -273,6 +302,25 @@ public class controlPanelSubsystem extends SubsystemBase {
 
   public void setPosition(double position) {
     controlPanelMotor.set(ControlMode.Position, position);
+  }
+
+  /**
+   * getColorCount - return the number of color transtions seen
+   * 
+   * @return int count of color transtions
+   */
+  public int getColorCount() {
+    return count;
+  }
+
+  /**
+   * resetColorCount - reset the number of color transitions seen to zero. Useful if we have to
+   * start over or when we start Stage2 and need to zero out the count from Stage0.
+   * 
+   */
+  public void resetColorCount() {
+    count = 0;
+    lastSeenColor = "Unknown";
   }
 
   public double getRotationCount() {

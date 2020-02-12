@@ -18,17 +18,19 @@ public class controlPanelStage2Command extends CommandBase {
   controlPanelSubsystem m_controlPanelSubsystem;
   String gameData;
   String currentColor = m_controlPanelSubsystem.getColor();
-  
-  /* Trying to reference count, I ran into the problem that since count is a private
-  integer on the controlPanelSubsystem, I can't access it from here. A bit confused on how to make that 
-  happen, would this be the right way to do it because I have a feeling its not. */
-  int count = m_controlPanelSubsystem.colorNumbers();
-  
+  int count = 0;
 
   public controlPanelStage2Command(controlPanelSubsystem cp) {
     // Use addRequirements() here to declare subsystem dependencies.
     m_controlPanelSubsystem = cp;
     addRequirements(m_controlPanelSubsystem);
+
+    // Before we start, reset the count so old state from other stages or previous attempts
+    // don't mess up our count.
+    m_controlPanelSubsystem.resetColorCount();
+
+    // use a public get method to make private variables visible to other classes
+    count = m_controlPanelSubsystem.getColorCount();
   }
 
   // Called when the command is initially scheduled.
@@ -46,6 +48,7 @@ public class controlPanelStage2Command extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    m_controlPanelSubsystem.stop();
   }
 
   // Returns true when the command should end.

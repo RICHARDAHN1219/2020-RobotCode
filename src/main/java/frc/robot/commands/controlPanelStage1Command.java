@@ -17,7 +17,9 @@ public class controlPanelStage1Command extends CommandBase {
   private controlPanelSubsystem m_controlPanelSubsystem;
 
   public controlPanelStage1Command(controlPanelSubsystem colorWheelSubsystem) {
-    // Use addRequirements() here to declare subsystem dependencies.
+    m_controlPanelSubsystem = colorWheelSubsystem;
+    addRequirements(colorWheelSubsystem);
+    m_controlPanelSubsystem.resetColorCount();
   }
 
   // Called when the command is initially scheduled.
@@ -34,6 +36,7 @@ public class controlPanelStage1Command extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    m_controlPanelSubsystem.stop();
   }
 
   // Returns true when the command should end.
