@@ -7,7 +7,6 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.limelightSubsystem;
 
@@ -30,6 +29,8 @@ public class pipelineByDistanceCommand extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    //Example output: currentDist = (98.5-24 / tan(10+20))
+    //currentDist = 129.03 so 3x Zoom shall be used.
     double h1 = 24;
     double h2 = 98.5;
     double a1 = 10;
@@ -38,17 +39,16 @@ public class pipelineByDistanceCommand extends CommandBase {
     double twoXDist = 107;
     double threeXDist = 117;
     double currentDist = Math.abs(h2 - h1) / Math.tan(a1 + a2);
-    if (currentDist <= oneXDist){
+    if (currentDist >= oneXDist){
       m_limelight.set1xZoom();
       System.out.println("Switching to 1x Zoom");
-    } else if (currentDist <= twoXDist){
+    } else if (currentDist >= twoXDist){
       m_limelight.set2xZoom();
       System.out.println("Switching to 2x Zoom");
-    } else if (currentDist <= threeXDist) {
+    } else if (currentDist >= threeXDist) {
       m_limelight.set3xZoom();
       System.out.println("Switching to 3x Zoom");
     }
-    
   }
 
   // Called once the command ends or is interrupted.
