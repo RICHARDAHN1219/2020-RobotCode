@@ -50,7 +50,7 @@ public class RobotContainer {
   // private final indexerSubsystem m_indexer = new indexerSubsystem();
   // private final elevatorSubsystem m_elevatorSubsystem = new elevatorSubsystem();
   // private final controlPanelSubsystem m_controlPanelMotors = new controlPanelSubsystem();
-  private final limelightSubsystem m_limelight = new limelightSubsystem("limelight-one");
+  public final limelightSubsystem m_limelight = new limelightSubsystem("limelight-one");
 
   // Commands
   //public static final shooterCommand m_shooterCommand = new shooterCommand(m_shooter, m_indexer);

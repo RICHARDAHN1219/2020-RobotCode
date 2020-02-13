@@ -10,7 +10,6 @@ package frc.robot.subsystems;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.commands.limelightTurretVisionCommand;
 
 public class limelightSubsystem extends SubsystemBase {
   /**
@@ -48,29 +47,38 @@ public void set3xZoom(){
   limelightNT.getEntry("pipeline").setNumber(2);
 }
 /**
- * setLEDMode() - Sets LED mode.
+ * setLEDMode() - Sets LED mode. 0	use the LED Mode set in the current pipeline, 1	force off, 2	force blink, 3	force on
  * @return void
  */
 public void setLEDMode(double value) {
   limelightNT.getEntry("ledMode").setNumber(value);
 }
 /**
- * setCAMMode() - Sets camera mode.
+ * setCAMMode() - Sets camera mode. 0 for	Vision processor, 1	for Driver Camera (Increases exposure, disables vision processing)
  * @return void
  */
 public void setCAMMode(double value) {
   limelightNT.getEntry("camMode").setNumber(value);
 }
 /**
- * getTV() - monitor the Limelight's TV Value
+ * setStreamMode() - 	Sets limelight’s streaming mode -0	Standard - Side-by-side streams if a webcam is attached to Limelight
+- 1	PiP Main - The secondary camera stream is placed in the lower-right corner of the primary camera stream
+- 2	PiP Secondary - The primary camera stream is placed in the lower-right corner of the secondary camera stream
+ * @return void
+ */
+public void setStreamMode(double value){
+  limelightNT.getEntry("stream").setNumber(value);
+}
+/**
+ * getTV() - Monitor whether the limelight has any valid targets (0 or 1)
  * @return 1 if limelight target lock, 0 if no lock.
  */
 public double getTV(){
   return limelightNT.getEntry("tv").getDouble(0);
 }
 /**
- * getTA() - monitor the Limelight's TA Value
- * @return Area of image taken up by target. 0%-100% range.
+ * getTA() - Target Area (0% of image to 100% of image)
+ * @return (0-100)
  */
 public double getTA(){
   return limelightNT.getEntry("ta").getDouble(0);
@@ -95,6 +103,13 @@ public double getTY(){
  */
 public double getPipeline(){
   return limelightNT.getEntry("pipeline").getDouble(0);
+}
+/**
+ * getCameraTranslation() - Results of a 3D position solution
+ * @return 6 numbers: Translation (x,y,y) Rotation(pitch,yaw,roll)
+ */
+public double getCameraTranslation(){
+  return limelightNT.getEntry("camtran").getDouble(0);
 }
 /**
  * get() - monitor any value needed outside of currently provided.

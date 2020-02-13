@@ -13,19 +13,22 @@ import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Robot;
 import frc.robot.RobotContainer;
+import frc.robot.subsystems.limelightSubsystem;
 import frc.robot.subsystems.turretSubsystem;
 
 public class limelightTurretVisionCommand extends CommandBase {
   turretSubsystem m_turret;
+  limelightSubsystem m_limelight;
 
-
-  public limelightTurretVisionCommand(turretSubsystem subsystem) {
+  public limelightTurretVisionCommand(turretSubsystem subsystem, limelightSubsystem m_limelight) {
     addRequirements(subsystem);
     m_turret = subsystem;
   }
 
   @Override
   public void initialize() {
+    m_limelight.setLEDMode(2);
+    m_limelight.setCAMMode(0);
     NetworkTableInstance.getDefault().getTable("limelight").getEntry("camMode").setNumber(0);
     NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").setNumber(2);
   }
@@ -35,8 +38,8 @@ public class limelightTurretVisionCommand extends CommandBase {
     if (Robot.manualMode==false) {
       // These numbers must be tuned for Comp Robot!  Be careful!
       final double STEER_K = 0.07; //how hard to turn toward the target
-      double tv = NetworkTableInstance.getDefault().getTable("limelight-one").getEntry("tv").getDouble(0);
-      double tx = NetworkTableInstance.getDefault().getTable("limelight-one").getEntry("tx").getDouble(0);
+      double tv = m_limelight.getTV();
+      double tx = m_limelight.getTX();
       //boolean m_LimelightHasValidTarget = false;
       double m_LimelightSteerCommand = 0.0;
 
@@ -77,6 +80,8 @@ public class limelightTurretVisionCommand extends CommandBase {
 
   @Override
   public void end(boolean interrupted) {
+    m_limelight.setLEDMode(1);
+    m_limelight.setCAMMode(1);
   }
 
   @Override
