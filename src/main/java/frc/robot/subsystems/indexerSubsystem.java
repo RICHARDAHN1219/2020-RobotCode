@@ -28,21 +28,20 @@ public class indexerSubsystem extends SubsystemBase {
   private WPI_TalonSRX indexIntake = new WPI_TalonSRX(indexConstants.indexIntake);
   private WPI_TalonFX indexBelts = new WPI_TalonFX(indexConstants.indexBelts);
   private WPI_TalonFX indexKicker = new WPI_TalonFX(indexConstants.indexKicker);
-  public DigitalInput Sensor1 = new DigitalInput(0);
-  public DigitalInput Sensor2 = new DigitalInput(1);
+  private DigitalInput Sensor1 = new DigitalInput(0);
+  private DigitalInput Sensor2 = new DigitalInput(1);
   private DigitalInput Sensor3 = new DigitalInput(2);
   private boolean ballReady4IndexerLast = false;
   private boolean ballStagedLast = false;
   private boolean ballExitingLast = false;
-  public boolean ballReady4Indexer;
+  private boolean ballReady4Indexer;
   public boolean ballStaged;
   public static boolean eject = false;
   public int stateChangeCount = 0;
-  private int exitStateChangeCount = 0;
   public int ballCount = 0;
   public int restageState = 0;
-  public boolean periodic = true;
-  public int restageEndBallCount;
+  private boolean periodic = true;
+  public int restageEndBallCount = 0;
   private blinkin m_blinkin = RobotContainer.m_blinkin;
 
   public indexerSubsystem() {
@@ -107,18 +106,9 @@ public class indexerSubsystem extends SubsystemBase {
     // on PID index 1, and then swtich between the Talon PID index when setting RPM and Position
   }
 
-  @Override
-  public void periodic() {
-    boolean ballReady4Indexer = !Sensor1.get();
-    boolean ballStaged = !Sensor2.get();
-    boolean ballExiting = !Sensor3.get();
-    SmartDashboard.putNumber("ball count", ballCount);
-    SmartDashboard.putNumber("state change count", stateChangeCount);
-    SmartDashboard.putNumber("restage state", restageState);
-    SmartDashboard.putNumber("Belt RPM", indexBelts.getSelectedSensorVelocity() * 600 / 2048);
-    SmartDashboard.putNumber("Kicker RPM", indexKicker.getSelectedSensorVelocity() * 600 / 2048);
-    SmartDashboard.putNumber("Intake RPM", indexIntake.getSelectedSensorVelocity() * 600 / 2048);
-
+  private void stash_old_periodic() {
+    boolean ballExiting = false;
+    // temporarily put old periodic stuff here until it get's put into Commands
     // prevent intake of new balls when we already have 5
     // EDIT: We are aiming for 4 balls by week 1 until 5 is figured out
     if (periodic == true) {
@@ -130,7 +120,6 @@ public class indexerSubsystem extends SubsystemBase {
         setKickerPercentOutput(RobotContainer.m_operatorController.getTriggerAxis(Hand.kRight)
             - RobotContainer.m_operatorController.getTriggerAxis(Hand.kLeft));
       } else {
-
         // move indexer when a new ball is ready to enter the system
         if (ballReady4Indexer == true) {
           setIntakePercentOutput(0.6);
@@ -191,21 +180,36 @@ public class indexerSubsystem extends SubsystemBase {
           m_blinkin.solid_green();
         }
       }
-    } else {
-
-      // increase ball count as balls enter the indexer
-      if (ballReady4Indexer != ballReady4IndexerLast && ballReady4Indexer == true) {
-        ballCount += 1;
-      }
-      ballReady4IndexerLast = ballReady4Indexer;
-
-      // count number of state changes on ballStaged sensor to combat error states
-      if (ballStaged != ballStagedLast) {
-        stateChangeCount += 1;
-        ballStagedLast = ballStaged;
-      }
     }
 
+  }
+
+  @Override
+  public void periodic() {
+    boolean ballReady4Indexer = !Sensor1.get();
+    boolean ballStaged = !Sensor2.get();
+    boolean ballExiting = !Sensor3.get();
+    SmartDashboard.putNumber("ball count", ballCount);
+    SmartDashboard.putNumber("state change count", stateChangeCount);
+    SmartDashboard.putNumber("restage state", restageState);
+    SmartDashboard.putNumber("Belt RPM", indexBelts.getSelectedSensorVelocity() * 600 / 2048);
+    SmartDashboard.putNumber("Kicker RPM", indexKicker.getSelectedSensorVelocity() * 600 / 2048);
+    
+    // TODO: if we ever put an encoder on intake motor
+    //SmartDashboard.putNumber("Intake RPM", indexIntake.getSelectedSensorVelocity() * 600 / 2048);
+
+    // increase ball count as balls enter the indexer
+    if (ballReady4Indexer != ballReady4IndexerLast && ballReady4Indexer == true) {
+      ballCount += 1;
+    }
+    ballReady4IndexerLast = ballReady4Indexer;
+
+    // count number of state changes on ballStaged sensor to combat error states
+    if (ballStaged != ballStagedLast) {
+     stateChangeCount += 1;
+     ballStagedLast = ballStaged;
+    }
+    
     // decrease ballCount as balls leave the indexer
     if (ballExiting != ballExitingLast && ballExiting == false) {
       ballCount -= 1;
@@ -215,7 +219,6 @@ public class indexerSubsystem extends SubsystemBase {
 
     // count number of state changes as balls leave the system
     if (ballExiting != ballExitingLast) {
-      exitStateChangeCount += 1;
       ballExitingLast = ballExiting;
     }
 
@@ -230,18 +233,6 @@ public class indexerSubsystem extends SubsystemBase {
     }
   }
 
-  public void feedOneBall() {
-    final int singleFeedInitialStateCount = exitStateChangeCount;
-    final int singleFeedExitStateCount = singleFeedInitialStateCount + 2;
-
-    if (exitStateChangeCount != singleFeedExitStateCount) {
-      setIntakePercentOutput(0.6);
-      setBeltsPercentOutput(1);
-      setKickerPercentOutput(1);
-    } else {
-      return;
-    }
-  }
 
   public void setBeltsPercentOutput(double percent) {
     indexBelts.set(ControlMode.PercentOutput, percent);
@@ -327,7 +318,7 @@ public class indexerSubsystem extends SubsystemBase {
   }
 
   /**
-   * return true of ball is in the staged position
+   * return true of ball is in the staged position. Sensor 2
    * 
    * @return boolean
    */
@@ -336,7 +327,7 @@ public class indexerSubsystem extends SubsystemBase {
   }
 
   /**
-   * return true of ball waiting for 
+   * return true of ball waiting to go into shooter. Sensor 3
    * 
    * @return boolean
    */

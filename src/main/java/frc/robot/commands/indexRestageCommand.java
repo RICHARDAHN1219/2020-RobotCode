@@ -20,32 +20,38 @@ public class indexRestageCommand extends CommandBase {
 
   @Override
   public void initialize() {
-    m_indexer.periodic = false;
+    //m_indexer.periodic = false;
     m_indexer.restageEndBallCount = m_indexer.ballCount;
   }
 
+
+  // TODO: I may have broken this trying to make the indexer subsystem compatiple with commands. -Bryn
+
   @Override
   public void execute() {
-    if (!m_indexer.Sensor1.get() == false && m_indexer.restageState == 0) {
+
+    // TODO: I suggest putting this next block into the subsystem and calling that function.
+    // make isFinished depend on ballReadyForIndexer and restageState.
+    if (m_indexer.ballReadyForIndexer() == false && m_indexer.restageState == 0) {
       m_indexer.setIntakePercentOutput(-0.6);
       m_indexer.setBeltsPercentOutput(-1);
       m_indexer.setKickerPercentOutput(-0.3);
     }
 
-    if (!m_indexer.Sensor1.get() == true && m_indexer.restageState == 0) {
+    if (m_indexer.ballReadyForIndexer() == true && m_indexer.restageState == 0) {
       m_indexer.setIntakePercentOutput(0);
       m_indexer.setBeltsPercentOutput(0);
       m_indexer.setKickerPercentOutput(0);
       m_indexer.restageState = 1;
     }
 
-    if (!m_indexer.Sensor2.get() == false && m_indexer.restageState == 1) {
+    if (m_indexer.ballIndexed()== false && m_indexer.restageState == 1) {
       m_indexer.setIntakePercentOutput(0.6);
       m_indexer.setBeltsPercentOutput(1);
       m_indexer.setKickerPercentOutput(0.3);
     }
 
-    if (!m_indexer.Sensor2.get() == true && m_indexer.restageState == 1) {
+    if (!m_indexer.ballIndexed() == true && m_indexer.restageState == 1) {
       m_indexer.setIntakePercentOutput(0);
       m_indexer.setBeltsPercentOutput(0);
       m_indexer.setKickerPercentOutput(0);
@@ -57,7 +63,7 @@ public class indexRestageCommand extends CommandBase {
   public void end(boolean interrupted) {
     m_indexer.ballCount = m_indexer.restageEndBallCount;
     m_indexer.stateChangeCount = 2 * m_indexer.restageEndBallCount;
-    m_indexer.periodic = true;
+    //m_indexer.periodic = true;
   }
 
   @Override
