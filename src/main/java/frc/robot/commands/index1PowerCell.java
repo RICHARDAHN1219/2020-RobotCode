@@ -10,7 +10,7 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.indexerSubsystem;
 
-public class Index1PowerCell extends CommandBase {
+public class index1PowerCell extends CommandBase {
 
   private indexerSubsystem m_indexer;
   private boolean running = false;
