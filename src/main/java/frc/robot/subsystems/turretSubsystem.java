@@ -20,6 +20,8 @@ import static frc.robot.Constants.turretConstants.kSoftMinTurretAngle;
 import static frc.robot.Constants.turretConstants.kDegreesPerTick;
 import static frc.robot.Constants.turretConstants.kTimeout;
 import static frc.robot.Constants.turretConstants.kIndex;
+import static frc.robot.Constants.turretConstants.kMaxDegreesPerSecond;
+import static frc.robot.Constants.turretConstants.kMaxDegreesPerSecondSquared;
 
 public class turretSubsystem extends SubsystemBase {
 
@@ -41,7 +43,7 @@ public class turretSubsystem extends SubsystemBase {
     turretDrive.configForwardSoftLimitEnable(true);
     turretDrive.configReverseSoftLimitEnable(true);
 
-    // TODO: set max speed, max voltage, max current
+    // TODO: tune max current
     turretDrive.configContinuousCurrentLimit(25);
 
     // zero the position. start position becomes center
@@ -54,8 +56,9 @@ public class turretSubsystem extends SubsystemBase {
     turretDrive.config_kI(kIndex, 0, kTimeout);
     turretDrive.config_kD(kIndex, 0, kTimeout);
 
-    // TODO: set Motion Magic max Cruise Velocity and max acceleration
-
+    // set Motion Magic max Cruise Velocity and max acceleration
+		turretDrive.configMotionCruiseVelocity((int)(kMaxDegreesPerSecond / (kDegreesPerTick * 10)) , kTimeout);
+		turretDrive.configMotionAcceleration((int)(kMaxDegreesPerSecondSquared / (kDegreesPerTick * 10)), kTimeout);
   }
 
   public void turretHome() {

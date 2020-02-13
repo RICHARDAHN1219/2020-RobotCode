@@ -77,6 +77,11 @@ public static final class turretConstants {
     public static final double kGearRation = 1 / 396.0;  // turret rotations per motor rotation
     public static final double kTurretRotationsPerTick =  kGearRation / kEncoderCPR;
     public static final double kDegreesPerTick = 360 * kTurretRotationsPerTick;
+    // TODO: test and increase max velocity and acceleration
+    // Max velocity:  90 deg/s
+    // Max acceleration: 45 deg/s^2  
+    public static final double kMaxDegreesPerSecond = 90;
+    public static final double kMaxDegreesPerSecondSquared = 45;
     public static final int kTimeout = 30;  // Talon command timeout
     public static final int kIndex = 0;     // Talon PID index
 }
