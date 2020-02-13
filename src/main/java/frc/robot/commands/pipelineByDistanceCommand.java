@@ -42,10 +42,10 @@ public class pipelineByDistanceCommand extends CommandBase {
       m_limelight.set1xZoom();
       System.out.println("Switching to 1x Zoom");
     } else if (currentDist <= twoXDist){
-      m_limelight.set1xZoom();
+      m_limelight.set2xZoom();
       System.out.println("Switching to 2x Zoom");
     } else if (currentDist <= threeXDist) {
-      m_limelight.set1xZoom();
+      m_limelight.set3xZoom();
       System.out.println("Switching to 3x Zoom");
     }
     
