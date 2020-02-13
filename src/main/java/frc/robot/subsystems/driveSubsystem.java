@@ -16,6 +16,7 @@ import static frc.robot.Constants.driveConstants.kEncoderCPR;
 import static frc.robot.Constants.driveConstants.kDistancePerWheelRevolutionMeters;
 import static frc.robot.Constants.driveConstants.kGearReduction;
 import static frc.robot.Constants.driveConstants.kGyroReversed;
+import static frc.robot.Constants.driveConstants.kDriveKinematics;
 import static frc.robot.Constants.driveConstants.driveTimeout;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.InvertType;
@@ -28,6 +29,7 @@ import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -206,6 +208,19 @@ public class driveSubsystem extends SubsystemBase {
     return new DifferentialDriveWheelSpeeds(
         getLeftVelocity(),
         getRightVelocity());
+  }
+
+
+  /**
+   * getChassisSpeeds() - return the robot velocity in meters/second in robot centric X and Y
+   * direction, and the rotation of the robot in radians/second.
+   * 
+   * Note: Vy should always be zero, because the robot cannot drive sideways.
+   * 
+   * @return ChassisSpeeds: (vxMetersPerSecond, vyMetersPerSecond, omegaRadiansPerSecond)
+   */
+  public ChassisSpeeds getChassisSpeeds() {
+    return kDriveKinematics.toChassisSpeeds(getWheelSpeeds());
   }
 
   /**
