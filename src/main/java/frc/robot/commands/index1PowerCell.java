@@ -25,7 +25,7 @@ public class index1PowerCell extends CommandBase {
   public void initialize() {
     //TODO: we need to disable all the motor control in periodic for this to work.
     m_indexer.runOnlyIntake();
-    final int endStateChangeCount = m_indexer.stateChangeCount;
+    final int endStateChangeCount = m_indexer.getStateChangeCount();
   }
 
   @Override
@@ -40,12 +40,12 @@ public class index1PowerCell extends CommandBase {
     }
 
     //finish staging balls when this error state occurs
-    if ((-1 + (m_indexer.ballCount * 2)) != m_indexer.stateChangeCount) {
+    if ((-1 + (m_indexer.getBallCount() * 2)) != m_indexer.getStateChangeCount()) {
       m_indexer.runIndexer();
     }
 
     //finish staging balls when this error state occurs
-    if (m_indexer.ballCount >= 1 && m_indexer.ballReadyForIndexer() == false && m_indexer.ballStaged() == false) {
+    if (m_indexer.getBallCount() >= 1 && m_indexer.ballReadyForIndexer() == false && m_indexer.ballStaged() == false) {
       m_indexer.runIndexer();
     }
 
@@ -54,7 +54,7 @@ public class index1PowerCell extends CommandBase {
       isFinished();
     }
 
-    if (m_indexer.ballStaged() && m_indexer.stateChangeCount == endStateChangeCount) {
+    if (m_indexer.ballStaged() && m_indexer.getStateChangeCount() == endStateChangeCount) {
       isFinished();
     }
   }

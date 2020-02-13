@@ -37,13 +37,12 @@ public class indexerSubsystem extends SubsystemBase {
   private boolean ballReady4Indexer;
   private boolean ballStaged;
   private boolean ballExiting;
-  public static boolean eject = false;
-  public int stateChangeCount = 0;
-  public int exitStateChangeCount = 0;
-  public int ballCount = 0;
-  public int restageState = 0;
+  private boolean eject = false;
+  private int stateChangeCount = 0;
+  private int exitStateChangeCount = 0;
+  private int ballCount = 0;
+  private int restageState = 0;
   private boolean periodic = true;
-  public int restageEndBallCount = 0;
   private blinkin m_blinkin = RobotContainer.m_blinkin;
 
   public indexerSubsystem() {
@@ -382,5 +381,53 @@ public class indexerSubsystem extends SubsystemBase {
    */
   public int getBallCount() {
     return ballCount;
+  }
+
+  /**
+   * setBallCount() - set the number of balls in the indexer
+   */
+  public void setBallCount(int BallCount) {
+    ballCount = BallCount;
+  }
+
+  /**
+   * getStateChangeCount() - return the number of state changes on the staging sensor
+   * 
+   * @return int state change count
+   */
+  public int getStateChangeCount() {
+    return stateChangeCount;
+  }
+
+  /**
+   * setBallCount() - set the number of balls in the indexer
+   */
+  public void setStateChangeCount(int StateChangeCount) {
+    stateChangeCount = StateChangeCount;
+  }
+
+  /**
+   * getExitStateChangeCount() - return the number of state changes on the exiting sensor
+   * 
+   * @return int exit state change count
+   */
+  public int getExitStateChangeCount() {
+    return exitStateChangeCount;
+  }
+
+  /**
+   * getRestageState() - return the state number of the restage command
+   * 
+   * @return int restage state
+   */
+  public int getRestageState() {
+    return restageState;
+  }
+
+  /**
+   * setRestageState() - set the restage state
+   */
+  public void setRestageState(int RestageState) {
+    restageState = RestageState;
   }
 }

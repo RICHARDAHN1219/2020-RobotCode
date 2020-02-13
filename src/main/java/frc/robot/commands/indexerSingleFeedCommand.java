@@ -22,12 +22,12 @@ public class indexerSingleFeedCommand extends CommandBase {
 
   @Override
   public void initialize() {
-    endStateChangeCount = m_indexer.exitStateChangeCount + 2;
+    endStateChangeCount = m_indexer.getExitStateChangeCount() + 2;
   }
 
   @Override
   public void execute() {
-    if (m_indexer.exitStateChangeCount < endStateChangeCount && m_indexer.ballExiting() != true) {
+    if (m_indexer.getExitStateChangeCount() < endStateChangeCount && m_indexer.ballExiting() != true) {
       m_indexer.setIntakePercentOutput(0.6);
       m_indexer.setBeltsRPM(6380);
       m_indexer.setKickerRPM(6380);
