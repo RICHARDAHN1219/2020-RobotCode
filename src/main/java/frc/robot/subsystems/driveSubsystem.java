@@ -191,6 +191,35 @@ public class driveSubsystem extends SubsystemBase {
   }
 
   /**
+   * getFuturePose() - predict robot pose t_sec in the future based on the current robot wheel
+   * speed.
+   * 
+   * This is only an estimate and the larger the value t_sec, the less accurate the estimate will
+   * be.
+   * 
+   * @param t_sec
+   * @return Estimated pose t_sec in the future.
+   */
+  public Pose2d getFuturePose(double t_sec) {
+    Pose2d current_pose = m_odometry.getPoseMeters();
+    if (t_sec <= 0) {
+      System.out.println("Error: getFuturePose needs a positive time value.");
+      return current_pose;
+    }
+
+    // new odometery class starting from current position
+    Rotation2d current_heading = Rotation2d.fromDegrees(getHeading());
+    DifferentialDriveOdometry future_odomentery =
+        new DifferentialDriveOdometry(current_heading, current_pose);
+
+    // predict where we will be t_sec in the future based on our current wheel speeds
+    future_odomentery.update(current_heading, getLeftVelocity() * t_sec,
+        getRightVelocity() * t_sec);
+
+    return future_odomentery.getPoseMeters();
+  }
+
+  /**
    * Returns the Feedforward settings for the drivetrain.
    * 
    * @return Feedforward
@@ -209,7 +238,6 @@ public class driveSubsystem extends SubsystemBase {
         getLeftVelocity(),
         getRightVelocity());
   }
-
 
   /**
    * getChassisSpeeds() - return the robot velocity in meters/second in robot centric X and Y
