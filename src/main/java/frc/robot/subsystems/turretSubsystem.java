@@ -122,7 +122,7 @@ public class turretSubsystem extends SubsystemBase {
       DriverStation.reportError("Min limit Reached on turret. motor stopped", false);
       // check angle and reset position to kSoftMinTurretAngle if off by more than 1 deg
       if (Math.abs(pos * kDegreesPerTick - kSoftMinTurretAngle) > 1.0) {
-        // TODO: magnetic limits switch may be outside software min/max set accourdingly
+        // TODO: magnetic limits switch may be outside software min/max set accordingly
         turretDrive.setSelectedSensorPosition((int) (kSoftMinTurretAngle / kDegreesPerTick), kIndex, kTimeout);
       }
     }
@@ -132,7 +132,7 @@ public class turretSubsystem extends SubsystemBase {
       DriverStation.reportError("Max limit Reached on turret, motor stopped", false);
       // check angle and reset position to kSoftMaxTurretAngle if off by more than 1 deg
       if (Math.abs(pos * kDegreesPerTick - kSoftMaxTurretAngle) > 1.0) {
-        // TODO: magnetic limits switch may be outside software min/max set accourdingly
+        // TODO: magnetic limits switch may be outside software min/max set accordingly
         turretDrive.setSelectedSensorPosition((int) (kSoftMaxTurretAngle / kDegreesPerTick), kIndex, kTimeout);
       }
     }
