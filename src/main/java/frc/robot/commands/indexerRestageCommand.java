@@ -26,37 +26,25 @@ public class indexerRestageCommand extends CommandBase {
     final int restageEndBallCount = m_indexer.getBallCount();
   }
 
-
-  // TODO: I may have broken this trying to make the indexer subsystem compatiple with commands. -Bryn
-
   @Override
   public void execute() {
-
-    // TODO: I suggest putting this next block into the subsystem and calling that function.
-    // make isFinished depend on ballReadyForIndexer and restageState.
+    
+    //make isFinished depend on ballReadyForIndexer and restageState.
     if (m_indexer.ballReadyForIndexer() == false && m_indexer.getRestageState() == 0) {
-      m_indexer.setIntakePercentOutput(-0.6);
-      m_indexer.setBeltsPercentOutput(-1);
-      m_indexer.setKickerPercentOutput(-0.3);
+      m_indexer.reverseIndexer();
     }
 
     if (m_indexer.ballReadyForIndexer() == true && m_indexer.getRestageState() == 0) {
-      m_indexer.setIntakePercentOutput(0);
-      m_indexer.setBeltsPercentOutput(0);
-      m_indexer.setKickerPercentOutput(0);
+      m_indexer.stopIndexer();
       m_indexer.setRestageState(1);
     }
 
     if (m_indexer.ballStaged() == false && m_indexer.getRestageState() == 1) {
-      m_indexer.setIntakePercentOutput(0.6);
-      m_indexer.setBeltsPercentOutput(1);
-      m_indexer.setKickerPercentOutput(0.3);
+      m_indexer.runIndexer();
     }
 
     if (!m_indexer.ballStaged() == true && m_indexer.getRestageState() == 1) {
-      m_indexer.setIntakePercentOutput(0);
-      m_indexer.setBeltsPercentOutput(0);
-      m_indexer.setKickerPercentOutput(0);
+      m_indexer.stopIndexer();
       m_indexer.setRestageState(2);
     }
   }

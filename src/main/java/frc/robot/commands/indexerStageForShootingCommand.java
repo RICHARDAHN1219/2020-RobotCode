@@ -36,7 +36,7 @@ public class indexerStageForShootingCommand extends CommandBase {
 
   @Override
   public void end(boolean interrupted) {
-    m_indexer.stop();
+    m_indexer.stopIndexer();
   }
 
   @Override

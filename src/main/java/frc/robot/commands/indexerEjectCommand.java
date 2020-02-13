@@ -21,9 +21,7 @@ public class indexerEjectCommand extends CommandBase {
 
   @Override
   public void initialize() {
-    m_indexer.setIntakePercentOutput(0.6);
-    m_indexer.setBeltsRPM(6380);
-    m_indexer.setKickerRPM(6380);
+    m_indexer.ejectIndexer();
   }
 
   @Override
@@ -32,9 +30,7 @@ public class indexerEjectCommand extends CommandBase {
 
   @Override
   public void end(boolean interrupted) {
-    m_indexer.setIntakePercentOutput(0);
-    m_indexer.setBeltsRPM(0);
-    m_indexer.setKickerRPM(0);
+    m_indexer.stopIndexer();
   }
 
   @Override

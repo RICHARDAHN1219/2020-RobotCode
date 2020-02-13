@@ -22,7 +22,6 @@ public class indexerSingleIntakeCommand extends CommandBase {
 
   @Override
   public void initialize() {
-    //TODO: we need to disable all the motor control in periodic for this to work.
     m_indexer.runOnlyIntake();
     final int endStateChangeCount = m_indexer.getStateChangeCount();
   }
@@ -70,7 +69,7 @@ public class indexerSingleIntakeCommand extends CommandBase {
 
   @Override
   public void end(boolean interrupted) {
-    m_indexer.stop();
+    m_indexer.stopIndexer();
   }
 
   @Override

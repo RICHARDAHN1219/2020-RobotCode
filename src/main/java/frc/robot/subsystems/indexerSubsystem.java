@@ -21,8 +21,6 @@ import frc.robot.RobotContainer;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
 import frc.robot.subsystems.blinkin;
 
-
-// TODO work on conditions where we run or don't run the kicker motor
 public class indexerSubsystem extends SubsystemBase {
 
   private WPI_TalonSRX indexIntake = new WPI_TalonSRX(indexConstants.indexIntake);
@@ -87,7 +85,6 @@ public class indexerSubsystem extends SubsystemBase {
 
 
     // Config PID values to control RPM
-    // TODO: test PID values
     indexBelts.config_kP(0, 0.15, 10);
     indexBelts.config_kI(0, 0.0, 10);
     indexBelts.config_kD(0, 1.5, 10);
@@ -195,9 +192,9 @@ public class indexerSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Belt RPM", indexBelts.getSelectedSensorVelocity() * 600 / 2048);
     SmartDashboard.putNumber("Kicker RPM", indexKicker.getSelectedSensorVelocity() * 600 / 2048);
     
-    //TODO: automatically stage balls for shooting when we have 4 (5 in the future)
+    
 
-    // TODO: if we ever put an encoder on intake motor
+    //TODO: if we ever put an encoder on intake motor
     //SmartDashboard.putNumber("Intake RPM", indexIntake.getSelectedSensorVelocity() * 600 / 2048);
 
     // increase ball count as balls enter the indexer
@@ -234,6 +231,16 @@ public class indexerSubsystem extends SubsystemBase {
     if (ballCount == 0) {
       stateChangeCount = 0;
     }
+
+    //TODO: test this autostaging code
+    /*
+    if (ballCount == 4 && ballExiting != true) {
+      runIndexer();
+    }
+    else if (ballCount == 4 && ballExiting == true) {
+      stopIndexer();
+    }
+    */
   }
 
   public void setBeltsPercentOutput(double percent) {
@@ -263,7 +270,7 @@ public class indexerSubsystem extends SubsystemBase {
   /** 
    * Stop all motors
    */
-  public void stop() {
+  public void stopIndexer() {
     setBeltsPercentOutput(0.0);
     setKickerPercentOutput(0.0);
     setIntakePercentOutput(0.0);
@@ -335,6 +342,15 @@ public class indexerSubsystem extends SubsystemBase {
     setKickerRPM(-1914);
     setIntakePercentOutput(-0.6);
     m_blinkin.strobe_red();
+  }
+
+  /**
+   * ejectIndexer() - run all indexer motors at eject/shooting speeds
+   */
+  public void ejectIndexer() {
+    setBeltsRPM(6380);
+    setKickerRPM(6380);
+    setIntakePercentOutput(0.6);
   }
 
   /**
