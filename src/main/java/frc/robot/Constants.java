@@ -77,6 +77,8 @@ public static final class turretConstants {
     public static final double kGearRation = 1 / 396.0;  // turret rotations per motor rotation
     public static final double kTurretRotationsPerTick =  kGearRation / kEncoderCPR;
     public static final double kDegreesPerTick = 360 * kTurretRotationsPerTick;
+    public static final int kTimeout = 30;  // Talon command timeout
+    public static final int kIndex = 0;     // Talon PID index
 }
 public static final class shooterConstants {
     public static final int shooter1 = 4;

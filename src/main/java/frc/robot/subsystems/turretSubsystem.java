@@ -18,6 +18,8 @@ import frc.robot.Constants;
 import static frc.robot.Constants.turretConstants.kSoftMaxTurretAngle;
 import static frc.robot.Constants.turretConstants.kSoftMinTurretAngle;
 import static frc.robot.Constants.turretConstants.kDegreesPerTick;
+import static frc.robot.Constants.turretConstants.kTimeout;
+import static frc.robot.Constants.turretConstants.kIndex;
 
 public class turretSubsystem extends SubsystemBase {
 
@@ -27,7 +29,7 @@ public class turretSubsystem extends SubsystemBase {
 
   public turretSubsystem() {
     turretDrive.configFactoryDefault();
-    turretDrive.configSelectedFeedbackSensor(FeedbackDevice.Analog, 0, 10);
+    turretDrive.configSelectedFeedbackSensor(FeedbackDevice.Analog, kIndex, kTimeout);
 
     // fix rotational direction
     turretDrive.setInverted(false);
@@ -43,10 +45,17 @@ public class turretSubsystem extends SubsystemBase {
     turretDrive.configContinuousCurrentLimit(25);
 
     // zero the position. start position becomes center
-    turretDrive.setSelectedSensorPosition(0, 0, 10);
+    turretDrive.setSelectedSensorPosition(0, kIndex, kTimeout);
 
-    // TODO: make sure position is zerod correctly
-    // TODO: set PID parameters
+    // TODO: tune PIDF parameters (these are only a guess)
+    turretDrive.configAllowableClosedloopError(0, kIndex, kTimeout);
+    turretDrive.config_kF(kIndex, 0.01, kTimeout);
+    turretDrive.config_kP(kIndex, 0.1, kTimeout);
+    turretDrive.config_kI(kIndex, 0, kTimeout);
+    turretDrive.config_kD(kIndex, 0, kTimeout);
+
+    // TODO: set Motion Magic max Cruise Velocity and max acceleration
+
   }
 
   public void turretHome() {
@@ -114,7 +123,7 @@ public class turretSubsystem extends SubsystemBase {
       // check angle and reset position to kSoftMinTurretAngle if off by more than 1 deg
       if (Math.abs(pos * kDegreesPerTick - kSoftMinTurretAngle) > 1.0) {
         // TODO: magnetic limits switch may be outside software min/max set accourdingly
-        turretDrive.setSelectedSensorPosition((int) (kSoftMinTurretAngle / kDegreesPerTick), 0, 10);
+        turretDrive.setSelectedSensorPosition((int) (kSoftMinTurretAngle / kDegreesPerTick), kIndex, kTimeout);
       }
     }
 
@@ -124,7 +133,7 @@ public class turretSubsystem extends SubsystemBase {
       // check angle and reset position to kSoftMaxTurretAngle if off by more than 1 deg
       if (Math.abs(pos * kDegreesPerTick - kSoftMaxTurretAngle) > 1.0) {
         // TODO: magnetic limits switch may be outside software min/max set accourdingly
-        turretDrive.setSelectedSensorPosition((int) (kSoftMaxTurretAngle / kDegreesPerTick), 0, 10);
+        turretDrive.setSelectedSensorPosition((int) (kSoftMaxTurretAngle / kDegreesPerTick), kIndex, kTimeout);
       }
     }
   }
