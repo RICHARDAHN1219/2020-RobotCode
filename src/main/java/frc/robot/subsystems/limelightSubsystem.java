@@ -24,6 +24,26 @@ public class limelightSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+        //Example output: currentDist = (98.5-24 / tan(10+20))
+    //currentDist = 129.03 so 3x Zoom shall be used.
+    double h1 = 24;
+    double h2 = 98.5;
+    double a1 = 10;
+    double a2 = getTY();
+    double oneXDist = 68;
+    double twoXDist = 107;
+    double threeXDist = 117;
+    double currentDist = Math.abs(h2 - h1) / Math.tan(a1 + a2);
+    if (currentDist >= oneXDist){
+      set1xZoom();
+      System.out.println("Switching to 1x Zoom");
+    } else if (currentDist >= twoXDist){
+      set2xZoom();
+      System.out.println("Switching to 2x Zoom");
+    } else if (currentDist >= threeXDist) {
+      set3xZoom();
+      System.out.println("Switching to 3x Zoom");
+    }
   }
   /**
  * set1xZoom() - Sets zoom level to 1x HW Zoom on Limelight.
