@@ -31,6 +31,7 @@ public class shooterSubsystem extends SubsystemBase {
     neo_shooter1.restoreFactoryDefaults();
     neo_shooter2.restoreFactoryDefaults();
 
+    //Current Limits for use on competition bot
     //neo_shooter1.setSmartCurrentLimit(35);
     //neo_shooter2.setSmartCurrentLimit(35);
     
@@ -54,9 +55,10 @@ public class shooterSubsystem extends SubsystemBase {
     double rpm = SmartDashboard.getNumber("DesiredShooterRPM", 0);
     if (m_desiredRPM != rpm ) {
       m_desiredRPM = rpm;
-      System.out.println("Shoot er desired ROM: "  + m_desiredRPM);
+      System.out.println("Shooter desired ROM: "  + m_desiredRPM);
       m_pidController.setReference(m_desiredRPM, ControlType.kVelocity);
     }
+    SmartDashboard.putBoolean("isAtSpeed", isAtSpeed());
   }
 
   public void setShooterRPM (double desiredRPM) {
@@ -82,7 +84,13 @@ public class shooterSubsystem extends SubsystemBase {
   public void setPercentOutput(double percent) {
     neo_shooter1.set(percent);
   }
-
+  public boolean isAtSpeed(){
+    if (Math.abs(m_desiredRPM - m_encoder.getVelocity()) < 100){
+      return true;
+    } else {
+      return false;
+    }
+  }
   public void stop() {
     setPercentOutput(0.0);
   }
