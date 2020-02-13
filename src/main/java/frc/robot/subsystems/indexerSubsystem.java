@@ -274,7 +274,7 @@ public class indexerSubsystem extends SubsystemBase {
     setBeltsPercentOutput(0.0);
     setKickerPercentOutput(0.0);
     setIntakePercentOutput(0.0);
-    m_blinkin.solid_orange());
+    m_blinkin.solid_orange();
   }
 
   /**
