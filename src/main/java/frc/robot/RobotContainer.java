@@ -37,6 +37,7 @@ import frc.robot.commands.turretHomingCommand;
 import frc.robot.subsystems.driveSubsystem;
 import frc.robot.subsystems.elevatorSubsystem;
 import frc.robot.subsystems.indexerSubsystem;
+import frc.robot.subsystems.limelightSubsystem;
 import frc.robot.subsystems.turretSubsystem;
 import frc.robot.subsystems.shooterSubsystem;
 import frc.robot.subsystems.controlPanelSubsystem;
@@ -49,6 +50,7 @@ public class RobotContainer {
   // private final indexerSubsystem m_indexer = new indexerSubsystem();
   // private final elevatorSubsystem m_elevatorSubsystem = new elevatorSubsystem();
   // private final controlPanelSubsystem m_controlPanelMotors = new controlPanelSubsystem();
+  private final limelightSubsystem m_limelight = new limelightSubsystem("limelight-one");
 
   // Commands
   //public static final shooterCommand m_shooterCommand = new shooterCommand(m_shooter, m_indexer);
