@@ -10,24 +10,31 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.indexerSubsystem;
 
-public class indexerEjectCommand extends CommandBase {
+public class indexerSingleFeedCommand extends CommandBase {
 
   private indexerSubsystem m_indexer;
+  private int endStateChangeCount;
 
-  public indexerEjectCommand(indexerSubsystem indexer) {
-    addRequirements(indexer);
+  public indexerSingleFeedCommand(indexerSubsystem indexer) {
+    addRequirements(m_indexer);
     m_indexer = indexer;
   }
 
   @Override
   public void initialize() {
-    m_indexer.setIntakePercentOutput(0.6);
-    m_indexer.setBeltsRPM(6380);
-    m_indexer.setKickerRPM(6380);
+    endStateChangeCount = m_indexer.exitStateChangeCount + 2;
   }
 
   @Override
   public void execute() {
+    if (m_indexer.exitStateChangeCount < endStateChangeCount && m_indexer.ballExiting() != true) {
+      m_indexer.setIntakePercentOutput(0.6);
+      m_indexer.setBeltsRPM(6380);
+      m_indexer.setKickerRPM(6380);
+    }
+    else {
+      isFinished();
+    }
   }
 
   @Override

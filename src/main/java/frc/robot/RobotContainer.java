@@ -13,7 +13,10 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.driveConstants;
 import frc.robot.Constants.pwmConstants;
 import frc.robot.commands.driveCommand;
-import frc.robot.commands.indexRestageCommand;
+import frc.robot.commands.index1PowerCell;
+import frc.robot.commands.indexerRestageCommand;
+import frc.robot.commands.indexerSingleFeedCommand;
+import frc.robot.commands.indexerStageForShootingCommand;
 import frc.robot.commands.indexerEjectCommand;
 import frc.robot.commands.limelightTurretVisionCommand;
 import frc.robot.commands.manualMode;
@@ -42,10 +45,8 @@ public class RobotContainer {
   //public static final shooterCommand m_shooterCommand = new shooterCommand(m_shooter, m_indexer);
   //private final limelightTurretVisionCommand m_turretVisionCommand = new limelightTurretVisionCommand(m_turretSubsystem);
   //private final driveCommand m_driveCommand = new driveCommand(m_driveSubsystem);
-  
-  /**
-   * The container for the robot.  Contains subsystems, OI devices, and commands.
-   */
+  //private final index1PowerCell m_index1PowerCell = new index1PowerCell(m_indexer);
+
   public static XboxController m_driveController = new XboxController(driveConstants.driveController);
   public static XboxController m_operatorController = new XboxController(driveConstants.operatorController);
   public RobotContainer() {
@@ -61,22 +62,21 @@ public class RobotContainer {
     final JoystickButton ybutton = new JoystickButton(m_driveController, Button.kY.value);
     final JoystickButton startbutton = new JoystickButton(m_driveController, Button.kStart.value);
     final JoystickButton selectbutton = new JoystickButton(m_driveController, Button.kBack.value);
-    //bbutton.toggleWhenPressed(new shooterCommand(m_shooter, m_indexer));
     final JoystickButton opAbutton = new JoystickButton(m_operatorController, Button.kA.value);
     final JoystickButton opBbutton = new JoystickButton(m_operatorController, Button.kB.value);
     opAbutton.whenPressed(new manualMode());
     opBbutton.whenPressed(new turretHomingCommand());
-    //ybutton.toggleWhenPressed(new indexStage1Command(m_indexer));
     //ybutton.whenPressed(() -> m_controlPanelMotors.setPosition(0), m_controlPanelMotors);
     //xbutton.whenPressed(() -> m_controlPanelMotors.setPosition(1 * 4096), m_controlPanelMotors);
     // abutton.whenPressed(() -> m_shooter.setShooterRPM(2000));
-    //abutton.whenPressed(() -> m_indexer.setBeltsPercentOutput(0.5));
-    //bbutton.whenPressed(() -> m_indexer.feedOneBall());
-    //abutton.whenPressed(new indexRestageCommand(m_indexer));
-    xbutton.whenPressed(() -> m_shooter.setShooterRPM(2500));
-    ybutton.whenPressed(() -> m_shooter.setShooterRPM(3000));
-    startbutton.toggleWhenPressed(new indexerEjectCommand());
-    selectbutton.whenPressed(() -> m_shooter.testMode());
+    bbutton.whenPressed(new index1PowerCell(m_indexer));
+    abutton.whenPressed(new indexerStageForShootingCommand(m_indexer));
+    xbutton.whenPressed(new indexerSingleFeedCommand(m_indexer));
+    ybutton.whenPressed(new indexerRestageCommand(m_indexer));
+    startbutton.toggleWhenPressed(new indexerEjectCommand(m_indexer));
+    //xbutton.whenPressed(() -> m_shooter.setShooterRPM(2500));
+    //ybutton.whenPressed(() -> m_shooter.setShooterRPM(3000));
+    //selectbutton.whenPressed(() -> m_shooter.testMode());
   }
   /*
   public Command getAutonomousCommand() {

@@ -35,9 +35,11 @@ public class indexerSubsystem extends SubsystemBase {
   private boolean ballStagedLast = false;
   private boolean ballExitingLast = false;
   private boolean ballReady4Indexer;
-  public boolean ballStaged;
+  private boolean ballStaged;
+  private boolean ballExiting;
   public static boolean eject = false;
   public int stateChangeCount = 0;
+  public int exitStateChangeCount = 0;
   public int ballCount = 0;
   public int restageState = 0;
   private boolean periodic = true;
@@ -181,7 +183,6 @@ public class indexerSubsystem extends SubsystemBase {
         }
       }
     }
-
   }
 
   @Override
@@ -195,6 +196,8 @@ public class indexerSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Belt RPM", indexBelts.getSelectedSensorVelocity() * 600 / 2048);
     SmartDashboard.putNumber("Kicker RPM", indexKicker.getSelectedSensorVelocity() * 600 / 2048);
     
+    //TODO: automatically stage balls for shooting when we have 4 (5 in the future)
+
     // TODO: if we ever put an encoder on intake motor
     //SmartDashboard.putNumber("Intake RPM", indexIntake.getSelectedSensorVelocity() * 600 / 2048);
 
@@ -219,6 +222,7 @@ public class indexerSubsystem extends SubsystemBase {
 
     // count number of state changes as balls leave the system
     if (ballExiting != ballExitingLast) {
+      exitStateChangeCount += 1;
       ballExitingLast = ballExiting;
     }
 
@@ -232,7 +236,6 @@ public class indexerSubsystem extends SubsystemBase {
       stateChangeCount = 0;
     }
   }
-
 
   public void setBeltsPercentOutput(double percent) {
     indexBelts.set(ControlMode.PercentOutput, percent);
@@ -269,7 +272,7 @@ public class indexerSubsystem extends SubsystemBase {
   }
 
   /**
-   * ballReadyForIndexer - monitor sensor 1 for a ball ready to be indexed.
+   * ballReadyForIndexer - monitor sensor 1 for a ball ready to be indexed
    * 
    * @return true if a ball is waiting to be indexed
    */
@@ -278,11 +281,29 @@ public class indexerSubsystem extends SubsystemBase {
   }
 
   /**
-   * runIntake() - pull a ball into the indexer
+   * ballStaged - monitor sensor 2 for a ball that is staged
+   * 
+   * @return true if a ball is staged
    */
-  public void runIntake() {
+  public boolean ballStaged() {
+    return ! Sensor2.get();
+  }
+
+  /**
+   * ballExiting - monitor sensor 3 for a ball that is at the kickers
+   * 
+   * @return true if a ball is at the kickers
+   */
+  public boolean ballExiting() {
+    return ! Sensor3.get();
+  }
+
+  /**
+   * runIndexer() - run all indexer motors at ball staging speeds
+   */
+  public void runIndexer() {
     setBeltsRPM(6380);
-    setKickerRPM(0);
+    setKickerRPM(1914);
     setIntakePercentOutput(0.6);
     m_blinkin.solid_green();
   }
@@ -300,52 +321,66 @@ public class indexerSubsystem extends SubsystemBase {
   /**
    * runBelts() - run only the belts
    */
-  public void runBelts() {
+  public void runOnlyBelts() {
     setBeltsRPM(6380);
-    setKickerRPM(0.0);
-    setIntakePercentOutput(0.0);
+    setKickerRPM(0);
+    setIntakePercentOutput(0);
     m_blinkin.solid_blue();
   }
 
   /**
-   * reverseIntake() - run intake in reverse
+   * reverseIndexer() - run all indexer motors backwards at staging speeds
    */
-  public void reverseIntake() {
-    setBeltsRPM(-6000);
-    setKickerRPM(0);
-    setIntakePercentOutput(-0.7);
+  public void reverseIndexer() {
+    setBeltsRPM(-6380);
+    setKickerRPM(-1914);
+    setIntakePercentOutput(-0.6);
     m_blinkin.strobe_red();
   }
 
   /**
-   * return true of ball is in the staged position. Sensor 2
-   * 
-   * @return boolean
+   * runIntake() - run intake motor
    */
-  public boolean ballIndexed() {
-    return ! Sensor2.get();
+  public void runIntake() {
+    setIntakePercentOutput(0.6);
   }
 
   /**
-   * return true of ball waiting to go into shooter. Sensor 3
-   * 
-   * @return boolean
+   * stopIntake() - stop intake motor
    */
-  public boolean indexerFull() {
-    return ! Sensor3.get();
+  public void stopIntake() {
+    setIntakePercentOutput(0);
   }
+  
+  /**
+   * runOnlyIntake() - run intake motor and stop the belts and kicker
+   */
+  public void runOnlyIntake() {
+    setIntakePercentOutput(0.6);
+    setBeltsRPM(0);
+    setKickerRPM(0);
+  } 
 
-  public static void setEject(boolean e){
-    eject = e;
+  /**
+   * stopBelts() - stop the belts motor
+   */
+  public void stopBelts() {
+    setBeltsRPM(0);
   }
 
   /**
-   * getBallCount() return the number of balls in the indexer
+   * stopKicker() - stop the kicker motor
+   */
+  public void stopKicker() {
+    setKickerRPM(0);
+  }
+
+  /**
+   * getBallCount() - return the number of balls in the indexer
    * 
    * @return int ball count
    */
   public int getBallCount() {
     return ballCount;
   }
-
 }

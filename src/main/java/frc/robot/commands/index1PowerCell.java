@@ -9,53 +9,63 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.indexerSubsystem;
+import frc.robot.RobotContainer;
 
 public class index1PowerCell extends CommandBase {
 
   private indexerSubsystem m_indexer;
-  private boolean running = false;
+  private int endStateChangeCount;
 
-  /**
-   * Creates a new Index1PowerCell.
-   */
   public index1PowerCell(indexerSubsystem indexer) {
     addRequirements(indexer);
     m_indexer = indexer;
   }
 
-  // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    // TODO: we need to disable all the motor control in periodic for this to work.
+    //TODO: we need to disable all the motor control in periodic for this to work.
+    m_indexer.runOnlyIntake();
+    final int endStateChangeCount = m_indexer.stateChangeCount;
   }
 
-  // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (!running) {
-      if (m_indexer.ballReadyForIndexer() && m_indexer.ballCount < 5) {
-        m_indexer.runIntake();
-        running = true;
-      }
-      //TODO: if ballcount >= 5 reverse indexer and eject the extra ball
+    if (m_indexer.ballReadyForIndexer() == true) {
+      m_indexer.runIndexer();
+    }
+
+    //stop indexer when balls are properly staged
+    else if (m_indexer.ballStaged() == true) {
+      m_indexer.stop();
+    }
+
+    //finish staging balls when this error state occurs
+    if ((-1 + (m_indexer.ballCount * 2)) != m_indexer.stateChangeCount) {
+      m_indexer.runIndexer();
+    }
+
+    //finish staging balls when this error state occurs
+    if (m_indexer.ballCount >= 1 && m_indexer.ballReadyForIndexer() == false && m_indexer.ballStaged() == false) {
+      m_indexer.runIndexer();
+    }
+
+    //prevent balls from exiting the indexer by accident
+    if (m_indexer.ballExiting() == true) {
+      isFinished();
+    }
+
+    if (m_indexer.ballStaged() && m_indexer.stateChangeCount == endStateChangeCount) {
+      isFinished();
     }
   }
 
-  // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
     m_indexer.stop();
   }
 
-  // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if (m_indexer.ballIndexed()) {
-        return true;
-    }
-    if (m_indexer.indexerFull()) {
-        return true;
-    }
     return false;
   }
 }

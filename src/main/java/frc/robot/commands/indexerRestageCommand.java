@@ -10,10 +10,10 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.indexerSubsystem;
 
-public class indexRestageCommand extends CommandBase {
+public class indexerRestageCommand extends CommandBase {
   indexerSubsystem m_indexer;
 
-  public indexRestageCommand(indexerSubsystem indexer) {
+  public indexerRestageCommand(indexerSubsystem indexer) {
     addRequirements(indexer);
     m_indexer = indexer; 
   }
@@ -21,6 +21,7 @@ public class indexRestageCommand extends CommandBase {
   @Override
   public void initialize() {
     //m_indexer.periodic = false;
+    m_indexer.restageState = 0;
     m_indexer.restageEndBallCount = m_indexer.ballCount;
   }
 
@@ -45,13 +46,13 @@ public class indexRestageCommand extends CommandBase {
       m_indexer.restageState = 1;
     }
 
-    if (m_indexer.ballIndexed()== false && m_indexer.restageState == 1) {
+    if (m_indexer.ballStaged() == false && m_indexer.restageState == 1) {
       m_indexer.setIntakePercentOutput(0.6);
       m_indexer.setBeltsPercentOutput(1);
       m_indexer.setKickerPercentOutput(0.3);
     }
 
-    if (!m_indexer.ballIndexed() == true && m_indexer.restageState == 1) {
+    if (!m_indexer.ballStaged() == true && m_indexer.restageState == 1) {
       m_indexer.setIntakePercentOutput(0);
       m_indexer.setBeltsPercentOutput(0);
       m_indexer.setKickerPercentOutput(0);
