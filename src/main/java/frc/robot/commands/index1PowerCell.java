@@ -18,7 +18,7 @@ public class index1PowerCell extends CommandBase {
   /**
    * Creates a new Index1PowerCell.
    */
-  public Index1PowerCell(indexerSubsystem indexer) {
+  public index1PowerCell(indexerSubsystem indexer) {
     addRequirements(indexer);
     m_indexer = indexer;
   }
