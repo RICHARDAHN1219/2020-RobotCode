@@ -152,25 +152,4 @@ public class RobotContainer {
     return ramseteCommand;
   }
   
-  /**
-   * getPose()  - return the current pose of the robot from the drivetrain.
-   * 
-   * @return Pose2d of the robot
-   */
-  Pose2d getPose() {
-    return m_drive.getPose();
-  }
-
-  /**
-   * getChassisSpeeds() - return the robot velocity in meters/second in robot centric X and Y
-   * direction, and the rotation of the robot in radians/second.
-   * 
-   * Note: Vy should always be zero, because the robot cannot drive sideways.
-   * 
-   * @return ChassisSpeeds: (vxMetersPerSecond, vyMetersPerSecond, omegaRadiansPerSecond)
-   */
-  ChassisSpeeds getChassisSpeeds() {
-    return m_drive.getChassisSpeeds();
-  }
-
 }
