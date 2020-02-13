@@ -29,8 +29,7 @@ public class limelightTurretVisionCommand extends CommandBase {
   public void initialize() {
     m_limelight.setLEDMode(2);
     m_limelight.setCAMMode(0);
-    NetworkTableInstance.getDefault().getTable("limelight").getEntry("camMode").setNumber(0);
-    NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").setNumber(2);
+    new pipelineByDistanceCommand(m_limelight);
   }
 
   @Override
