@@ -13,7 +13,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.driveConstants;
 import frc.robot.Constants.pwmConstants;
 import frc.robot.commands.driveCommand;
-import frc.robot.commands.index1PowerCell;
+import frc.robot.commands.indexerSingleIntakeCommand;
 import frc.robot.commands.indexerRestageCommand;
 import frc.robot.commands.indexerSingleFeedCommand;
 import frc.robot.commands.indexerStageForShootingCommand;
@@ -69,7 +69,7 @@ public class RobotContainer {
     //ybutton.whenPressed(() -> m_controlPanelMotors.setPosition(0), m_controlPanelMotors);
     //xbutton.whenPressed(() -> m_controlPanelMotors.setPosition(1 * 4096), m_controlPanelMotors);
     // abutton.whenPressed(() -> m_shooter.setShooterRPM(2000));
-    bbutton.whenPressed(new index1PowerCell(m_indexer));
+    bbutton.whenPressed(new indexerSingleIntakeCommand(m_indexer));
     abutton.whenPressed(new indexerStageForShootingCommand(m_indexer));
     xbutton.whenPressed(new indexerSingleFeedCommand(m_indexer));
     ybutton.whenPressed(new indexerRestageCommand(m_indexer));

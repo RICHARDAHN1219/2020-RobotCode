@@ -22,7 +22,6 @@ public class indexerRestageCommand extends CommandBase {
 
   @Override
   public void initialize() {
-    //m_indexer.periodic = false;
     m_indexer.setRestageState(0);
     final int restageEndBallCount = m_indexer.getBallCount();
   }

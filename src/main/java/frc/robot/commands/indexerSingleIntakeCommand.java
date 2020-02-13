@@ -9,14 +9,13 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.indexerSubsystem;
-import frc.robot.RobotContainer;
 
-public class index1PowerCell extends CommandBase {
+public class indexerSingleIntakeCommand extends CommandBase {
 
   private indexerSubsystem m_indexer;
   private int endStateChangeCount;
 
-  public index1PowerCell(indexerSubsystem indexer) {
+  public indexerSingleIntakeCommand(indexerSubsystem indexer) {
     addRequirements(indexer);
     m_indexer = indexer;
   }
@@ -30,32 +29,42 @@ public class index1PowerCell extends CommandBase {
 
   @Override
   public void execute() {
+    //run indexer when a new ball appears
     if (m_indexer.ballReadyForIndexer() == true) {
       m_indexer.runIndexer();
     }
 
+    /*
     //stop indexer when balls are properly staged
     else if (m_indexer.ballStaged() == true) {
       m_indexer.stop();
     }
+    */
 
     //finish staging balls when this error state occurs
-    if ((-1 + (m_indexer.getBallCount() * 2)) != m_indexer.getStateChangeCount()) {
+    else if (m_indexer.getStateChangeCount() != endStateChangeCount) {
       m_indexer.runIndexer();
     }
 
+    /*
     //finish staging balls when this error state occurs
-    if (m_indexer.getBallCount() >= 1 && m_indexer.ballReadyForIndexer() == false && m_indexer.ballStaged() == false) {
+    else if (m_indexer.getBallCount() >= 1 && m_indexer.ballReadyForIndexer() == false && m_indexer.ballStaged() == false) {
       m_indexer.runIndexer();
+    }
+    */
+    
+    //stop indexer when balls are properly staged
+    else if (m_indexer.ballStaged() == true && m_indexer.getStateChangeCount() == endStateChangeCount) {
+      isFinished();
     }
 
     //prevent balls from exiting the indexer by accident
-    if (m_indexer.ballExiting() == true) {
+    else if (m_indexer.ballExiting() == true) {
       isFinished();
     }
 
-    if (m_indexer.ballStaged() && m_indexer.getStateChangeCount() == endStateChangeCount) {
-      isFinished();
+    else {
+      m_indexer.runOnlyIntake();
     }
   }
 
