@@ -14,6 +14,7 @@ import static frc.robot.Constants.AutoConstants.kRamseteZeta;
 import static frc.robot.Constants.driveConstants.kDriveKinematics;
 import java.util.List;
 
+import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.XboxController.Button;
@@ -43,7 +44,9 @@ import frc.robot.subsystems.shooterSubsystem;
 import frc.robot.subsystems.controlPanelSubsystem;
 
 public class RobotContainer {
-  // Subsystems
+  public static final Compressor airCompressor = new Compressor();
+
+// Subsystems
   private final driveSubsystem m_drive = new driveSubsystem();
   // private final turretSubsystem m_turretSubsystem = new turretSubsystem();
   // private final shooterSubsystem m_shooter = new shooterSubsystem();
