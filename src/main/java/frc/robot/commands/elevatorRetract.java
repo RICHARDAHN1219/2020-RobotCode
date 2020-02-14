@@ -15,11 +15,11 @@ import frc.robot.subsystems.elevatorSubsystem;
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/latest/docs/software/commandbased/convenience-features.html
-public class retractDeploy extends SequentialCommandGroup {
+public class elevatorRetract extends SequentialCommandGroup {
   /**
    * Creates a new retractDeploy.
    */
-  public retractDeploy(elevatorSubsystem elevator) {
+  public elevatorRetract(elevatorSubsystem elevator) {
     // Add your commands in the super() call, e.g.
     // super(new FooCommand(), new BarCommand());
     // super()
