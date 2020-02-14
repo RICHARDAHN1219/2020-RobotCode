@@ -23,6 +23,9 @@ public class turretAutoTargeting extends CommandBase {
   private double m_targetAngleDegrees = 0.0;
   private double m_errorDegrees = 0.0;
 
+  // kP for limelight must be 1.0 or less
+  private double kPlimelight = 0.5;
+
   /**
    * Creates a new turretAutoTargeting.
    * 
@@ -48,8 +51,6 @@ public class turretAutoTargeting extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_errorDegrees = (m_turret.getAngleDegrees() - m_targetAngleDegrees);
-    SmartDashboard.putNumber("TargetAngle Error", m_errorDegrees);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -65,26 +66,27 @@ public class turretAutoTargeting extends CommandBase {
 
     // calculate m_targetAngleDegrees from robot to target
     m_targetAngleDegrees = angle2TargetDegrees(future_pose, m_target);
+    SmartDashboard.putNumber("OdometryAngle2Target", m_targetAngleDegrees);
 
     // estimated distance to target based on odometery
     double dist_pose = distance2Target(future_pose, m_target);
 
-    // TODO: get distance and angle estimates from LimeLight
-    // double ll_distance = m_limelight.getDistance();
-
-    // TODO: get left/right error from limelight
-    // TODO: adjust target angle using PID (really just P) of limelight error
+    double ll_angleDegrees = 0;
+    if ((int) m_limelight.getTV() == 1 ) {
+      ll_angleDegrees = m_limelight.getTY();
+      m_targetAngleDegrees = m_targetAngleDegrees + kPlimelight * ll_angleDegrees;
+    }
 
     // move turret to angle
     m_turret.setAngleDegrees(m_targetAngleDegrees);
 
+    m_errorDegrees = m_targetAngleDegrees - m_turret.getAngleDegrees();
 
-    double angle_errorDegrees = m_targetAngleDegrees - m_turret.getAngleDegrees();
     SmartDashboard.putNumber("Angle2Target", m_targetAngleDegrees);
     SmartDashboard.putNumber("Dist2Target", dist_pose);
-    SmartDashboard.putNumber("AngleError", angle_errorDegrees);
-
-    // TODO: add limelight offset and distance to SmartDashboard
+    SmartDashboard.putNumber("LL_Dist2Target", m_limelight.getDist());
+    SmartDashboard.putNumber("AngleError", m_errorDegrees);
+    SmartDashboard.putNumber("LL_Angle", ll_angleDegrees);
 
   }
 
