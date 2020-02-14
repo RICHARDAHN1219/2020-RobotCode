@@ -16,7 +16,7 @@ public class indexerSingleFeedCommand extends CommandBase {
   private int endStateChangeCount;
 
   public indexerSingleFeedCommand(indexerSubsystem indexer) {
-    addRequirements(m_indexer);
+    addRequirements(indexer);
     m_indexer = indexer;
   }
 

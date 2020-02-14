@@ -15,7 +15,7 @@ public class indexerStageForShootingCommand extends CommandBase {
   indexerSubsystem m_indexer;
 
   public indexerStageForShootingCommand(indexerSubsystem indexer) {
-    addRequirements(m_indexer);
+    addRequirements(indexer);
     m_indexer = indexer;
   }
 
