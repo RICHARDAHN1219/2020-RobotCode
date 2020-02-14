@@ -198,7 +198,7 @@ public class indexerSubsystem extends SubsystemBase {
     //SmartDashboard.putNumber("Intake RPM", indexIntake.getSelectedSensorVelocity() * 600 / 2048);
 
     // increase ball count as balls enter the indexer
-    if (ballReady4Indexer != ballReady4IndexerLast && ballReady4Indexer == true) {
+    if (ballReady4Indexer != ballReady4IndexerLast && ballReady4Indexer == false) {
       ballCount += 1;
     }
     ballReady4IndexerLast = ballReady4Indexer;
@@ -438,6 +438,15 @@ public class indexerSubsystem extends SubsystemBase {
    */
   public int getRestageState() {
     return restageState;
+  }
+
+  /**
+   * getBallStagedLast() - get the last state of the stagind sensor
+   * 
+   * @return boolean ball staged last
+   */
+  public boolean getBallStagedLast() {
+    return ballStagedLast;
   }
 
   /**

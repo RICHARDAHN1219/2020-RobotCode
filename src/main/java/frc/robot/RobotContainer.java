@@ -35,7 +35,7 @@ public class RobotContainer {
   public final static blinkin m_blinkin = new blinkin(pwmConstants.blinkin);
   private final driveSubsystem m_driveSubsystem = new driveSubsystem();
   private final turretSubsystem m_turretSubsystem = new turretSubsystem();
-  public static final shooterSubsystem m_shooter = new shooterSubsystem();
+  //public static final shooterSubsystem m_shooter = new shooterSubsystem();
   public static final indexerSubsystem m_indexer = new indexerSubsystem();
   private final elevatorSubsystem m_elevatorSubsystem = new elevatorSubsystem();
   private final controlPanelSubsystem m_controlPanelMotors = new controlPanelSubsystem();

@@ -60,7 +60,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopPeriodic() {
-    RobotContainer.m_shooter.testMode();
+    //RobotContainer.m_shooter.testMode();
   }
 
   @Override

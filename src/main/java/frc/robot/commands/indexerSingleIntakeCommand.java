@@ -13,7 +13,7 @@ import frc.robot.subsystems.indexerSubsystem;
 public class indexerSingleIntakeCommand extends CommandBase {
 
   private indexerSubsystem m_indexer;
-  private int endStateChangeCount;
+  private boolean clearedSensor2 = false;
 
   public indexerSingleIntakeCommand(indexerSubsystem indexer) {
     addRequirements(indexer);
@@ -22,48 +22,19 @@ public class indexerSingleIntakeCommand extends CommandBase {
 
   @Override
   public void initialize() {
+    clearedSensor2 = false;
     m_indexer.runOnlyIntake();
-    final int endStateChangeCount = m_indexer.getStateChangeCount();
   }
 
   @Override
   public void execute() {
-    //run indexer when a new ball appears
+
+    if (m_indexer.ballStaged() == false) {
+      clearedSensor2 = true;
+    }
+
     if (m_indexer.ballReadyForIndexer() == true) {
       m_indexer.runIndexer();
-    }
-
-    /*
-    //stop indexer when balls are properly staged
-    else if (m_indexer.ballStaged() == true) {
-      m_indexer.stop();
-    }
-    */
-
-    //finish staging balls when this error state occurs
-    else if (m_indexer.getStateChangeCount() != endStateChangeCount) {
-      m_indexer.runIndexer();
-    }
-
-    /*
-    //finish staging balls when this error state occurs
-    else if (m_indexer.getBallCount() >= 1 && m_indexer.ballReadyForIndexer() == false && m_indexer.ballStaged() == false) {
-      m_indexer.runIndexer();
-    }
-    */
-    
-    //stop indexer when balls are properly staged
-    else if (m_indexer.ballStaged() == true && m_indexer.getStateChangeCount() == endStateChangeCount) {
-      isFinished();
-    }
-
-    //prevent balls from exiting the indexer by accident
-    else if (m_indexer.ballExiting() == true) {
-      isFinished();
-    }
-
-    else {
-      m_indexer.runOnlyIntake();
     }
   }
 
@@ -74,6 +45,11 @@ public class indexerSingleIntakeCommand extends CommandBase {
 
   @Override
   public boolean isFinished() {
+
+    if (clearedSensor2 && m_indexer.ballStaged()) {
+      return true;
+    }
+    
     return false;
   }
 }
