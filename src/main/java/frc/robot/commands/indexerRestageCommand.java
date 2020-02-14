@@ -29,7 +29,6 @@ public class indexerRestageCommand extends CommandBase {
   @Override
   public void execute() {
     
-    //make isFinished depend on ballReadyForIndexer and restageState.
     if (m_indexer.ballReadyForIndexer() == false && m_indexer.getRestageState() == 0) {
       m_indexer.reverseIndexer();
     }

@@ -41,7 +41,6 @@ public class intakeSubsystem extends SubsystemBase {
     //   }
     // }
   }
-
   public void setIntakePercentOutput(double percent) {
     intake.set(ControlMode.PercentOutput, percent);
   }
