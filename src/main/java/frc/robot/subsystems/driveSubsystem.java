@@ -16,6 +16,7 @@ import static frc.robot.Constants.driveConstants.kEncoderCPR;
 import static frc.robot.Constants.driveConstants.kDistancePerWheelRevolutionMeters;
 import static frc.robot.Constants.driveConstants.kGearReduction;
 import static frc.robot.Constants.driveConstants.kGyroReversed;
+import static frc.robot.Constants.driveConstants.kDriveKinematics;
 import static frc.robot.Constants.driveConstants.driveTimeout;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.InvertType;
@@ -28,6 +29,7 @@ import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -189,6 +191,35 @@ public class driveSubsystem extends SubsystemBase {
   }
 
   /**
+   * getFuturePose() - predict robot pose t_sec in the future based on the current robot wheel
+   * speed.
+   * 
+   * This is only an estimate and the larger the value t_sec, the less accurate the estimate will
+   * be.
+   * 
+   * @param t_sec
+   * @return Estimated pose t_sec in the future.
+   */
+  public Pose2d getFuturePose(double t_sec) {
+    Pose2d current_pose = m_odometry.getPoseMeters();
+    if (t_sec <= 0) {
+      System.out.println("Error: getFuturePose needs a positive time value.");
+      return current_pose;
+    }
+
+    // new odometery class starting from current position
+    Rotation2d current_heading = Rotation2d.fromDegrees(getHeading());
+    DifferentialDriveOdometry future_odomentery =
+        new DifferentialDriveOdometry(current_heading, current_pose);
+
+    // predict where we will be t_sec in the future based on our current wheel speeds
+    future_odomentery.update(current_heading, getLeftVelocity() * t_sec,
+        getRightVelocity() * t_sec);
+
+    return future_odomentery.getPoseMeters();
+  }
+
+  /**
    * Returns the Feedforward settings for the drivetrain.
    * 
    * @return Feedforward
@@ -206,6 +237,18 @@ public class driveSubsystem extends SubsystemBase {
     return new DifferentialDriveWheelSpeeds(
         getLeftVelocity(),
         getRightVelocity());
+  }
+
+  /**
+   * getChassisSpeeds() - return the robot velocity in meters/second in robot centric X and Y
+   * direction, and the rotation of the robot in radians/second.
+   * 
+   * Note: Vy should always be zero, because the robot cannot drive sideways.
+   * 
+   * @return ChassisSpeeds: (vxMetersPerSecond, vyMetersPerSecond, omegaRadiansPerSecond)
+   */
+  public ChassisSpeeds getChassisSpeeds() {
+    return kDriveKinematics.toChassisSpeeds(getWheelSpeeds());
   }
 
   /**
