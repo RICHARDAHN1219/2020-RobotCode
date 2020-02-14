@@ -52,7 +52,6 @@ public class elevatorSubsystem extends SubsystemBase {
   }
 
   public void retract1() {
-    // TODO: lower climber so we can try again
     stage1Solenoid.set(false);
   }
 
@@ -63,11 +62,13 @@ public class elevatorSubsystem extends SubsystemBase {
   public void raiseRobot() {
     brakeOff();
     elevatorWinch.setVoltage(6);
+    //TODO: experimentally find correct voltage
   }
 
   public void lowerRobot() {
     brakeOff();
     elevatorWinch.setVoltage(-2);
+     //TODO: experimentally find correct voltage
   }
 
   public void stopWinch() {
