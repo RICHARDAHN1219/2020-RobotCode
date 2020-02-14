@@ -48,14 +48,16 @@ public class elevatorSubsystem extends SubsystemBase {
   }
 
   public void deployStage2() {
-    stage2Solenoid.set(false);
+    stage2Solenoid.set(true);
   }
 
   public void retract1() {
     // TODO: lower climber so we can try again
+    stage1Solenoid.set(false);
   }
 
   public void retract2() {
+    stage2Solenoid.set(false);
   }
 
   public void raiseRobot() {
