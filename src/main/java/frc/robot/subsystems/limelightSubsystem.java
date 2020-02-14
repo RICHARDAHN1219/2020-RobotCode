@@ -18,6 +18,7 @@ public class limelightSubsystem extends SubsystemBase {
   private String limelightName;
   NetworkTableInstance getNT = NetworkTableInstance.getDefault();
   private NetworkTable limelightNT;
+  private double dist = -1;
 
   public limelightSubsystem() {
     limelightName = "limelight-one";
@@ -32,16 +33,17 @@ public class limelightSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-        //Example output: currentDist = (98.5-24 / tan(10+20))
-    //currentDist = 129.03 so 3x Zoom shall be used.
-    double h1 = 24;
-    double h2 = 98.5;
+        //Example output: currentDist = (2.5019-0.6096 / tan(10+20))
+    //currentDist = 3.27755 so 3x Zoom shall be used.
+    double h1 = 0.6096;
+    double h2 = 2.5019;
     double a1 = 10;
     double a2 = getTY();
-    double oneXDist = 68;
-    double twoXDist = 107;
-    double threeXDist = 117;
+    double oneXDist = 1.7272;
+    double twoXDist = 2.7178;
+    double threeXDist = 2.9718;
     double currentDist = Math.abs(h2 - h1) / Math.tan(a1 + a2);
+    dist = currentDist;
     if (currentDist >= oneXDist){
       set1xZoom();
       System.out.println("Switching to 1x Zoom");
@@ -51,6 +53,10 @@ public class limelightSubsystem extends SubsystemBase {
     } else if (currentDist >= threeXDist) {
       set3xZoom();
       System.out.println("Switching to 3x Zoom");
+    } if (a2 == 0){
+      dist = -1;
+      set1xZoom();
+      System.out.println("No target in range, switching to normal zoom.");
     }
   }
 
@@ -174,5 +180,13 @@ public class limelightSubsystem extends SubsystemBase {
    */
   public double get(String entry) {
     return limelightNT.getEntry(entry).getDouble(0);
+  }
+    /**
+   * getDist() - Gets calculated distance to target
+   * 
+   * @return Distance to target (in METERS)
+   */
+  public double getDist(){
+    return dist;
   }
 }
