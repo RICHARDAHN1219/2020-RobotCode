@@ -22,10 +22,9 @@ public class retractDeploy extends SequentialCommandGroup {
   public retractDeploy(elevatorSubsystem elevator) {
     // Add your commands in the super() call, e.g.
     // super(new FooCommand(), new BarCommand());
-    //super()
-    addCommands(new InstantCommand(elevator::retract1, elevator),
+    // super()
+    addCommands(new InstantCommand(elevator::retract1, elevator), 
                 new WaitCommand(0.5),
                 new InstantCommand(elevator::retract2, elevator));
-    }
   }
 }
