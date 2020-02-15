@@ -10,55 +10,54 @@ package frc.robot;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveKinematics;
 
 public final class Constants {
-public static final class driveConstants {
-    public static final int falcon1_leftLead    = 1;
-    public static final int falcon2_leftFollow  = 3;
-    public static final int falcon3_rightLead   = 0;
-    public static final int falcon4_rightFollow = 2;
-    public static final int driveTimeout = 30;
-    public static final int pigeonCANid = 0;
-    public static final int driveController = 0;
-    public static final int operatorController = 1;
+    public static final class driveConstants {
+        public static final int falcon1_leftLead = 1;
+        public static final int falcon2_leftFollow = 3;
+        public static final int falcon3_rightLead = 0;
+        public static final int falcon4_rightFollow = 2;
+        public static final int driveTimeout = 30;
+        public static final int pigeonCANid = 15;
+        public static final int driveController = 0;
+        public static final int operatorController = 1;
 
-    public static final boolean kLeftEncoderReversed = false;
-    public static final boolean kRightEncoderReversed = false;
 
-    public static final boolean kGyroReversed = true;
+        public static final boolean kLeftEncoderReversed = false;
+        public static final boolean kRightEncoderReversed = false;
 
-    // Comp bot track width (center of wheel to center of wheel) is 0.627m
-    public static final double kTrackwidthMeters = 0.627;
-    public static final DifferentialDriveKinematics kDriveKinematics =
-            new DifferentialDriveKinematics(kTrackwidthMeters);
+        public static final boolean kGyroReversed = true;
 
-    // TODO: Determined using frc-characterization tool
-    public static final double ksVolts = 0.138;
-    public static final double kvVoltSecondsPerMeter = 4.5;
-    public static final double kaVoltSecondsSquaredPerMeter = 0.444;
+        // Comp bot track width (center of wheel to center of wheel) is 0.627m
+        public static final double kTrackwidthMeters = 0.627;
+        public static final DifferentialDriveKinematics kDriveKinematics =
+                new DifferentialDriveKinematics(kTrackwidthMeters);
 
-    // Determined using frc-characterization
-    public static final double kPDriveVel = 12.0;
-    public static final double kDDriveVel = 0.0;
 
-    // TalonFX encoders have 2048, Rev Robitics have 4096
-    public static final int kEncoderCPR = 2048;
+        // Determined using frc-characterization tool
+        public static final double ksVolts = 0.05;   // 0.0491;  
+        public static final double kvVoltSecondsPerMeter =  2.36;    // 2.36;
+        public static final double kaVoltSecondsSquaredPerMeter = 0.127;
 
-    // Aprox 6 inch (0.1524 meters) traction wheels, measured 0.15836 m 
-    // Measured circumference = 0.509 m
-    public static final double kDistancePerWheelRevolutionMeters = 0.509;
-    public static final double kWheelDiameterMeters = kDistancePerWheelRevolutionMeters / Math.PI;
+        // Determined using frc-characterization
+        public static final double kPDriveVel = 5.0;  // frc-characterization 14.4
+        public static final double kDDriveVel = 0.0;  // frc-characterization 5.16
 
-    // gear reduction from Falcon Gearbox:
-    // Two stages 11:60 then 16:31 for a total gear reduction of 11:120
-    public static final double kGearReduction = 11.0 / 120.0;
+        // TalonFX encoders have 2048, Rev Robitics have 4096
+        public static final int kEncoderCPR = 2048;
 
-    // Assumes the encoders are directly mounted on the motor shafts
-    public static final double kEncoderDistancePerPulseMeters =
+        // Aprox 6 inch (0.1524 meters) traction wheels, measured 0.15836 m
+        // Measured circumference = 0.509 m
+        public static final double kDistancePerWheelRevolutionMeters = 0.509;
+        public static final double kWheelDiameterMeters =
+                kDistancePerWheelRevolutionMeters / Math.PI;
+
+        // gear reduction from Falcon Gearbox:
+        // Two stages 11:60 then 16:31 for a total gear reduction of 11:120
+        public static final double kGearReduction = 11.0 / 120.0;
+
+        // Assumes the encoders are directly mounted on the motor shafts
+        public static final double kEncoderDistancePerPulseMeters =
             (kDistancePerWheelRevolutionMeters * kGearReduction) / (double) kEncoderCPR;
-
-    // Reasonable baseline values for a RAMSETE follower in units of meters and seconds
-    public static final double kRamseteB = 2;
-    public static final double kRamseteZeta = 0.7;
-}
+   }
 public static final class AutoConstants {
     public static final double kMaxSpeedMetersPerSecond =  .5;
     public static final double kMaxAccelerationMetersPerSecondSquared = 0.25;
@@ -66,7 +65,7 @@ public static final class AutoConstants {
     // Reasonable baseline values for a RAMSETE follower in units of meters and seconds
     public static final double kRamseteB = 2;
     public static final double kRamseteZeta = 0.7;
-}
+ }
 public static final class turretConstants {
     public static final int turret = 11;
     public static final int kSoftMaxTurretAngle = 1;
@@ -80,9 +79,10 @@ public static final class shooterConstants {
     public static final int shooterSlotIdx = 0;
 }
 public static final class elevatorConstants {
-    public static final int elevator1 = 6;
-    public static final int elevator2 = 7;
+    public static final int solenoid1 = 6;
+    public static final int solenoid2 = 7;
     public static final int elevatorWinch = 12;
+    public static final int brakeSolenoid = 14;
     public static final int elevatorPivotTimeout = 30;
     public static final int elevatorSlotIdx = 1;
 }
