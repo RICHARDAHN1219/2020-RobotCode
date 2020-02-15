@@ -19,7 +19,7 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.RobotContainer;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
-import frc.robot.subsystems.blinkin;
+import frc.robot.subsystems.blinkinSubsystem;
 
 public class indexerSubsystem extends SubsystemBase {
 
@@ -41,7 +41,7 @@ public class indexerSubsystem extends SubsystemBase {
   private int ballCount = 0;
   private int restageState = 0;
   private boolean periodic = true;
-  private blinkin m_blinkin = RobotContainer.m_blinkin;
+  private blinkinSubsystem m_blinkin = RobotContainer.m_blinkin;
 
   public indexerSubsystem() {
     indexBelts.configFactoryDefault();

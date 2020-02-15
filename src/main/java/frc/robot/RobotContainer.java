@@ -47,12 +47,12 @@ import frc.robot.subsystems.intakeSubsystem;
 import frc.robot.subsystems.turretSubsystem;
 import frc.robot.subsystems.shooterSubsystem;
 import frc.robot.subsystems.controlPanelSubsystem;
-import frc.robot.subsystems.blinkin;
+import frc.robot.subsystems.blinkinSubsystem;
 
 public class RobotContainer {
   // Subsystems
-  public final static blinkin m_blinkin = new blinkin(pwmConstants.blinkin);
   private final driveSubsystem m_drive = new driveSubsystem();
+  public final static blinkinSubsystem m_blinkin = new blinkinSubsystem(pwmConstants.blinkin);
   private final turretSubsystem m_turretSubsystem = new turretSubsystem();
   //public static final shooterSubsystem m_shooter = new shooterSubsystem();
   public static final indexerSubsystem m_indexer = new indexerSubsystem();
