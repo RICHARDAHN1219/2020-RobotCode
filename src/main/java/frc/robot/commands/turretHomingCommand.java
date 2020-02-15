@@ -8,22 +8,23 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.Robot;
+import frc.robot.subsystems.turretSubsystem;
 
 public class turretHomingCommand extends CommandBase {
   
-  public turretHomingCommand() {
+  private turretSubsystem m_turret;
+
+  public turretHomingCommand(turretSubsystem turret) {
+    m_turret = turret;
+    addRequirements(turret);
+  }
+
+  public void home() {
+    m_turret.setAngleDegrees(0);
   }
 
   @Override
   public void initialize() {
-    if (Robot.turretHome = false) {
-      System.out.println("Turret is going home!");
-      Robot.turretHome = true;
-    } 
-    else {
-      Robot.turretHome = false;
-    }
   }
 
   @Override

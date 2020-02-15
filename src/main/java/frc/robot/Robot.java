@@ -14,7 +14,6 @@ public class Robot extends TimedRobot {
   public static boolean manualMode = false;
   public static boolean turretHome = false;
   public static double temp; 
-  @SuppressWarnings("unused")
   private RobotContainer m_robotContainer;
   public static SupplyCurrentLimitConfiguration m_currentlimitMain = new SupplyCurrentLimitConfiguration(true, 35, 1, 1);
   public static SupplyCurrentLimitConfiguration m_currentlimitSecondary = new SupplyCurrentLimitConfiguration(true, 25, 1, 1);
@@ -40,10 +39,18 @@ public class Robot extends TimedRobot {
   public void disabledPeriodic() {
   }
 
+  /**
+   * This autonomous runs the autonomous command selected by your {@link RobotContainer} class.
+   */
   @Override
   public void autonomousInit() {
+    m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+    
+    // schedule the autonomous command (example)
     if (m_autonomousCommand != null) {
+      System.out.println("Scheduling Autonomous Command");
       m_autonomousCommand.schedule();
+      System.out.println("Finished Autonomous Command");
     }
   }
 
@@ -54,6 +61,7 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopInit() {
     if (m_autonomousCommand != null) {
+      System.out.println("Cancelling Autonomous Command");
       m_autonomousCommand.cancel();
     }
   }
