@@ -99,8 +99,8 @@ public static final class elevatorConstants {
     public static final int elevatorSlotIdx = 1;
 }
 public static final class indexConstants {
-    public static final int index1_1 = 8;
-    public static final int index1_2 = 9;
+    public static final int indexIntake = 8;
+    public static final int indexBelts = 9;
     public static final int indexKicker = 10;
 }
 public static final class controlPanelConstants {
@@ -119,4 +119,4 @@ public static final class intakeConstants {
 public static final class pwmConstants {
     public static final int blinkin = 0;
     }
-
+}

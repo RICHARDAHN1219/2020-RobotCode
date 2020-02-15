@@ -38,8 +38,6 @@ import frc.robot.commands.indexerSingleFeedCommand;
 import frc.robot.commands.indexerStageForShootingCommand;
 import frc.robot.commands.indexerEjectCommand;
 import frc.robot.commands.limelightTurretVisionCommand;
-import frc.robot.commands.shooterCommand;
-import frc.robot.commands.manualMode;
 import frc.robot.commands.turretHomingCommand;
 import frc.robot.subsystems.driveSubsystem;
 import frc.robot.subsystems.elevatorSubsystem;
@@ -54,7 +52,7 @@ import frc.robot.subsystems.blinkin;
 public class RobotContainer {
   // Subsystems
   public final static blinkin m_blinkin = new blinkin(pwmConstants.blinkin);
-  private final driveSubsystem m_driveSubsystem = new driveSubsystem();
+  private final driveSubsystem m_drive = new driveSubsystem();
   private final turretSubsystem m_turretSubsystem = new turretSubsystem();
   //public static final shooterSubsystem m_shooter = new shooterSubsystem();
   public static final indexerSubsystem m_indexer = new indexerSubsystem();
@@ -69,7 +67,7 @@ public class RobotContainer {
   //private final index1PowerCell m_index1PowerCell = new index1PowerCell(m_indexer);
 
   public static XboxController m_driveController = new XboxController(driveConstants.driveController);
-  // public static XboxController m_operatorController = new XboxController(driveConstants.operatorController);
+  public static XboxController m_operatorController = new XboxController(driveConstants.operatorController);
   public RobotContainer() {
     configureButtonBindings();
 
@@ -89,15 +87,12 @@ public class RobotContainer {
     final JoystickButton bbutton = new JoystickButton(m_driveController, Button.kB.value);
     final JoystickButton xbutton = new JoystickButton(m_driveController, Button.kX.value);
     final JoystickButton ybutton = new JoystickButton(m_driveController, Button.kY.value);
-  
-  public Command getNoAutonomousCommand() {
-    return new RunCommand(() -> m_drive.tankDriveVolts(0, 0));
     final JoystickButton startbutton = new JoystickButton(m_driveController, Button.kStart.value);
     final JoystickButton selectbutton = new JoystickButton(m_driveController, Button.kBack.value);
     final JoystickButton opAbutton = new JoystickButton(m_operatorController, Button.kA.value);
     final JoystickButton opBbutton = new JoystickButton(m_operatorController, Button.kB.value);
-    opAbutton.whenPressed(new manualMode());
-    opBbutton.whenPressed(new turretHomingCommand());
+    //opAbutton.whenPressed(new manualMode());
+    //opBbutton.whenPressed(new turretHomingCommand());
     //ybutton.whenPressed(() -> m_controlPanelMotors.setPosition(0), m_controlPanelMotors);
     //xbutton.whenPressed(() -> m_controlPanelMotors.setPosition(1 * 4096), m_controlPanelMotors);
     // abutton.whenPressed(() -> m_shooter.setShooterRPM(2000));
@@ -109,6 +104,9 @@ public class RobotContainer {
     //xbutton.whenPressed(() -> m_shooter.setShooterRPM(2500));
     //ybutton.whenPressed(() -> m_shooter.setShooterRPM(3000));
     //selectbutton.whenPressed(() -> m_shooter.testMode());
+  }
+  public Command getNoAutonomousCommand() {
+    return new RunCommand(() -> m_drive.tankDriveVolts(0, 0));
   }
   
   public Command getAutonomousCommand() {
