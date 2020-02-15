@@ -36,13 +36,27 @@ public class controlPanelStage2Command extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_controlPanelSubsystem.setSpeed(0.2);
+    if(m_controlPanelSubsystem.moveToGamePosition() == -1 ){
+      m_controlPanelSubsystem.setPosition(-1 * 4096);
+    }
+    if(m_controlPanelSubsystem.moveToGamePosition() == 0 ){
+      m_controlPanelSubsystem.setPosition(0 * 4096);
+    }
+    if(m_controlPanelSubsystem.moveToGamePosition() == 1 ){
+      m_controlPanelSubsystem.setPosition(1 * 4096);
+    }
+    if(m_controlPanelSubsystem.moveToGamePosition() == 2 ){
+      m_controlPanelSubsystem.setPosition(2 * 4096);
+    }
+    if(m_controlPanelSubsystem.moveToGamePosition() == 6 ){
+      //error number
+    }
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-
+ 
   }
 
   // Called once the command ends or is interrupted.
@@ -54,7 +68,9 @@ public class controlPanelStage2Command extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if(m_controlPanelSubsystem.moveToGamePosition() == true){
+    char stage2ColorChar = gameData.charAt(0);
+    char currentColorChar = currentColor.charAt(0);
+    if (){
       return true;
     }
     return false;

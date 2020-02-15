@@ -88,15 +88,16 @@ public class controlPanelSubsystem extends SubsystemBase {
   }
 
   /**
-   * stop - stop the motor. 
+   * stop - stop the motor.
    */
   public void stop() {
     setSpeed(0.0);
   }
 
   /**
-   * senseColorWheelPos - detect current color, track the number of color transitions.
-   *   Eight (8) color transistions in one direction is a full rotation of the wheel.
+   * senseColorWheelPos - detect current color, track the number of color
+   * transitions. Eight (8) color transistions in one direction is a full rotation
+   * of the wheel.
    */
   public void senseColorWheelPos() {
 
@@ -174,14 +175,9 @@ public class controlPanelSubsystem extends SubsystemBase {
     return colorString;
   }
 
-
   /**
-   * Given a String color name return the corresponding number.
-   *    B -> 0
-   *    Y -> 1
-   *    R -> 2
-   *    G -> 3
-   * and return -1 for anything else.
+   * Given a String color name return the corresponding number. B -> 0 Y -> 1 R ->
+   * 2 G -> 3 and return -1 for anything else.
    * 
    * @param colorString
    * @return int color number
@@ -211,93 +207,78 @@ public class controlPanelSubsystem extends SubsystemBase {
     return -1;
   }
 
-//TODO: Actually make motors move and test if count is accurate
+  // TODO: Actually make motors move and test if count is accurate
 
-  public boolean moveToGamePosition() {
+  public int moveToGamePosition() {
     String currentColor = getColor();
     char currentColorChar = currentColor.charAt(0);
     String gameData = DriverStation.getInstance().getGameSpecificMessage();
     char stage2ColorChar = gameData.charAt(0);
 
-  // TODO: I think maybe you should split this into two functions.
-  //    One to get the number of color transtions we need to move
-  //    from the start position to the desired position.
-  //    Second to track when we've turned far enough. 
-  //    This will make controlPanelStage2Command look very similar to the
-  //    Stage1Command
-  // 
-  //  I like the comments like "move CCW 2" and "move CW 1" etc. very descriptive.
+    // TODO: I think maybe you should split this into two functions.
+    // One to get the number of color transtions we need to move
+    // from the start position to the desired position.
+    // Second to track when we've turned far enough.
+    // This will make controlPanelStage2Command look very similar to the
+    // Stage1Command
+    //
+    // I like the comments like "move CCW 2" and "move CW 1" etc. very descriptive.
 
- //TODO:Figure out what actions to take if one of these options isn't the case
- //Do I need to reset count on this before starting?
-    if (stage2ColorChar == 'B' && currentColorChar == 'B' && count == 2) {
-      return true;
-      // move counterclockwise 2
+    // TODO:Figure out what actions to take if one of these options isn't the case
+
+    if (stage2ColorChar == currentColorChar) {
+      return 2;
+      //move counterclockwise 2
     }
-    if (stage2ColorChar == 'B' && currentColorChar == 'Y' && count == 1) {
-      return true;
+    if (stage2ColorChar == 'B' && currentColorChar == 'Y') {
+      return 1;
       // move counterclockwise 1
     }
-    if (stage2ColorChar == 'B' && currentColorChar == 'R' && count == 0) {
-      return true;
+    if (stage2ColorChar == 'B' && currentColorChar == 'R') {
+      return 0;
       // don't move
     }
-    if (stage2ColorChar == 'B' && currentColorChar == 'G' && count == -1) {
-      return true;
+    if (stage2ColorChar == 'B' && currentColorChar == 'G') {
+      return -1;
       // move clockwise 1
     }
-
-    if (stage2ColorChar == 'Y' && currentColorChar == 'B' && count == 1) {
-      return true;
+    if (stage2ColorChar == 'Y' && currentColorChar == 'B') {
+      return 1;
       // move counterclockwise 1
     }
-    if (stage2ColorChar == 'Y' && currentColorChar == 'Y' && count == 2) {
-      return true;
-      // move counterclockwise 2
-    }
-    if (stage2ColorChar == 'Y' && currentColorChar == 'R' && count == -1) {
-      return true;
+    if (stage2ColorChar == 'Y' && currentColorChar == 'R') {
+      return -1;
       // move clockwise 1
     }
-    if (stage2ColorChar == 'Y' && currentColorChar == 'G' && count == 0) {
-      return true;
+    if (stage2ColorChar == 'Y' && currentColorChar == 'G') {
+      return 0;
       // don't move
     }
-
-    if (stage2ColorChar == 'R' && currentColorChar == 'R' && count == 2) {
-      return true;
-      // move counterclockwise 2
-    }
-    if (stage2ColorChar == 'R' && currentColorChar == 'Y' && count == 1) {
-      return true;
+    if (stage2ColorChar == 'R' && currentColorChar == 'Y') {
+      return 1;
       // move counterclockwise 1
     }
-    if (stage2ColorChar == 'R' && currentColorChar == 'G' && count == -1) {
-      return true;
+    if (stage2ColorChar == 'R' && currentColorChar == 'G') {
+      return -1;
       // move clockwise 1
     }
-    if (stage2ColorChar == 'R' && currentColorChar == 'B' && count == 0) {
-      return true;
+    if (stage2ColorChar == 'R' && currentColorChar == 'B') {
+      return 0;
       // don't move
     }
-
-    if (stage2ColorChar == 'G' && currentColorChar == 'B' && count == -1) {
-      return true;
+    if (stage2ColorChar == 'G' && currentColorChar == 'B') {
+      return -1;
       // move clockwise 1
     }
-    if (stage2ColorChar == 'G' && currentColorChar == 'Y' && count == 0) {
-      return true;
+    if (stage2ColorChar == 'G' && currentColorChar == 'Y') {
+      return 0;
       // don't move
     }
-    if (stage2ColorChar == 'G' && currentColorChar == 'R' && count == 1) {
-      return true;
+    if (stage2ColorChar == 'G' && currentColorChar == 'R') {
+      return 1;
       // move counterclockwise 1
     }
-    if (stage2ColorChar == 'G' && currentColorChar == 'G' && count == 2) {
-      return true;
-      // move counterclockwise 2
-    }
-    return false;
+    return 6;
   }
 
   public void setPosition(double position) {
@@ -314,8 +295,9 @@ public class controlPanelSubsystem extends SubsystemBase {
   }
 
   /**
-   * resetColorCount - reset the number of color transitions seen to zero. Useful if we have to
-   * start over or when we start Stage2 and need to zero out the count from Stage0.
+   * resetColorCount - reset the number of color transitions seen to zero. Useful
+   * if we have to start over or when we start Stage2 and need to zero out the
+   * count from Stage0.
    * 
    */
   public void resetColorCount() {
