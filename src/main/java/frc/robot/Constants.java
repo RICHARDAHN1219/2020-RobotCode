@@ -20,7 +20,6 @@ public final class Constants {
         public static final int driveController = 0;
         public static final int operatorController = 1;
 
-
         public static final boolean kLeftEncoderReversed = false;
         public static final boolean kRightEncoderReversed = false;
 
@@ -31,15 +30,14 @@ public final class Constants {
         public static final DifferentialDriveKinematics kDriveKinematics =
                 new DifferentialDriveKinematics(kTrackwidthMeters);
 
-
         // Determined using frc-characterization tool
-        public static final double ksVolts = 0.05;   // 0.0491;  
-        public static final double kvVoltSecondsPerMeter =  2.36;    // 2.36;
+        public static final double ksVolts = 0.05; // 0.0491;
+        public static final double kvVoltSecondsPerMeter = 2.36; // 2.36;
         public static final double kaVoltSecondsSquaredPerMeter = 0.127;
 
         // Determined using frc-characterization
-        public static final double kPDriveVel = 5.0;  // frc-characterization 14.4
-        public static final double kDDriveVel = 0.0;  // frc-characterization 5.16
+        public static final double kPDriveVel = 5.0; // frc-characterization 14.4
+        public static final double kDDriveVel = 0.0; // frc-characterization 5.16
 
         // TalonFX encoders have 2048, Rev Robitics have 4096
         public static final int kEncoderCPR = 2048;
@@ -56,51 +54,51 @@ public final class Constants {
 
         // Assumes the encoders are directly mounted on the motor shafts
         public static final double kEncoderDistancePerPulseMeters =
-            (kDistancePerWheelRevolutionMeters * kGearReduction) / (double) kEncoderCPR;
-   }
-public static final class AutoConstants {
-    public static final double kMaxSpeedMetersPerSecond =  .5;
-    public static final double kMaxAccelerationMetersPerSecondSquared = 0.25;
+                (kDistancePerWheelRevolutionMeters * kGearReduction) / (double) kEncoderCPR;
+    }
+    public static final class AutoConstants {
+        public static final double kMaxSpeedMetersPerSecond = .5;
+        public static final double kMaxAccelerationMetersPerSecondSquared = 0.25;
 
-    // Reasonable baseline values for a RAMSETE follower in units of meters and seconds
-    public static final double kRamseteB = 2;
-    public static final double kRamseteZeta = 0.7;
- }
-public static final class turretConstants {
-    public static final int turret = 11;
-    public static final int kSoftMaxTurretAngle = 1;
-    public static final int kSoftMinTurretAngle = 1;
-    public static final int kTurretRotationsPerTick = 1;
-}
-public static final class shooterConstants {
-    public static final int shooter1 = 4;
-    public static final int shooter2 = 5;
-    public static final int shooterTimeout = 30;
-    public static final int shooterSlotIdx = 0;
-}
-public static final class elevatorConstants {
-    public static final int solenoid1 = 6;
-    public static final int solenoid2 = 7;
-    public static final int elevatorWinch = 12;
-    public static final int brakeSolenoid = 14;
-    public static final int elevatorPivotTimeout = 30;
-    public static final int elevatorSlotIdx = 1;
-}
-public static final class indexConstants {
-    public static final int index1_1 = 8;
-    public static final int index1_2 = 9;
-    public static final int indexKicker = 10;
-}
-public static final class controlPanelConstants {
-    public static final int motor = 13;
-    public static final int controlPanelSlotIdx = 0;
-    public static final int PIDLoopIdx = 0;
-    public static final int timeoutMs = 30;
-    public static boolean sensorPhase = true;
-    public static boolean motorInvert = false;
-    public static final Gains gains = new Gains(0.15, 0.0, 0.0, 0.0, 0, 1.0);
-}
-public static final class intakeConstants {
-    public static final int intakeMotor = 20;
-}
+        // Reasonable baseline values for a RAMSETE follower in units of meters and seconds
+        public static final double kRamseteB = 2;
+        public static final double kRamseteZeta = 0.7;
+    }
+    public static final class turretConstants {
+        public static final int turret = 11;
+        public static final int kSoftMaxTurretAngle = 1;
+        public static final int kSoftMinTurretAngle = 1;
+        public static final int kTurretRotationsPerTick = 1;
+    }
+    public static final class shooterConstants {
+        public static final int shooter1 = 4;
+        public static final int shooter2 = 5;
+        public static final int shooterTimeout = 30;
+        public static final int shooterSlotIdx = 0;
+    }
+    public static final class elevatorConstants {
+        public static final int solenoid1 = 6;
+        public static final int solenoid2 = 7;
+        public static final int elevatorWinch = 12;
+        public static final int brakeSolenoid = 14;
+        public static final int elevatorPivotTimeout = 30;
+        public static final int elevatorSlotIdx = 1;
+    }
+    public static final class indexConstants {
+        public static final int index1_1 = 8;
+        public static final int index1_2 = 9;
+        public static final int indexKicker = 10;
+    }
+    public static final class controlPanelConstants {
+        public static final int motor = 13;
+        public static final int controlPanelSlotIdx = 0;
+        public static final int PIDLoopIdx = 0;
+        public static final int timeoutMs = 30;
+        public static boolean sensorPhase = true;
+        public static boolean motorInvert = false;
+        public static final Gains gains = new Gains(0.15, 0.0, 0.0, 0.0, 0, 1.0);
+    }
+    public static final class intakeConstants {
+        public static final int intakeMotor = 20;
+    }
 }
