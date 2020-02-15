@@ -1,27 +1,23 @@
 package frc.robot;
 
-import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 import com.ctre.phoenix.sensors.PigeonIMU;
-
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.subsystems.elevatorSubsystem;
-import frc.robot.subsystems.turretSubsystem;
-import com.ctre.phoenix.motorcontrol.*;
 
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
   public static boolean manualMode = false;
   public static boolean turretHome = false;
   public static double temp; 
-
-  // @SuppressWarnings("unused")
   private RobotContainer m_robotContainer;
   public static SupplyCurrentLimitConfiguration m_currentlimitMain = new SupplyCurrentLimitConfiguration(true, 35, 1, 1);
   public static SupplyCurrentLimitConfiguration m_currentlimitSecondary = new SupplyCurrentLimitConfiguration(true, 25, 1, 1);
+  public PowerDistributionPanel m_pdp = new PowerDistributionPanel();
 
   @Override
   public void robotInit() {
@@ -72,6 +68,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopPeriodic() {
+    //RobotContainer.m_shooter.testMode();
   }
 
   @Override

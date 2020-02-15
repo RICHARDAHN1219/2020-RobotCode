@@ -30,37 +30,44 @@ import edu.wpi.first.wpilibj2.command.RamseteCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.driveConstants;
+import frc.robot.Constants.pwmConstants;
 import frc.robot.commands.driveCommand;
-import frc.robot.commands.indexStage1Command;
+import frc.robot.commands.indexerSingleIntakeCommand;
+import frc.robot.commands.indexerRestageCommand;
+import frc.robot.commands.indexerSingleFeedCommand;
+import frc.robot.commands.indexerStageForShootingCommand;
+import frc.robot.commands.indexerEjectCommand;
 import frc.robot.commands.limelightTurretVisionCommand;
 import frc.robot.commands.shooterCommand;
+import frc.robot.commands.manualMode;
 import frc.robot.commands.turretHomingCommand;
 import frc.robot.subsystems.driveSubsystem;
 import frc.robot.subsystems.elevatorSubsystem;
 import frc.robot.subsystems.indexerSubsystem;
 import frc.robot.subsystems.limelightSubsystem;
+import frc.robot.subsystems.intakeSubsystem;
 import frc.robot.subsystems.turretSubsystem;
 import frc.robot.subsystems.shooterSubsystem;
 import frc.robot.subsystems.controlPanelSubsystem;
+import frc.robot.subsystems.blinkin;
 
 public class RobotContainer {
   // Subsystems
-  private final driveSubsystem m_drive = new driveSubsystem();
-  // private final turretSubsystem m_turretSubsystem = new turretSubsystem();
-  // private final shooterSubsystem m_shooter = new shooterSubsystem();
-  // private final indexerSubsystem m_indexer = new indexerSubsystem();
-  // private final elevatorSubsystem m_elevatorSubsystem = new elevatorSubsystem();
-  // private final controlPanelSubsystem m_controlPanelMotors = new controlPanelSubsystem();
+  public final static blinkin m_blinkin = new blinkin(pwmConstants.blinkin);
+  private final driveSubsystem m_driveSubsystem = new driveSubsystem();
+  private final turretSubsystem m_turretSubsystem = new turretSubsystem();
+  //public static final shooterSubsystem m_shooter = new shooterSubsystem();
+  public static final indexerSubsystem m_indexer = new indexerSubsystem();
+  private final elevatorSubsystem m_elevatorSubsystem = new elevatorSubsystem();
+  private final controlPanelSubsystem m_controlPanelMotors = new controlPanelSubsystem();
+  private final intakeSubsystem m_intake = new intakeSubsystem();
   private final limelightSubsystem m_limelight = new limelightSubsystem("limelight-one");
-
   // Commands
   //public static final shooterCommand m_shooterCommand = new shooterCommand(m_shooter, m_indexer);
   //private final limelightTurretVisionCommand m_turretVisionCommand = new limelightTurretVisionCommand(m_turretSubsystem);
   //private final driveCommand m_driveCommand = new driveCommand(m_driveSubsystem);
-  
-  /**
-   * The container for the robot.  Contains subsystems, OI devices, and commands.
-   */
+  //private final index1PowerCell m_index1PowerCell = new index1PowerCell(m_indexer);
+
   public static XboxController m_driveController = new XboxController(driveConstants.driveController);
   // public static XboxController m_operatorController = new XboxController(driveConstants.operatorController);
   public RobotContainer() {
@@ -82,21 +89,26 @@ public class RobotContainer {
     final JoystickButton bbutton = new JoystickButton(m_driveController, Button.kB.value);
     final JoystickButton xbutton = new JoystickButton(m_driveController, Button.kX.value);
     final JoystickButton ybutton = new JoystickButton(m_driveController, Button.kY.value);
-    //bbutton.toggleWhenPressed(new shooterCommand(m_shooter, m_indexer));
-    // final JoystickButton opAbutton = new JoystickButton(m_operatorController, Button.kA.value);
-    // final JoystickButton opBbutton = new JoystickButton(m_operatorController, Button.kB.value);
-    // opAbutton.whenPressed(new manualMode());
-    // opBbutton.whenPressed(new turretHomingCommand());
-    // ybutton.toggleWhenPressed(new indexStage1Command(m_indexer));
-    // ybutton.whenPressed(() -> m_controlPanelMotors.setPosition(0), m_controlPanelMotors);
-    // xbutton.whenPressed(() -> m_controlPanelMotors.setPosition(1 * 4096), m_controlPanelMotors);
-    //abutton.whenPressed(() -> m_shooter.setShooterRPM(2000));
-    //xbutton.whenPressed(() -> m_shooter.setShooterRPM(2500));
-    //ybutton.whenPressed(() -> m_shooter.setShooterRPM(3000));
-  }
   
   public Command getNoAutonomousCommand() {
     return new RunCommand(() -> m_drive.tankDriveVolts(0, 0));
+    final JoystickButton startbutton = new JoystickButton(m_driveController, Button.kStart.value);
+    final JoystickButton selectbutton = new JoystickButton(m_driveController, Button.kBack.value);
+    final JoystickButton opAbutton = new JoystickButton(m_operatorController, Button.kA.value);
+    final JoystickButton opBbutton = new JoystickButton(m_operatorController, Button.kB.value);
+    opAbutton.whenPressed(new manualMode());
+    opBbutton.whenPressed(new turretHomingCommand());
+    //ybutton.whenPressed(() -> m_controlPanelMotors.setPosition(0), m_controlPanelMotors);
+    //xbutton.whenPressed(() -> m_controlPanelMotors.setPosition(1 * 4096), m_controlPanelMotors);
+    // abutton.whenPressed(() -> m_shooter.setShooterRPM(2000));
+    bbutton.whenPressed(new indexerSingleIntakeCommand(m_indexer));
+    abutton.whenPressed(new indexerStageForShootingCommand(m_indexer));
+    xbutton.whenPressed(new indexerSingleFeedCommand(m_indexer));
+    ybutton.whenPressed(new indexerRestageCommand(m_indexer));
+    startbutton.toggleWhenPressed(new indexerEjectCommand(m_indexer));
+    //xbutton.whenPressed(() -> m_shooter.setShooterRPM(2500));
+    //ybutton.whenPressed(() -> m_shooter.setShooterRPM(3000));
+    //selectbutton.whenPressed(() -> m_shooter.testMode());
   }
   
   public Command getAutonomousCommand() {

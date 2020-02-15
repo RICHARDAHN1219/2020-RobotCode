@@ -7,7 +7,6 @@
 
 package frc.robot.commands;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj2.command.CommandBase;
@@ -64,11 +63,11 @@ public class limelightTurretVisionCommand extends CommandBase {
       }
       m_LimelightDriveCommand = drive_cmd;
       */
-      m_turret.setPercentOutput(m_LimelightSteerCommand);
+      //m_turret.setPercentOutput(m_LimelightSteerCommand);
     }
     
     else if (Robot.manualMode = true) {
-      //m_turret.setPercentOutput(RobotContainer.m_operatorController.getX(Hand.kLeft));
+      m_turret.setPercentOutput(RobotContainer.m_driveController.getX(Hand.kLeft) * 0.25);
     }
     
     else if (Robot.turretHome = true){

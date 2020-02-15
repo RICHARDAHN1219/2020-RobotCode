@@ -8,28 +8,29 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.elevatorSubsystem;
+import frc.robot.subsystems.indexerSubsystem;
 
-public class elevatorWinchCommand extends CommandBase {
-  private elevatorSubsystem m_elevator;
+public class indexerEjectCommand extends CommandBase {
 
-  public elevatorWinchCommand(elevatorSubsystem elevator) {
-    addRequirements(elevator);
-    m_elevator = elevator;
+  private indexerSubsystem m_indexer;
+
+  public indexerEjectCommand(indexerSubsystem indexer) {
+    addRequirements(indexer);
+    m_indexer = indexer;
   }
 
   @Override
   public void initialize() {
-    m_elevator.setNeutralMode();
+    m_indexer.ejectIndexer();
   }
 
   @Override
   public void execute() {
-    //m_elevator.elevatorWinch.set(ControlMode.PercentOutput, 1);
   }
 
   @Override
   public void end(boolean interrupted) {
+    m_indexer.stopIndexer();
   }
 
   @Override

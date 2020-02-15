@@ -22,6 +22,10 @@ import static frc.robot.Constants.turretConstants.kTimeout;
 import static frc.robot.Constants.turretConstants.kIndex;
 import static frc.robot.Constants.turretConstants.kMaxDegreesPerSecond;
 import static frc.robot.Constants.turretConstants.kMaxDegreesPerSecondSquared;
+import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.FeedbackDevice;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 public class turretSubsystem extends SubsystemBase {
 
@@ -59,6 +63,7 @@ public class turretSubsystem extends SubsystemBase {
     // set Motion Magic max Cruise Velocity and max acceleration
 		turretDrive.configMotionCruiseVelocity((int)(kMaxDegreesPerSecond / (kDegreesPerTick * 10)) , kTimeout);
 		turretDrive.configMotionAcceleration((int)(kMaxDegreesPerSecondSquared / (kDegreesPerTick * 10)), kTimeout);
+  
   }
 
   public void turretHome() {

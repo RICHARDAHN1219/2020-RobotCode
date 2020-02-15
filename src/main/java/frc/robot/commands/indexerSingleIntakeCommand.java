@@ -8,32 +8,48 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.elevatorSubsystem;
+import frc.robot.subsystems.indexerSubsystem;
 
-public class elevatorWinchCommand extends CommandBase {
-  private elevatorSubsystem m_elevator;
+public class indexerSingleIntakeCommand extends CommandBase {
 
-  public elevatorWinchCommand(elevatorSubsystem elevator) {
-    addRequirements(elevator);
-    m_elevator = elevator;
+  private indexerSubsystem m_indexer;
+  private boolean clearedSensor2 = false;
+
+  public indexerSingleIntakeCommand(indexerSubsystem indexer) {
+    addRequirements(indexer);
+    m_indexer = indexer;
   }
 
   @Override
   public void initialize() {
-    m_elevator.setNeutralMode();
+    clearedSensor2 = false;
+    m_indexer.runOnlyIntake();
   }
 
   @Override
   public void execute() {
-    //m_elevator.elevatorWinch.set(ControlMode.PercentOutput, 1);
+
+    if (m_indexer.ballStaged() == false) {
+      clearedSensor2 = true;
+    }
+
+    if (m_indexer.ballReadyForIndexer() == true) {
+      m_indexer.runIndexer();
+    }
   }
 
   @Override
   public void end(boolean interrupted) {
+    m_indexer.stopIndexer();
   }
 
   @Override
   public boolean isFinished() {
+
+    if (clearedSensor2 && m_indexer.ballStaged()) {
+      return true;
+    }
+    
     return false;
   }
 }

@@ -9,63 +9,89 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
-
-import frc.robot.Robot;
+import com.revrobotics.CANEncoder;
+import com.revrobotics.CANPIDController;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.ControlType;
+import com.revrobotics.EncoderType;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import frc.robot.Constants.shooterConstants;
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.FeedbackDevice;
-import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 
 public class shooterSubsystem extends SubsystemBase {
 
-  private WPI_TalonFX shooter1 = new WPI_TalonFX(shooterConstants.shooter1);
-  private WPI_TalonFX shooter2 = new WPI_TalonFX(shooterConstants.shooter2);
-  public double shooterRPM = 2500;
+  private CANSparkMax neo_shooter1 = new CANSparkMax(shooterConstants.shooter1, MotorType.kBrushless);
+  private CANSparkMax neo_shooter2 = new CANSparkMax(shooterConstants.shooter2, MotorType.kBrushless);
+  private CANPIDController m_pidController;
+  private CANEncoder m_encoder;
+  private double kP, kI, kD, kIz, kFF, kMaxOutput, kMinOutput;
+  private double m_desiredRPM = 0;
 
   public shooterSubsystem() {
-    shooter2.follow(shooter1);
-    shooter2.setInverted(true);
-    shooter1.configSupplyCurrentLimit(Robot.m_currentlimitMain);
-    shooter2.configSupplyCurrentLimit(Robot.m_currentlimitMain);
-    shooter1.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor, shooterConstants.shooterSlotIdx, shooterConstants.shooterTimeout);
-    shooter1.setSensorPhase(true);
-    shooter1.configNominalOutputForward(0, shooterConstants.shooterTimeout);
-    shooter1.configNominalOutputReverse(0, shooterConstants.shooterTimeout);
-    shooter1.configPeakOutputForward(1, shooterConstants.shooterTimeout);
-    shooter1.configPeakOutputReverse(-1, shooterConstants.shooterTimeout);
-    shooter1.setNeutralMode(NeutralMode.Coast);
-    shooter2.setNeutralMode(NeutralMode.Coast);
-    setShooterPID(0.1, 0, 0, 0);
+
+    neo_shooter1.restoreFactoryDefaults();
+    neo_shooter2.restoreFactoryDefaults();
+
+    //Current Limits for use on competition bot
+    //neo_shooter1.setSmartCurrentLimit(35);
+    //neo_shooter2.setSmartCurrentLimit(35);
+    
+    // Set coast mode
+    neo_shooter1.setIdleMode(CANSparkMax.IdleMode.kCoast);
+    neo_shooter2.setIdleMode(CANSparkMax.IdleMode.kCoast);
+
+    neo_shooter2.follow(neo_shooter1, true);
+    m_pidController = neo_shooter1.getPIDController();
+    m_encoder = neo_shooter1.getEncoder(EncoderType.kHallSensor, 4096);
+    kMaxOutput = 1; 
+    kMinOutput = -1;
+    m_pidController.setOutputRange(kMinOutput, kMaxOutput);
+
+    setShooterPID(0.00005, 0.000001, 0, 0);
   }
 
   @Override
   public void periodic() {
-    SmartDashboard.putNumber("ShooterRPM", (int) (shooter1.getSelectedSensorVelocity() * 600 / 4096));
+    SmartDashboard.putNumber("ShooterRPM", (int) m_encoder.getVelocity());
+    double rpm = SmartDashboard.getNumber("DesiredShooterRPM", 0);
+    if (m_desiredRPM != rpm ) {
+      m_desiredRPM = rpm;
+      System.out.println("Shooter desired ROM: "  + m_desiredRPM);
+      m_pidController.setReference(m_desiredRPM, ControlType.kVelocity);
+    }
+    SmartDashboard.putBoolean("isAtSpeed", isAtSpeed());
   }
 
   public void setShooterRPM (double desiredRPM) {
-    shooter1.set(ControlMode.Velocity, desiredRPM * 4096 / 600); //RPM must be less than 6380
+    m_desiredRPM = desiredRPM;
+    m_pidController.setReference(desiredRPM, ControlType.kVelocity);
+  }
+
+  public void testMode(){
+    //m_desiredRPM = SmartDashboard.getNumber("DesiredShooterRPM", 0);
+    //System.out.println("Shooter desired ROM: "  + m_desiredRPM);
+    //m_pidController.setReference(m_desiredRPM, ControlType.kVelocity);
+    //System.out.println("Activating Test Mode");
   }
 
   public void setShooterPID (double P, double I, double D, double F) {
-    shooter1.config_kP(shooterConstants.shooterSlotIdx, P, shooterConstants.shooterTimeout);
-    shooter1.config_kI(shooterConstants.shooterSlotIdx, I, shooterConstants.shooterTimeout);
-    shooter1.config_kD(shooterConstants.shooterSlotIdx, D, shooterConstants.shooterTimeout);
-    shooter1.config_kF(shooterConstants.shooterSlotIdx, F, shooterConstants.shooterTimeout);
+    m_pidController.setP(P);
+    m_pidController.setI(I);
+    m_pidController.setD(D);
+    m_pidController.setFF(F);
   }
 
+  //Current limiting on the fly switching removed due to the SparkMAX API not supporting that sort of switch.
   public void setPercentOutput(double percent) {
-    shooter1.set(ControlMode.PercentOutput, percent);
+    neo_shooter1.set(percent);
   }
-
-  public void disableCurrentLimit() {
-    //shooter1.configGetSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(false, 35, 35, 1));
+  public boolean isAtSpeed(){
+    if (Math.abs(m_desiredRPM - m_encoder.getVelocity()) < 100){
+      return true;
+    } else {
+      return false;
+    }
   }
-
-  public void enableCurrentLimit() {
-   // shooter1.configGetSupplyCurrentLimit(Robot.m_currentlimitMain);
+  public void stop() {
+    setPercentOutput(0.0);
   }
-
 }
