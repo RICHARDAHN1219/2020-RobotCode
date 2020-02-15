@@ -24,7 +24,7 @@ public class FieldLocations {
     public static final double LENGTH = inchesToMeters(52 * 12 + 5.25);
 
     // coordinates of our powerPort
-    public static final Translation2d powerPort = new Translation2d(Transform2(WIDTH / 2 - inchesToMeters(94.66), LENGTH / 2);
+    public static final Translation2d powerPort = new Translation2d(WIDTH / 2 - inchesToMeters(94.66), LENGTH / 2);
 
 
    public static double inchesToMeters(double i) {
