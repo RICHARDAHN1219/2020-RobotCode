@@ -71,11 +71,11 @@ public final class Constants {
         public static final int kEncoderCPR = 2048;
 
         // BAG motor controlled by Talon
-        // Turret inner teeth = 264. * 360
+        // Turret inner teeth = 264
         // gear teeth = 20
-        // gearbox = 30:1
-        // Total motor to turret rotation ration: 1/396
-        public static final double kGearRation = 1 / 396.0; // turret rotations per motor rotation
+        // gearbox = 35:1
+        // Total motor to turret rotation ration: 1/462 = (1/35) * (20/264)
+        public static final double kGearRation = 1 / 462.0; // turret rotations per motor rotation
         public static final double kTurretRotationsPerTick = kGearRation / kEncoderCPR;
         public static final double kDegreesPerTick = 360 * kTurretRotationsPerTick;
         // TODO: test and increase max velocity and acceleration
