@@ -44,6 +44,7 @@ import frc.robot.subsystems.shooterSubsystem;
 import frc.robot.subsystems.controlPanelSubsystem;
 
 public class RobotContainer {
+
   public static final Compressor airCompressor = new Compressor();
 
 // Subsystems
@@ -52,7 +53,8 @@ public class RobotContainer {
   // private final shooterSubsystem m_shooter = new shooterSubsystem();
   // private final indexerSubsystem m_indexer = new indexerSubsystem();
   // private final elevatorSubsystem m_elevatorSubsystem = new elevatorSubsystem();
-  // private final controlPanelSubsystem m_controlPanelMotors = new controlPanelSubsystem();
+  // private final controlPanelSubsystem m_controlPanelSubsystem = new controlPanelSubsystem();
+
 
   // Commands
   //public static final shooterCommand m_shooterCommand = new shooterCommand(m_shooter, m_indexer);
