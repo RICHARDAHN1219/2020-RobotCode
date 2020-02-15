@@ -192,8 +192,15 @@ public class indexerSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Belt RPM", indexBelts.getSelectedSensorVelocity() * 600 / 2048);
     SmartDashboard.putNumber("Kicker RPM", indexKicker.getSelectedSensorVelocity() * 600 / 2048);
     
-    
-
+    //TODO Test manual mode
+    if (Robot.manualMode == true) {
+      setIntakePercentOutput((RobotContainer.m_operatorController.getTriggerAxis(Hand.kRight)
+          - RobotContainer.m_operatorController.getTriggerAxis(Hand.kLeft)) * 0.6);
+      setBeltsPercentOutput(RobotContainer.m_operatorController.getTriggerAxis(Hand.kRight)
+          - RobotContainer.m_operatorController.getTriggerAxis(Hand.kLeft));
+      setKickerPercentOutput(RobotContainer.m_operatorController.getTriggerAxis(Hand.kRight)
+          - RobotContainer.m_operatorController.getTriggerAxis(Hand.kLeft));
+    } else {
     //TODO: if we ever put an encoder on intake motor
     //SmartDashboard.putNumber("Intake RPM", indexIntake.getSelectedSensorVelocity() * 600 / 2048);
 
@@ -241,7 +248,7 @@ public class indexerSubsystem extends SubsystemBase {
       stopIndexer();
     }
     */
-  }
+  }}
 
   public void setBeltsPercentOutput(double percent) {
     indexBelts.set(ControlMode.PercentOutput, percent);
