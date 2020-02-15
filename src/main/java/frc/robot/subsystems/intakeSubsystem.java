@@ -17,8 +17,8 @@ import frc.robot.RobotContainer;
 
 public class intakeSubsystem extends SubsystemBase {
 
-  public WPI_TalonSRX intake = new WPI_TalonSRX(intakeConstants.intakeMotor);
-  public Solenoid intakeSolenoid = new Solenoid(intakeConstants.intakeSolenoid);
+  private WPI_TalonSRX intake = new WPI_TalonSRX(intakeConstants.intakeMotor);
+  private Solenoid intakeSolenoid = new Solenoid(intakeConstants.intakeSolenoid);
   
   public intakeSubsystem() {
     intake.configSupplyCurrentLimit(Robot.m_currentlimitSecondary);
@@ -30,21 +30,12 @@ public class intakeSubsystem extends SubsystemBase {
     if (current >= 20) {
       intake.set(ControlMode.PercentOutput, -0.5);
     }
-
-    setIntakePercentOutput(0.75);
-    // else {
-    //   if (RobotContainer.m_indexer.ballCount >= 4) {
-    //     retractIntake();
-    //   }
-    //   else{
-    //     deployIntake();
-    //   }
-    // }
   }
+  
   public void setIntakePercentOutput(double percent) {
     intake.set(ControlMode.PercentOutput, percent);
   }
-  
+
   public void deployIntake() {
     intakeSolenoid.set(true);
     setIntakePercentOutput(0.75);
