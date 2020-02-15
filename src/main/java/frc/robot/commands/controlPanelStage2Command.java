@@ -9,7 +9,6 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.controlPanelSubsystem;
-import edu.wpi.first.wpilibj.DriverStation;
 
 public class controlPanelStage2Command extends CommandBase {
   /**
@@ -25,9 +24,6 @@ public class controlPanelStage2Command extends CommandBase {
     m_controlPanelSubsystem = cp;
     addRequirements(m_controlPanelSubsystem);
 
-    // Before we start, reset the count so old state from other stages or previous
-    // attempts
-    // don't mess up our count.
     m_controlPanelSubsystem.resetColorCount();
 
     // use a public get method to make private variables visible to other classes
