@@ -21,6 +21,7 @@ import frc.robot.Constants.controlPanelConstants;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 
 public class controlPanelSubsystem extends SubsystemBase {
   // space for variables
@@ -63,16 +64,7 @@ public class controlPanelSubsystem extends SubsystemBase {
         controlPanelConstants.timeoutMs);
     controlPanelMotor.config_kD(controlPanelConstants.PIDLoopIdx, controlPanelConstants.gains.kD,
         controlPanelConstants.timeoutMs);
-    int absolutePosition = controlPanelMotor.getSelectedSensorPosition();
-    absolutePosition &= 0xFFF;
-
-    if (controlPanelConstants.sensorPhase) {
-      absolutePosition *= -1;
-    }
-
-    if (controlPanelConstants.motorInvert) {
-      absolutePosition *= -1;
-    }
+    controlPanelMotor.setNeutralMode(NeutralMode.Brake);
 
     controlPanelMotor.setSelectedSensorPosition(0, controlPanelConstants.PIDLoopIdx, controlPanelConstants.timeoutMs);
 
@@ -207,8 +199,6 @@ public class controlPanelSubsystem extends SubsystemBase {
     return -1;
   }
 
-  // TODO: Actually make motors move and test if count is accurate
-
   public int moveToGamePosition() {
     String currentColor = getColor();
     char currentColorChar = currentColor.charAt(0);
@@ -279,6 +269,9 @@ public class controlPanelSubsystem extends SubsystemBase {
       // move counterclockwise 1
     }
     return 6;
+  }
+  public int getMoveToGamePosition(){
+    return moveToGamePosition();
   }
 
   public void setPosition(double position) {
