@@ -25,7 +25,8 @@ public class controlPanelStage2Command extends CommandBase {
     m_controlPanelSubsystem = cp;
     addRequirements(m_controlPanelSubsystem);
 
-    // Before we start, reset the count so old state from other stages or previous attempts
+    // Before we start, reset the count so old state from other stages or previous
+    // attempts
     // don't mess up our count.
     m_controlPanelSubsystem.resetColorCount();
 
@@ -36,27 +37,22 @@ public class controlPanelStage2Command extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    if(m_controlPanelSubsystem.moveToGamePosition() == -1 ){
-      m_controlPanelSubsystem.setPosition(-1 * 4096);
+   
+    int getMoveToGamePosition = m_controlPanelSubsystem.getMoveToGamePosition();
+    if (getMoveToGamePosition < 0) {
+      m_controlPanelSubsystem.setSpeed(-0.2);
+      //move clockwise
     }
-    if(m_controlPanelSubsystem.moveToGamePosition() == 0 ){
-      m_controlPanelSubsystem.setPosition(0 * 4096);
-    }
-    if(m_controlPanelSubsystem.moveToGamePosition() == 1 ){
-      m_controlPanelSubsystem.setPosition(1 * 4096);
-    }
-    if(m_controlPanelSubsystem.moveToGamePosition() == 2 ){
-      m_controlPanelSubsystem.setPosition(2 * 4096);
-    }
-    if(m_controlPanelSubsystem.moveToGamePosition() == 6 ){
-      //error number
+    if (getMoveToGamePosition >= 1) {
+      m_controlPanelSubsystem.setSpeed(0.2);
+      //move counterclockwise
     }
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
- 
+
   }
 
   // Called once the command ends or is interrupted.
@@ -70,7 +66,17 @@ public class controlPanelStage2Command extends CommandBase {
   public boolean isFinished() {
     char stage2ColorChar = gameData.charAt(0);
     char currentColorChar = currentColor.charAt(0);
-    if (){
+
+    if (stage2ColorChar == 'Y' && currentColorChar == 'G') {
+      return true;
+    }
+    if (stage2ColorChar == 'G' && currentColorChar == 'Y') {
+      return true;
+    }
+    if (stage2ColorChar == 'B' && currentColorChar == 'R') {
+      return true;
+    }
+    if (stage2ColorChar == 'R' && currentColorChar == 'B') {
       return true;
     }
     return false;
