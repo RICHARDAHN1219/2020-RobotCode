@@ -25,7 +25,8 @@ public class controlPanelStage2Command extends CommandBase {
     m_controlPanelSubsystem = cp;
     addRequirements(m_controlPanelSubsystem);
 
-    // Before we start, reset the count so old state from other stages or previous attempts
+    // Before we start, reset the count so old state from other stages or previous
+    // attempts
     // don't mess up our count.
     m_controlPanelSubsystem.resetColorCount();
 
@@ -36,7 +37,16 @@ public class controlPanelStage2Command extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_controlPanelSubsystem.setSpeed(0.2);
+   
+    int getMoveToGamePosition = m_controlPanelSubsystem.getMoveToGamePosition();
+    if (getMoveToGamePosition < 0) {
+      m_controlPanelSubsystem.setSpeed(-0.2);
+      //move clockwise
+    }
+    if (getMoveToGamePosition >= 1) {
+      m_controlPanelSubsystem.setSpeed(0.2);
+      //move counterclockwise
+    }
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -54,7 +64,19 @@ public class controlPanelStage2Command extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if(m_controlPanelSubsystem.moveToGamePosition() == true){
+    char stage2ColorChar = gameData.charAt(0);
+    char currentColorChar = currentColor.charAt(0);
+
+    if (stage2ColorChar == 'Y' && currentColorChar == 'G') {
+      return true;
+    }
+    if (stage2ColorChar == 'G' && currentColorChar == 'Y') {
+      return true;
+    }
+    if (stage2ColorChar == 'B' && currentColorChar == 'R') {
+      return true;
+    }
+    if (stage2ColorChar == 'R' && currentColorChar == 'B') {
       return true;
     }
     return false;
