@@ -18,8 +18,9 @@ import static frc.robot.Constants.driveConstants.kGearReduction;
 import static frc.robot.Constants.driveConstants.kGyroReversed;
 import static frc.robot.Constants.driveConstants.driveTimeout;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
+import com.ctre.phoenix.motorcontrol.InvertType;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.ctre.phoenix.motorcontrol.TalonFXSensorCollection;
+import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.sensors.PigeonIMU;
 import edu.wpi.first.wpilibj.controller.PIDController;
@@ -31,7 +32,6 @@ import edu.wpi.first.wpilibj.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Robot;
 import frc.robot.Constants.driveConstants;
 
 public class driveSubsystem extends SubsystemBase {
@@ -40,65 +40,74 @@ public class driveSubsystem extends SubsystemBase {
   private WPI_TalonFX falcon2_leftFollow  = new WPI_TalonFX(driveConstants.falcon2_leftFollow);
   private WPI_TalonFX falcon3_rightLead   = new WPI_TalonFX(driveConstants.falcon3_rightLead);
   private WPI_TalonFX falcon4_rightFollow = new WPI_TalonFX(driveConstants.falcon4_rightFollow);
-  //private final AHRS m_gyro = new AHRS(SPI.Port.kMXP);
+
+  // OLD Gyro, NAVX:
+  //    private final AHRS m_gyro = new AHRS(SPI.Port.kMXP);
+
+  // New Gyro, pigeon IMU on the CAN bus
   private PigeonIMU m_gyro = new PigeonIMU(driveConstants.pigeonCANid);
 
-  //private static SpeedController m_leftMotors;
-  //private static SpeedController m_rightMotors;
+  // Note: We do not use SpeedController. We use CAN based Lead/Follow. 
 
   private final DifferentialDrive m_drive;
-  private final TalonFXSensorCollection m_leftEncoder;
-  private final TalonFXSensorCollection m_rightEncoder;
   private final SimpleMotorFeedforward  m_feedforward = 
       new SimpleMotorFeedforward(ksVolts, kvVoltSecondsPerMeter, kaVoltSecondsSquaredPerMeter);
 
   private PIDController left_PIDController = new PIDController(kPDriveVel, 0.0, kDDriveVel);
   private PIDController right_PIDController =  new PIDController(kPDriveVel, 0.0, kDDriveVel);
-
-  // The gyro sensor
-  // private final Gyro m_gyro = new ADXRS450_Gyro();
  
   // Odometry class for tracking robot pose
   private final DifferentialDriveOdometry m_odometry;
 
+  // http://www.ctr-electronics.com/downloads/pdf/Falcon%20500%20User%20Guide.pdf
+  // Peak power: 140A
+  // Stall:      257A  (more than the battery can supply)
+  // Battery can at best supply around 250A
+  private SupplyCurrentLimitConfiguration m_limit =
+      new SupplyCurrentLimitConfiguration(true, 30, 20, 0.5);
+
   public driveSubsystem() {
 
+    m_gyro.configFactoryDefault();
+
+    m_drive = new DifferentialDrive(falcon1_leftLead, falcon3_rightLead);
     falcon1_leftLead.configFactoryDefault();
     falcon2_leftFollow.configFactoryDefault();
     falcon3_rightLead.configFactoryDefault();
     falcon4_rightFollow.configFactoryDefault();
 
     // Current limiting
-    falcon1_leftLead.configSupplyCurrentLimit(Robot.m_currentlimitMain);
-    falcon2_leftFollow.configSupplyCurrentLimit(Robot.m_currentlimitMain);
-    falcon2_leftFollow.configSupplyCurrentLimit(Robot.m_currentlimitMain);
-    falcon4_rightFollow.configSupplyCurrentLimit(Robot.m_currentlimitMain);
+    setCurrentLimit(m_limit);
 
+    // Voltage limits
+    setVoltageLimit(11);
+    
     // set brake mode
     falcon1_leftLead.setNeutralMode(NeutralMode.Brake);
     falcon2_leftFollow.setNeutralMode(NeutralMode.Brake);
     falcon3_rightLead.setNeutralMode(NeutralMode.Brake);
     falcon4_rightFollow.setNeutralMode(NeutralMode.Brake);
     
-    // default feed
-    falcon1_leftLead.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor, 0, driveTimeout);
-    falcon3_rightLead.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor, 0, driveTimeout);
-
-    // TODO: do we need to invert both right motors?
+    // No need to invert Follow Motors
+    falcon1_leftLead.setInverted(false);
     falcon3_rightLead.setInverted(true);
-    falcon4_rightFollow.setInverted(true);
+    falcon2_leftFollow.setInverted(InvertType.FollowMaster);
+    falcon4_rightFollow.setInverted(InvertType.FollowMaster);
 
     // set Lead/Follow 
     falcon2_leftFollow.follow(falcon1_leftLead);
     falcon4_rightFollow.follow(falcon3_rightLead);
- 
-    m_leftEncoder = falcon1_leftLead.getSensorCollection();
-    m_rightEncoder = falcon3_rightLead.getSensorCollection();
 
-    m_drive = new DifferentialDrive(falcon1_leftLead, falcon3_rightLead);
+    // NOTE: setSensorPhase() does nothing on TalonFX motors as the encoders 
+    // are integrated, and can cannot be out of phase with the motor. 
+    falcon1_leftLead.setSensorPhase(true);
+    falcon3_rightLead.setSensorPhase(true);
+
+    // default feedback sensor
+    falcon1_leftLead.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor, 0, driveTimeout);
+    falcon3_rightLead.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor, 0, driveTimeout);
+
     m_drive.setRightSideInverted(false);
-
-    m_gyro.configFactoryDefault();
 
     resetEncoders();
     m_odometry = new DifferentialDriveOdometry(Rotation2d.fromDegrees(getHeading()));
@@ -107,10 +116,10 @@ public class driveSubsystem extends SubsystemBase {
   
   @Override
   public void periodic() {
-        // Note: periodic() is run by the scheduler, always. No matter what.
+    // Note: periodic() is run by the scheduler, always. No matter what.
     // Update the odometry in the periodic block
-    double leftDist = getPosition(m_leftEncoder); 
-    double rightDist = getPosition(m_rightEncoder);
+    double leftDist = getLeftPosition(); 
+    double rightDist = getRightPosition();
     m_odometry.update(Rotation2d.fromDegrees(getHeading()), leftDist, rightDist);
 
     // log drive train and data to Smartdashboard
@@ -119,11 +128,11 @@ public class driveSubsystem extends SubsystemBase {
     // NOTE: call getFusedHeading(FusionStatus) to detect gyro errors
 
     // report the wheel speed, position, and pose
-    SmartDashboard.putNumber("left_wheel_Velocity",  getVelocity(m_rightEncoder));
-    SmartDashboard.putNumber("right_wheel_Velocity", getVelocity(m_rightEncoder));
-    SmartDashboard.putNumber("left_wheel_Distance", leftDist); // m_leftEncoder.getPosition());
-    SmartDashboard.putNumber("right_wheel_Distance", rightDist); // m_rightEncoder.getPosition());
-
+    SmartDashboard.putNumber("left_wheel_Velocity", getLeftVelocity());
+    SmartDashboard.putNumber("right_wheel_Velocity", getRightVelocity());
+    SmartDashboard.putNumber("left_wheel_Distance", leftDist); 
+    SmartDashboard.putNumber("right_wheel_Distance", rightDist);
+    
     Pose2d currentPose = m_odometry.getPoseMeters();
     SmartDashboard.putNumber("pose_x",currentPose.getTranslation().getX());
     SmartDashboard.putNumber("pose_y",currentPose.getTranslation().getY());
@@ -131,24 +140,44 @@ public class driveSubsystem extends SubsystemBase {
   }
   
   /**
-   * Returns the distance in Meteres wheel has travelled
+   * Returns the distance in Meteres the left wheel has travelled
    *
    * @return distance in meters
    */
-   double getPosition(TalonFXSensorCollection encoder) {
+  double getLeftPosition() {
      // Native units are encoder ticks (2048 ticks per revolution)
-    return encoder.getIntegratedSensorPosition() * kDistancePerWheelRevolutionMeters * kGearReduction / kEncoderCPR;
-   }
+    return falcon1_leftLead.getSelectedSensorPosition() * kDistancePerWheelRevolutionMeters * kGearReduction / kEncoderCPR;
+  }
 
   /**
-   * Returns the velocity of a given wheel in meters per second
+   * Returns the distance in Meteres the right wheel has travelled
+   *
+   * @return distance in meters
+   */
+  double getRightPosition() {
+    // Native units are encoder ticks (2048 ticks per revolution)
+    return falcon3_rightLead.getSelectedSensorPosition() * kDistancePerWheelRevolutionMeters * kGearReduction / kEncoderCPR;
+  }
+
+  /**
+   * Returns the velocity of the left wheel in meters per second
    *
    * @return velocity in meters/second
    */
-  double getVelocity(TalonFXSensorCollection encoder) {
+  double getLeftVelocity() {
     // Native units are encoder ticks per 100ms
-    return encoder.getIntegratedSensorVelocity() * kDistancePerWheelRevolutionMeters * kGearReduction / (kEncoderCPR * 10.0);
-   }
+    return falcon1_leftLead.getSelectedSensorVelocity() * kDistancePerWheelRevolutionMeters * kGearReduction * 10.0 / kEncoderCPR ;
+  }
+
+  /**
+   * Returns the velocity of the right wheel in meters per second
+   *
+   * @return velocity in meters/second
+   */
+  double getRightVelocity() {
+    // Native units are encoder ticks per 100ms
+    return falcon3_rightLead.getSelectedSensorVelocity() * kDistancePerWheelRevolutionMeters * kGearReduction * 10.0 / kEncoderCPR ;
+  }
 
   /**
    * Returns the currently-estimated pose of the robot.
@@ -175,8 +204,8 @@ public class driveSubsystem extends SubsystemBase {
    */
   public DifferentialDriveWheelSpeeds getWheelSpeeds() {
     return new DifferentialDriveWheelSpeeds(
-        getVelocity(m_leftEncoder),
-        getVelocity(m_rightEncoder));
+        getLeftVelocity(),
+        getRightVelocity());
   }
 
   /**
@@ -233,8 +262,8 @@ public class driveSubsystem extends SubsystemBase {
    * Resets the drive encoders to currently read a position of 0.
    */
   public void resetEncoders() {
-    m_leftEncoder.setIntegratedSensorPosition(0.0, driveTimeout);
-    m_rightEncoder.setIntegratedSensorPosition(0.0, driveTimeout);
+    falcon1_leftLead.setSelectedSensorPosition(0);
+    falcon3_rightLead.setSelectedSensorPosition(0);
   }
 
   /**
@@ -243,27 +272,7 @@ public class driveSubsystem extends SubsystemBase {
    * @return the average of the two encoder readings
    */
   public double getAverageEncoderDistance() {
-    // Was Encoder.getDistance()
-    return ((m_leftEncoder.getIntegratedSensorPosition() + 
-             m_rightEncoder.getIntegratedSensorPosition()) / 2.0);
-  }
-
-  /**
-   * Gets the left drive encoder.
-   *
-   * @return the left drive encoder
-   */
-  public TalonFXSensorCollection getLeftEncoder() {
-    return m_leftEncoder;
-  }
-
-  /**
-   * Gets the right drive encoder.
-   *
-   * @return the right drive encoder
-   */
-  public TalonFXSensorCollection getRightEncoder() {
-    return m_rightEncoder;
+    return ((getLeftPosition() + getRightPosition()) / 2.0);
   }
 
   /**
@@ -305,4 +314,55 @@ public class driveSubsystem extends SubsystemBase {
     m_gyro.getRawGyro(xyz_dps);
     return xyz_dps[2] * (kGyroReversed ? -1.0 : 1.0);
   }
+
+
+  /**
+   * Enable current limiting.
+   *
+   * @param current limit
+   */
+  public void setVoltageLimit(double maxV) {
+    if (maxV > 12.0) {
+      maxV = 12.0;
+    }
+    if (maxV < 0.0) {
+      maxV = 0.0;
+    }
+    falcon1_leftLead.configVoltageCompSaturation(maxV);
+    falcon1_leftLead.enableVoltageCompensation(true);
+    falcon2_leftFollow.configVoltageCompSaturation(maxV);
+    falcon2_leftFollow.enableVoltageCompensation(true);
+    falcon3_rightLead.configVoltageCompSaturation(maxV);
+    falcon3_rightLead.enableVoltageCompensation(true);
+    falcon4_rightFollow.configVoltageCompSaturation(maxV);
+    falcon4_rightFollow.enableVoltageCompensation(true);
+  }
+
+  /**
+   * Enable current limiting.
+   *
+   * @param current limit
+   */
+  public void setCurrentLimit(SupplyCurrentLimitConfiguration limit) {
+    falcon1_leftLead.configSupplyCurrentLimit(limit);
+    falcon2_leftFollow.configSupplyCurrentLimit(limit);
+    falcon2_leftFollow.configSupplyCurrentLimit(limit);
+    falcon4_rightFollow.configSupplyCurrentLimit(limit);
+  }
+
+  /**
+   * Enable default current limiting for drivetrain.
+   */
+  public void enableCurrentLimit() {
+    setCurrentLimit(m_limit);
+  }
+
+  /**
+   * Disablecurrent limiting for drivetrain.
+   */
+  public void disableCurrentLimit() {
+    // not completely disabled, 4x80 amps is 240Amps, wich is almost 100% of the battery output
+    setCurrentLimit(new SupplyCurrentLimitConfiguration(true, 80, 60, 1));
+  }
+
 }
