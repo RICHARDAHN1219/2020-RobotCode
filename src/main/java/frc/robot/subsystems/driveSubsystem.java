@@ -209,14 +209,14 @@ public class driveSubsystem extends SubsystemBase {
 
     // new odometery class starting from current position
     Rotation2d current_heading = Rotation2d.fromDegrees(getHeading());
-    DifferentialDriveOdometry future_odomentery =
+    DifferentialDriveOdometry future_odometry =
         new DifferentialDriveOdometry(current_heading, current_pose);
 
     // predict where we will be t_sec in the future based on our current wheel speeds
-    future_odomentery.update(current_heading, getLeftVelocity() * t_sec,
+    future_odometry.update(current_heading, getLeftVelocity() * t_sec,
         getRightVelocity() * t_sec);
 
-    return future_odomentery.getPoseMeters();
+    return future_odometry.getPoseMeters();
   }
 
   /**

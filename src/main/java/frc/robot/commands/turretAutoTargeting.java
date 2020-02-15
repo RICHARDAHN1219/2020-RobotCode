@@ -7,10 +7,13 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Translation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Robot;
+import frc.robot.RobotContainer;
 import frc.robot.subsystems.driveSubsystem;
 import frc.robot.subsystems.limelightSubsystem;
 import frc.robot.subsystems.turretSubsystem;
@@ -56,6 +59,12 @@ public class turretAutoTargeting extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    if (Robot.manualMode == true){
+      RobotContainer.m_operatorController.getX(Hand.kLeft);
+    } 
+    else if (Robot.turretHome == true) {
+      m_turret.turretHome();
+    } else {
 
     /**
      * Get the pose of robot in the near future. This anticipates where we need will need to be
@@ -87,6 +96,7 @@ public class turretAutoTargeting extends CommandBase {
     SmartDashboard.putNumber("LL_Dist2Target", m_limelight.getDist());
     SmartDashboard.putNumber("AngleError", m_errorDegrees);
     SmartDashboard.putNumber("LL_Angle", ll_angleDegrees);
+  }
 
   }
 

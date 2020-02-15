@@ -4,7 +4,6 @@
 /* must be accompanied by the FIRST BSD license file in the root directory of */
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
-
 package frc.robot.commands;
 
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -15,6 +14,10 @@ import frc.robot.RobotContainer;
 import frc.robot.subsystems.limelightSubsystem;
 import frc.robot.subsystems.turretSubsystem;
 
+@Deprecated
+/**
+ * limelightTurretVisionCommand() - Deprecated. Use this only if turretAutoTargeting doesn't work.
+ */
 public class limelightTurretVisionCommand extends CommandBase {
   turretSubsystem m_turret;
   limelightSubsystem m_limelight;
