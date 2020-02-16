@@ -47,16 +47,22 @@ public class shooterSubsystem extends SubsystemBase {
     m_pidController.setOutputRange(kMinOutput, kMaxOutput);
 
     setShooterPID(0.00005, 0.000001, 0, 0);
+
+    SmartDashboard.putNumber("ShooterRPM", m_desiredRPM);
+    SmartDashboard.putNumber("UpdatedRPM", -1);
   }
 
   @Override
   public void periodic() {
     SmartDashboard.putNumber("ShooterRPM", (int) m_encoder.getVelocity());
-    double rpm = SmartDashboard.getNumber("DesiredShooterRPM", 0);
-    if (m_desiredRPM != rpm ) {
-      m_desiredRPM = rpm;
-      System.out.println("Shooter desired ROM: "  + m_desiredRPM);
-      m_pidController.setReference(m_desiredRPM, ControlType.kVelocity);
+    double rpm = SmartDashboard.getNumber("DesiredShooterRPM", -1);
+    if (rpm != -1) {
+      if (m_desiredRPM != rpm ) {
+        setShooterRPM(rpm);
+        System.out.println("New shooter desired RPM: "  + m_desiredRPM);
+        // lets' confirm we're changing this
+        SmartDashboard.putNumber("UpdatedRPM", m_desiredRPM);
+      }
     }
     SmartDashboard.putBoolean("isAtSpeed", isAtSpeed());
   }
