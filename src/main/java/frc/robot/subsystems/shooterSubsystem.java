@@ -49,6 +49,7 @@ public class shooterSubsystem extends SubsystemBase {
     setShooterPID(0.00005, 0.000001, 0, 0);
 
     SmartDashboard.putNumber("ShooterRPM", m_desiredRPM);
+    SmartDashboard.putNumber("UpdatedRPM", -1);
   }
 
   @Override
@@ -60,7 +61,7 @@ public class shooterSubsystem extends SubsystemBase {
         setShooterRPM(rpm);
         System.out.println("New shooter desired RPM: "  + m_desiredRPM);
         // lets' confirm we're changing this
-        SmartDashboard.putNumber("UPDATED_RPM", m_desiredRPM);
+        SmartDashboard.putNumber("UpdatedRPM", m_desiredRPM);
       }
     }
     SmartDashboard.putBoolean("isAtSpeed", isAtSpeed());
