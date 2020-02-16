@@ -46,7 +46,7 @@ public class shooterSubsystem extends SubsystemBase {
     kMinOutput = -1;
     m_pidController.setOutputRange(kMinOutput, kMaxOutput);
 
-    setShooterPID(0.00005, 0.000001, 0, 0);
+    setShooterPID(0.0003, 0.00000025, 0, 0.0002, 250);
 
     SmartDashboard.putNumber("ShooterRPM", m_desiredRPM);
     SmartDashboard.putNumber("UpdatedRPM", -1);
@@ -80,11 +80,12 @@ public class shooterSubsystem extends SubsystemBase {
     //System.out.println("Activating Test Mode");
   }
 
-  public void setShooterPID (double P, double I, double D, double F) {
+  public void setShooterPID (double P, double I, double D, double F, double iZ) {
     m_pidController.setP(P);
     m_pidController.setI(I);
     m_pidController.setD(D);
     m_pidController.setFF(F);
+    m_pidController.setIZone(iZ);
   }
 
   //Current limiting on the fly switching removed due to the SparkMAX API not supporting that sort of switch.
