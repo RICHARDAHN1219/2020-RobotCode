@@ -90,6 +90,7 @@ public static final class shooterConstants {
     public static final int shooter2 = 5;
     public static final int shooterTimeout = 30;
     public static final int shooterSlotIdx = 0;
+    public static final int shooterHood = 1;
 }
 public static final class elevatorConstants {
     public static final int elevator1 = 6;
@@ -114,7 +115,8 @@ public static final class controlPanelConstants {
 }
 public static final class intakeConstants {
     public static final int intakeMotor = 20;
-    public static final int intakeSolenoid = 1;
+    public static final int intakeSolenoid = 6;
+    public static final int intakeSolenoid2 = 7;
 }
 public static final class pwmConstants {
     public static final int blinkin = 0;

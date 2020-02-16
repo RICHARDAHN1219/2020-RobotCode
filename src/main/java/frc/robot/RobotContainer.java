@@ -36,6 +36,8 @@ import frc.robot.commands.indexerSingleIntakeCommand;
 import frc.robot.commands.indexerRestageCommand;
 import frc.robot.commands.indexerSingleFeedCommand;
 import frc.robot.commands.indexerStageForShootingCommand;
+import frc.robot.commands.intakeDeployCommand;
+import frc.robot.commands.intakeRetractCommand;
 import frc.robot.commands.indexerEjectCommand;
 import frc.robot.commands.limelightTurretVisionCommand;
 import frc.robot.commands.turretHomingCommand;
@@ -54,7 +56,7 @@ public class RobotContainer {
   private final driveSubsystem m_drive = new driveSubsystem();
   public final static blinkinSubsystem m_blinkin = new blinkinSubsystem(pwmConstants.blinkin);
   private final turretSubsystem m_turretSubsystem = new turretSubsystem();
-  //public static final shooterSubsystem m_shooter = new shooterSubsystem();
+  public static final shooterSubsystem m_shooter = new shooterSubsystem();
   public static final indexerSubsystem m_indexer = new indexerSubsystem();
   private final elevatorSubsystem m_elevatorSubsystem = new elevatorSubsystem();
   private final controlPanelSubsystem m_controlPanelMotors = new controlPanelSubsystem();
@@ -96,14 +98,19 @@ public class RobotContainer {
     //ybutton.whenPressed(() -> m_controlPanelMotors.setPosition(0), m_controlPanelMotors);
     //xbutton.whenPressed(() -> m_controlPanelMotors.setPosition(1 * 4096), m_controlPanelMotors);
     // abutton.whenPressed(() -> m_shooter.setShooterRPM(2000));
-    bbutton.whenPressed(new indexerSingleIntakeCommand(m_indexer));
-    abutton.whenPressed(new indexerStageForShootingCommand(m_indexer));
-    xbutton.whenPressed(new indexerSingleFeedCommand(m_indexer));
-    ybutton.whenPressed(new indexerRestageCommand(m_indexer));
-    startbutton.toggleWhenPressed(new indexerEjectCommand(m_indexer));
+    //bbutton.whenPressed(new indexerSingleIntakeCommand(m_indexer));
+    //abutton.whenPressed(new indexerStageForShootingCommand(m_indexer));
+    //xbutton.whenPressed(new indexerSingleFeedCommand(m_indexer));
+    //ybutton.whenPressed(new indexerRestageCommand(m_indexer));
+    //startbutton.toggleWhenPressed(new indexerEjectCommand(m_indexer));
     //xbutton.whenPressed(() -> m_shooter.setShooterRPM(2500));
     //ybutton.whenPressed(() -> m_shooter.setShooterRPM(3000));
     //selectbutton.whenPressed(() -> m_shooter.testMode());
+    bbutton.toggleWhenPressed(new intakeDeployCommand(m_intake));
+    //abutton.toggleWhenPressed(new intakeRetractCommand(m_intake));
+    abutton.whenPressed(() -> m_shooter.setShooterRPM(2000));
+    xbutton.whenPressed(() -> m_shooter.setShooterRPM(2500));
+    ybutton.whenPressed(() ->m_shooter.setShooterRPM(3000));
   }
   public Command getNoAutonomousCommand() {
     return new RunCommand(() -> m_drive.tankDriveVolts(0, 0));
