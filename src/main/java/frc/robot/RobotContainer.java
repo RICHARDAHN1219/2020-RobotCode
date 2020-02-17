@@ -108,9 +108,9 @@ public class RobotContainer {
     //selectbutton.whenPressed(() -> m_shooter.testMode());
     bbutton.toggleWhenPressed(new intakeDeployCommand(m_intake));
     //abutton.toggleWhenPressed(new intakeRetractCommand(m_intake));
-    abutton.whenPressed(() -> m_shooter.setShooterRPM(2000));
-    xbutton.whenPressed(() -> m_shooter.setShooterRPM(2500));
-    ybutton.whenPressed(() ->m_shooter.setShooterRPM(3000));
+    //abutton.whenPressed(() -> m_shooter.setShooterRPM(2000));
+    //xbutton.whenPressed(() -> m_shooter.setShooterRPM(2500));
+    //ybutton.whenPressed(() ->m_shooter.setShooterRPM(3000));
   }
   public Command getNoAutonomousCommand() {
     return new RunCommand(() -> m_drive.tankDriveVolts(0, 0));
