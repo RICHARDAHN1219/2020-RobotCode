@@ -1,14 +1,11 @@
 package frc.robot;
 
 import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
-import com.ctre.phoenix.sensors.PigeonIMU;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.subsystems.intakeSubsystem;
 
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;

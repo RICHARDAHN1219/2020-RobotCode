@@ -9,6 +9,7 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class limelightSubsystem extends SubsystemBase {
@@ -19,6 +20,10 @@ public class limelightSubsystem extends SubsystemBase {
   NetworkTableInstance getNT = NetworkTableInstance.getDefault();
   private NetworkTable limelightNT;
   private double dist = -1;
+  private boolean oneXZoom;
+  private boolean twoXZoom;
+  private boolean threeXZoom;
+  private boolean lock;
 
   public limelightSubsystem() {
     limelightName = "limelight-one";
@@ -32,6 +37,11 @@ public class limelightSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
+    if (getTV() == 1){
+      lock = true;
+    } else {
+      lock = false;
+    }
     // This method will be called once per scheduler run
         //Example output: currentDist = (2.5019-0.6096 / tan(10+20))
     //currentDist = 3.27755 so 3x Zoom shall be used.
@@ -43,6 +53,10 @@ public class limelightSubsystem extends SubsystemBase {
     double twoXDist = 2.7178;
     double threeXDist = 2.9718;
     double currentDist = Math.abs(h2 - h1) / Math.tan(a1 + a2);
+    SmartDashboard.putBoolean("1xZoom", oneXZoom);
+    SmartDashboard.putBoolean("2xZoom", twoXZoom);
+    SmartDashboard.putBoolean("3xZoom", threeXZoom);
+    SmartDashboard.putBoolean("LL_TARGETLOCK", lock);
     dist = currentDist;
   //  if (currentDist >= oneXDist || getTV() == 1){
   //     set1xZoom();
@@ -68,6 +82,9 @@ public class limelightSubsystem extends SubsystemBase {
    */
   public void set1xZoom() {
     limelightNT.getEntry("pipeline").setNumber(0);
+    oneXZoom = true;
+    twoXZoom = false;
+    threeXZoom = false;
   }
 
   /**
@@ -77,6 +94,9 @@ public class limelightSubsystem extends SubsystemBase {
    */
   public void set2xZoom() {
     limelightNT.getEntry("pipeline").setNumber(1);
+    oneXZoom = false;
+    twoXZoom = true;
+    threeXZoom = false;
   }
 
   /**
@@ -86,6 +106,9 @@ public class limelightSubsystem extends SubsystemBase {
    */
   public void set3xZoom() {
     limelightNT.getEntry("pipeline").setNumber(2);
+    oneXZoom = false;
+    twoXZoom = false;
+    threeXZoom = true;
   }
 
   /**
