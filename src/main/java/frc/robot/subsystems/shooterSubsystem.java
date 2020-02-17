@@ -15,6 +15,7 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.ControlType;
 import com.revrobotics.EncoderType;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.team2930.lib.util.linearInterpolator;
 import frc.robot.Constants.shooterConstants;
 
 public class shooterSubsystem extends SubsystemBase {
@@ -27,6 +28,19 @@ public class shooterSubsystem extends SubsystemBase {
   private double m_desiredRPM = 0;
   private boolean m_atSpeed = false;
   private long m_initalTime = 0;
+  private linearInterpolator m_lt;
+  private double data[][] = {
+    // distance in Feed -> RPM
+    { 4,  2650 }, 
+    { 5,  2550 },
+    { 6,  2550 },
+    { 7,  2550 },
+    { 8,  2600 },
+    { 9,  2650 },
+    { 10, 2700 },
+    
+    { 25, 4300},
+  };
 
   public shooterSubsystem() {
 
@@ -52,6 +66,8 @@ public class shooterSubsystem extends SubsystemBase {
 
     SmartDashboard.putNumber("ShooterRPM", m_desiredRPM);
     SmartDashboard.putNumber("UpdatedRPM", -1);
+
+    m_lt = new linearInterpolator(data);
   }
 
   @Override
@@ -108,7 +124,7 @@ public class shooterSubsystem extends SubsystemBase {
   public void setPercentOutput(double percent) {
     neo_shooter1.set(percent);
   }
-  
+
   public boolean isAtSpeed(){
     double error = m_desiredRPM - m_encoder.getVelocity();
     SmartDashboard.putNumber("RPM_Error", error);
@@ -118,6 +134,27 @@ public class shooterSubsystem extends SubsystemBase {
       return false;
     }
   }
+
+  /**
+   * getRPMforDistanceFeet() - return RPM based on distance to target in FEET
+   * 
+   * @param distanceFeet distance in FEET to goal
+   * @return RPM for flywheel
+   */
+  public double getRPMforDistanceFeet(double distanceFeet) {
+    return m_lt.getInterpolatedValue(distanceFeet);
+  }
+
+    /**
+   * getRPMforDistanceFeet() - return RPM based on distance to target in METERS
+   * 
+   * @param distanceFeet distance in METERS to goal
+   * @return RPM for flywheel
+   */
+  public double getRPMforDistanceMeter(double distanceMeters) {
+    return getRPMforDistanceFeet(distanceMeters * 3.28084);
+  }
+
   public void stop() {
     setPercentOutput(0.0);
   }
