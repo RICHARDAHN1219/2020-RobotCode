@@ -37,7 +37,7 @@ public class limelightTurretVisionCommand extends CommandBase {
   public void execute() {
     if (Robot.manualMode==false) {
       // These numbers must be tuned for Comp Robot!  Be careful!
-      final double STEER_K = 0.07; //how hard to turn toward the target
+      final double STEER_K = 0.1; //how hard to turn toward the target
       double tv = m_limelight.getTV();
       double tx = m_limelight.getTX();
       //boolean m_LimelightHasValidTarget = false;
