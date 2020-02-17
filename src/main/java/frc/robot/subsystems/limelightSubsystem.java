@@ -44,20 +44,21 @@ public class limelightSubsystem extends SubsystemBase {
     double threeXDist = 2.9718;
     double currentDist = Math.abs(h2 - h1) / Math.tan(a1 + a2);
     dist = currentDist;
-    if (currentDist >= oneXDist || getTV() == 1){
-      set1xZoom();
-      System.out.println("Switching to 1x Zoom");
-    } else if (currentDist >= twoXDist || getTV() == 1){
-      set2xZoom();
-      System.out.println("Switching to 2x Zoom");
-    } else if (currentDist >= threeXDist || getTV() == 1) {
-      set3xZoom();
-      System.out.println("Switching to 3x Zoom");
-    } if (a2 == 0 || getTV() == 0){
-      dist = -1;
-      set1xZoom();
-      System.out.println("No target in range, switching to normal zoom.");
-    }
+  //  if (currentDist >= oneXDist || getTV() == 1){
+  //     set1xZoom();
+  //     System.out.println("Switching to 1x Zoom");
+  //   } else if (currentDist >= twoXDist || getTV() == 1){
+  //     set2xZoom();
+  //     System.out.println("Switching to 2x Zoom");
+  //   } else if (currentDist >= threeXDist || getTV() == 1) {
+  //     set3xZoom();
+  //     System.out.println("Switching to 3x Zoom");
+  //   } if (a2 == 0 || getTV() == 0){
+  //     dist = -1;
+  //     set1xZoom();
+  //     System.out.println("No target in range, switching to normal zoom.");
+  //   }
+    
   }
 
   /**

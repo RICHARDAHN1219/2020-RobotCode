@@ -46,8 +46,8 @@ public class turretSubsystem extends SubsystemBase {
     // set soft limits
     turretDrive.configForwardSoftLimitThreshold((int) (kSoftMaxTurretAngle / kDegreesPerTick));
     turretDrive.configReverseSoftLimitThreshold((int) (kSoftMinTurretAngle / kDegreesPerTick));
-    turretDrive.configForwardSoftLimitEnable(true);
-    turretDrive.configReverseSoftLimitEnable(true);
+    turretDrive.configForwardSoftLimitEnable(false);
+    turretDrive.configReverseSoftLimitEnable(false);
 
     // TODO: tune max current
     turretDrive.configContinuousCurrentLimit(25);
@@ -118,8 +118,8 @@ public class turretSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    boolean turretLimit1 = limit1.get();
-    boolean turretLimit2 = limit2.get();
+    boolean turretLimit1 = false;
+    boolean turretLimit2 = false;
     int pos = turretDrive.getSelectedSensorPosition();
 
     SmartDashboard.putBoolean("TurretLimit 1", turretLimit1);

@@ -93,7 +93,7 @@ public class RobotContainer {
     final JoystickButton selectbutton = new JoystickButton(m_driveController, Button.kBack.value);
     final JoystickButton opAbutton = new JoystickButton(m_operatorController, Button.kA.value);
     final JoystickButton opBbutton = new JoystickButton(m_operatorController, Button.kB.value);
-    //opAbutton.whenPressed(new manualMode());
+    opAbutton.whenPressed(() -> m_turretSubsystem.turretHome());
     //opBbutton.whenPressed(new turretHomingCommand());
     //ybutton.whenPressed(() -> m_controlPanelMotors.setPosition(0), m_controlPanelMotors);
     //xbutton.whenPressed(() -> m_controlPanelMotors.setPosition(1 * 4096), m_controlPanelMotors);
