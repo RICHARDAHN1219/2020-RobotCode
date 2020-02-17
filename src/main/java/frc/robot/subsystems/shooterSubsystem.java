@@ -25,6 +25,8 @@ public class shooterSubsystem extends SubsystemBase {
   private CANEncoder m_encoder;
   private double kP, kI, kD, kIz, kFF, kMaxOutput, kMinOutput;
   private double m_desiredRPM = 0;
+  private boolean m_atSpeed = false;
+  private long m_initalTime = 0;
 
   public shooterSubsystem() {
 
@@ -63,9 +65,23 @@ public class shooterSubsystem extends SubsystemBase {
         System.out.println("New shooter desired RPM: "  + m_desiredRPM);
         // lets' confirm we're changing this
         SmartDashboard.putNumber("UpdatedRPM", m_desiredRPM);
+        m_initalTime = System.nanoTime();
+        m_atSpeed = false;
       }
     }
-    SmartDashboard.putBoolean("isAtSpeed", isAtSpeed());
+
+    m_initalTime = System.nanoTime();
+    if (isAtSpeed()) {
+      if (!m_atSpeed) {
+        SmartDashboard.putNumber("Time2RPM", System.nanoTime() - m_initalTime);
+      }
+      m_atSpeed = true;
+    }
+    else {
+      m_atSpeed = false;
+      m_initalTime = System.nanoTime();
+    }
+    SmartDashboard.putBoolean("isAtSpeed", m_atSpeed);
   }
 
   public void setShooterRPM (double desiredRPM) {
@@ -92,8 +108,11 @@ public class shooterSubsystem extends SubsystemBase {
   public void setPercentOutput(double percent) {
     neo_shooter1.set(percent);
   }
+  
   public boolean isAtSpeed(){
-    if (Math.abs(m_desiredRPM - m_encoder.getVelocity()) < 100){
+    double error = m_desiredRPM - m_encoder.getVelocity();
+    SmartDashboard.putNumber("RPM_Error", error);
+    if (Math.abs(error) < 100){
       return true;
     } else {
       return false;
