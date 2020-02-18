@@ -57,7 +57,7 @@ public class turretSubsystem extends SubsystemBase {
 
     // TODO: tune PIDF parameters (these are only a guess)
     turretDrive.configAllowableClosedloopError(0, kIndex, kTimeout);
-    turretDrive.config_kF(kIndex, 0.01, kTimeout);
+    turretDrive.config_kF(kIndex, 0.38, kTimeout);
     turretDrive.config_kP(kIndex, 0.1, kTimeout);
     turretDrive.config_kI(kIndex, 0, kTimeout);
     turretDrive.config_kD(kIndex, 0, kTimeout);
