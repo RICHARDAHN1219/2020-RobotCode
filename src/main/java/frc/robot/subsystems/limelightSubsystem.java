@@ -52,9 +52,8 @@ public class limelightSubsystem extends SubsystemBase {
     double oneXDist = 1.7272;
     double twoXDist = 2.7178;
     double threeXDist = 2.9718;
-    double currentDist = Math.abs(h2 - h1) / Math.tan((a1 + a2) * Math.PI / 180);
+    double currentDist = ((Math.abs(h2 - h1) / Math.tan((a1 + a2) * Math.PI / 180)) / 1.1154856);
     // TODO: figure out whey we need a fudge factor?
-    currentDist = currentDist / 1.1154856;
     SmartDashboard.putBoolean("1xZoom", oneXZoom);
     SmartDashboard.putBoolean("2xZoom", twoXZoom);
     SmartDashboard.putBoolean("3xZoom", threeXZoom);

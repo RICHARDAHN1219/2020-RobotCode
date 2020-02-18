@@ -13,7 +13,8 @@ import frc.robot.subsystems.indexerSubsystem;
 public class indexerSingleFeedCommand extends CommandBase {
 
   private indexerSubsystem m_indexer;
-  private int endStateChangeCount;
+  private boolean clearedSensor3 = false;
+  private int startBallCount;
 
   public indexerSingleFeedCommand(indexerSubsystem indexer) {
     addRequirements(indexer);
@@ -22,26 +23,39 @@ public class indexerSingleFeedCommand extends CommandBase {
 
   @Override
   public void initialize() {
-    endStateChangeCount = m_indexer.getExitStateChangeCount() + 2;
+    clearedSensor3 = false;
+    final int startBallCount = m_indexer.getBallCount();
+    m_indexer.setFinishedSingleFeed(false);
   }
 
   @Override
   public void execute() {
-    if (m_indexer.getExitStateChangeCount() < endStateChangeCount && m_indexer.ballExiting() != true) {
+    
+    if (m_indexer.ballExiting() == false && startBallCount == m_indexer.getBallCount() + 1) {
+      clearedSensor3 = true;
+    }
+
+    if (m_indexer.ballExiting() == false && startBallCount == m_indexer.getBallCount()) {
       m_indexer.ejectIndexer();
     }
-    else {
-      isFinished();
+
+    if (m_indexer.ballExiting() == true) {
+      m_indexer.ejectIndexer();
     }
   }
 
   @Override
   public void end(boolean interrupted) {
     m_indexer.stopIndexer();
+    m_indexer.setFinishedSingleFeed(true);
   }
 
   @Override
   public boolean isFinished() {
+    if (clearedSensor3 == true && startBallCount == m_indexer.getBallCount() + 1) {
+      return true;
+    }
+    
     return false;
   }
 }

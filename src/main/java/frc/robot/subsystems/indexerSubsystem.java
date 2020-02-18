@@ -42,6 +42,7 @@ public class indexerSubsystem extends SubsystemBase {
   private int restageState = 0;
   private boolean periodic = true;
   private blinkinSubsystem m_blinkin = RobotContainer.m_blinkin;
+  private boolean finishedSingleFeed;
 
   public indexerSubsystem() {
     indexBelts.configFactoryDefault();
@@ -453,5 +454,21 @@ public class indexerSubsystem extends SubsystemBase {
    */
   public void setRestageState(int RestageState) {
     restageState = RestageState;
+  }
+
+  /**
+   * setFinishedSingleFeed() - set the status of the single feed command
+   */
+  public void setFinishedSingleFeed(boolean finished) {
+    finishedSingleFeed = finished;
+  }
+
+  /**
+   * getFinishedSingleFeed() - gets the status of the single feed command
+   * 
+   * @return boolean finished single feed
+   */
+  public boolean getFinishedSingleFeed() {
+    return finishedSingleFeed;
   }
 }
