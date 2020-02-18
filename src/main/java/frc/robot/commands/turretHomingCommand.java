@@ -33,10 +33,12 @@ public class turretHomingCommand extends CommandBase {
 
   @Override
   public void end(boolean interrupted) {
+    m_turret.stop();
   }
 
   @Override
   public boolean isFinished() {
-    return true;
+    // Move to home and stay there until another command is initiated.
+    return false;
   }
 }

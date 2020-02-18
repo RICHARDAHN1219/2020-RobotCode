@@ -40,7 +40,9 @@ import frc.robot.commands.intakeDeployCommand;
 import frc.robot.commands.intakeRetractCommand;
 import frc.robot.commands.indexerEjectCommand;
 import frc.robot.commands.limelightTurretVisionCommand;
+import frc.robot.commands.turretAutoTargeting;
 import frc.robot.commands.turretHomingCommand;
+import frc.robot.commands.turretManualMode;
 import frc.robot.subsystems.driveSubsystem;
 import frc.robot.subsystems.elevatorSubsystem;
 import frc.robot.subsystems.indexerSubsystem;
@@ -93,7 +95,15 @@ public class RobotContainer {
     final JoystickButton selectbutton = new JoystickButton(m_driveController, Button.kBack.value);
     final JoystickButton opAbutton = new JoystickButton(m_operatorController, Button.kA.value);
     final JoystickButton opBbutton = new JoystickButton(m_operatorController, Button.kB.value);
-    opAbutton.whenPressed(() -> m_turretSubsystem.turretHome(), m_turretSubsystem);
+    final JoystickButton opStartbutton = new JoystickButton(m_operatorController, Button.kStart.value);
+
+    // op Start -> auto target
+    // op A  -> turret home
+    // op B  -> manual control with operator controller
+    opStartbutton.whenPressed(new turretAutoTargeting(new Translation2d(2.0,0), m_turretSubsystem, m_drive, m_limelight));
+    opAbutton.whenPressed(new turretHomingCommand(m_turretSubsystem));
+    opBbutton.whenPressed(new turretManualMode(m_turretSubsystem));
+    
     //opBbutton.whenPressed(new turretHomingCommand());
     //ybutton.whenPressed(() -> m_controlPanelMotors.setPosition(0), m_controlPanelMotors);
     //xbutton.whenPressed(() -> m_controlPanelMotors.setPosition(1 * 4096), m_controlPanelMotors);
@@ -111,10 +121,6 @@ public class RobotContainer {
     //abutton.whenPressed(() -> m_shooter.setShooterRPM(2000)), m_shooter;
     //xbutton.whenPressed(() -> m_shooter.setShooterRPM(2500)), m_shooter;
     //ybutton.whenPressed(() -> m_shooter.setShooterRPM(3000), m_shooter);
-    abutton.whenPressed(() -> m_turretSubsystem.setAngleDegrees(0), m_turretSubsystem);
-    xbutton.whenPressed(() -> m_turretSubsystem.setAngleDegrees(5), m_turretSubsystem);
-    ybutton.whenPressed(() -> m_turretSubsystem.setAngleDegrees(-5), m_turretSubsystem);
-    bbutton.whenPressed(() -> m_turretSubsystem.setAngleDegrees(-10), m_turretSubsystem);
   }
   public Command getNoAutonomousCommand() {
     return new RunCommand(() -> m_drive.tankDriveVolts(0, 0));

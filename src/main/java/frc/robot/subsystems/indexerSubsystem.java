@@ -110,74 +110,66 @@ public class indexerSubsystem extends SubsystemBase {
     // prevent intake of new balls when we already have 5
     // EDIT: We are aiming for 4 balls by week 1 until 5 is figured out
     if (periodic == true) {
-      if (Robot.manualMode == true) {
-        setIntakePercentOutput((RobotContainer.m_operatorController.getTriggerAxis(Hand.kRight)
-            - RobotContainer.m_operatorController.getTriggerAxis(Hand.kLeft)) * 0.6);
-        setBeltsPercentOutput(RobotContainer.m_operatorController.getTriggerAxis(Hand.kRight)
-            - RobotContainer.m_operatorController.getTriggerAxis(Hand.kLeft));
-        setKickerPercentOutput(RobotContainer.m_operatorController.getTriggerAxis(Hand.kRight)
-            - RobotContainer.m_operatorController.getTriggerAxis(Hand.kLeft));
-      } else {
-        // move indexer when a new ball is ready to enter the system
-        if (ballReady4Indexer == true) {
-          setIntakePercentOutput(0.6);
-          setBeltsPercentOutput(1);
-          setKickerPercentOutput(0.3);
-          m_blinkin.solid_blue();
-        }
-
-        // stop indexer when balls are properly staged
-        else if (ballStaged == true) {
-          setBeltsPercentOutput(0);
-          m_blinkin.solid_red();
-        }
-
-        // finish staging balls when this error state occurs
-        if ((-1 + (ballCount * 2)) != stateChangeCount) {
-          setIntakePercentOutput(0.6);
-          setBeltsPercentOutput(1);
-          setKickerPercentOutput(0.3);
-          m_blinkin.solid_blue();
-        }
-
-        // finish staging balls when this error state occurs
-        if ((ballCount >= 1) && ballReady4Indexer == false && ballStaged == false) {
-          setIntakePercentOutput(0.6);
-          setBeltsPercentOutput(1);
-          setKickerPercentOutput(0.3);
-          m_blinkin.solid_blue();
-        }
-
-        // automatically stage the balls for shooting when we have 4
-        if (ballCount == 4 && ballExiting == false) {
-          setIntakePercentOutput(0.6);
-          setBeltsPercentOutput(1);
-          m_blinkin.solid_green_lime();
-        }
-
-        // stop indexer when all 4 balls are staged for shooting
-        else if (ballCount == 4 && ballExiting == true) {
-          setIntakePercentOutput(0);
-          setBeltsPercentOutput(0);
-          m_blinkin.solid_pink();
-        }
-
-        if (ballExiting == true) {
-          setIntakePercentOutput(0);
-          setBeltsPercentOutput(0);
-          setKickerPercentOutput(0);
-          m_blinkin.solid_red();
-        }
-
-        if (eject == true) {
-          // setBeltsPercentOutput(1);
-          // setKickerPercentOutput(1);
-          setIntakePercentOutput(0.6);
-          setBeltsRPM(6380);
-          setKickerRPM(6380);
-          m_blinkin.solid_green();
-        }
+      // move indexer when a new ball is ready to enter the system
+      if (ballReady4Indexer == true) {
+        setIntakePercentOutput(0.6);
+        setBeltsPercentOutput(1);
+        setKickerPercentOutput(0.3);
+        m_blinkin.solid_blue();
       }
+
+      // stop indexer when balls are properly staged
+      else if (ballStaged == true) {
+        setBeltsPercentOutput(0);
+        m_blinkin.solid_red();
+      }
+
+      // finish staging balls when this error state occurs
+      if ((-1 + (ballCount * 2)) != stateChangeCount) {
+        setIntakePercentOutput(0.6);
+        setBeltsPercentOutput(1);
+        setKickerPercentOutput(0.3);
+        m_blinkin.solid_blue();
+      }
+
+      // finish staging balls when this error state occurs
+      if ((ballCount >= 1) && ballReady4Indexer == false && ballStaged == false) {
+        setIntakePercentOutput(0.6);
+        setBeltsPercentOutput(1);
+        setKickerPercentOutput(0.3);
+        m_blinkin.solid_blue();
+      }
+
+      // automatically stage the balls for shooting when we have 4
+      if (ballCount == 4 && ballExiting == false) {
+        setIntakePercentOutput(0.6);
+        setBeltsPercentOutput(1);
+        m_blinkin.solid_green_lime();
+      }
+
+      // stop indexer when all 4 balls are staged for shooting
+      else if (ballCount == 4 && ballExiting == true) {
+        setIntakePercentOutput(0);
+        setBeltsPercentOutput(0);
+        m_blinkin.solid_pink();
+      }
+
+      if (ballExiting == true) {
+        setIntakePercentOutput(0);
+        setBeltsPercentOutput(0);
+        setKickerPercentOutput(0);
+        m_blinkin.solid_red();
+      }
+
+      if (eject == true) {
+        // setBeltsPercentOutput(1);
+        // setKickerPercentOutput(1);
+        setIntakePercentOutput(0.6);
+        setBeltsRPM(6380);
+        setKickerRPM(6380);
+        m_blinkin.solid_green();
+      }
+
     }
   }
 
@@ -192,15 +184,15 @@ public class indexerSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Belt RPM", indexBelts.getSelectedSensorVelocity() * 600 / 2048);
     SmartDashboard.putNumber("Kicker RPM", indexKicker.getSelectedSensorVelocity() * 600 / 2048);
     
-    //TODO Test manual mode
-    if (Robot.manualMode == true) {
-      setIntakePercentOutput((RobotContainer.m_operatorController.getTriggerAxis(Hand.kRight)
-          - RobotContainer.m_operatorController.getTriggerAxis(Hand.kLeft)) * 0.6);
-      setBeltsPercentOutput(RobotContainer.m_operatorController.getTriggerAxis(Hand.kRight)
-          - RobotContainer.m_operatorController.getTriggerAxis(Hand.kLeft));
-      setKickerPercentOutput(RobotContainer.m_operatorController.getTriggerAxis(Hand.kRight)
-          - RobotContainer.m_operatorController.getTriggerAxis(Hand.kLeft));
-    } else {
+    //TODO: No globals. Put this into a command
+    // if (Robot.manualMode == true) {
+    //   setIntakePercentOutput((RobotContainer.m_operatorController.getTriggerAxis(Hand.kRight)
+    //       - RobotContainer.m_operatorController.getTriggerAxis(Hand.kLeft)) * 0.6);
+    //   setBeltsPercentOutput(RobotContainer.m_operatorController.getTriggerAxis(Hand.kRight)
+    //       - RobotContainer.m_operatorController.getTriggerAxis(Hand.kLeft));
+    //   setKickerPercentOutput(RobotContainer.m_operatorController.getTriggerAxis(Hand.kRight)
+    //       - RobotContainer.m_operatorController.getTriggerAxis(Hand.kLeft));
+    
     //TODO: if we ever put an encoder on intake motor
     //SmartDashboard.putNumber("Intake RPM", indexIntake.getSelectedSensorVelocity() * 600 / 2048);
 
@@ -248,7 +240,7 @@ public class indexerSubsystem extends SubsystemBase {
       stopIndexer();
     }
     */
-  }}
+  }
 
   public void setBeltsPercentOutput(double percent) {
     indexBelts.set(ControlMode.PercentOutput, percent);

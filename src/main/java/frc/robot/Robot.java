@@ -9,10 +9,8 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
-  public static boolean manualMode = false;
-  public static boolean turretHome = false;
-  public static double temp; 
   private RobotContainer m_robotContainer;
+  // TODO: current limits belong in Constants.java
   public static SupplyCurrentLimitConfiguration m_currentlimitMain = new SupplyCurrentLimitConfiguration(true, 35, 1, 1);
   public static SupplyCurrentLimitConfiguration m_currentlimitSecondary = new SupplyCurrentLimitConfiguration(true, 25, 1, 1);
   public PowerDistributionPanel m_pdp = new PowerDistributionPanel();
