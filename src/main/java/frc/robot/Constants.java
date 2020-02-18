@@ -74,7 +74,10 @@ public static final class turretConstants {
     // gear teeth = 20
     // gearbox = 30:1
     // Total motor to turret rotation ration:  1/396
-    public static final double kGearRation = 1 / 396.0;  // turret rotations per motor rotation
+    // public static final double kGearRation = 1 / 396.0;  // turret rotations per motor rotation
+    // POST gearbox encoder ratio is:
+    // 20:264  or 1/13.2
+    public static final double kGearRation = 1 / 13.2;   // turret rotations per encoder rotation
     public static final double kTurretRotationsPerTick =  kGearRation / kEncoderCPR;
     public static final double kDegreesPerTick = 360 * kTurretRotationsPerTick;
     // TODO: test and increase max velocity and acceleration
