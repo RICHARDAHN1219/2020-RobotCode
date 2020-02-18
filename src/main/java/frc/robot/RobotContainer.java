@@ -39,7 +39,7 @@ import frc.robot.commands.indexerStageForShootingCommand;
 import frc.robot.commands.intakeDeployCommand;
 import frc.robot.commands.intakeRetractCommand;
 import frc.robot.commands.indexerEjectCommand;
-import frc.robot.commands.limelightTurretVisionCommand;
+import frc.robot.commands.turretLimelightCommand;
 import frc.robot.commands.turretAutoTargeting;
 import frc.robot.commands.turretHomingCommand;
 import frc.robot.commands.turretManualMode;
@@ -83,7 +83,7 @@ public class RobotContainer {
         new RunCommand(() -> m_drive.arcadeDrive(0.5 *  -m_driveController.getY(GenericHID.Hand.kLeft),
             0.6 * -m_driveController.getX(GenericHID.Hand.kRight)), m_drive));
 
-    m_turretSubsystem.setDefaultCommand(new limelightTurretVisionCommand(m_turretSubsystem, m_limelight, m_shooter));
+    m_turretSubsystem.setDefaultCommand(new turretLimelightCommand(m_turretSubsystem, m_limelight, m_shooter));
   }
 
   private void configureButtonBindings() {
@@ -96,11 +96,14 @@ public class RobotContainer {
     final JoystickButton opAbutton = new JoystickButton(m_operatorController, Button.kA.value);
     final JoystickButton opBbutton = new JoystickButton(m_operatorController, Button.kB.value);
     final JoystickButton opStartbutton = new JoystickButton(m_operatorController, Button.kStart.value);
+    final JoystickButton opSelectbutton = new JoystickButton(m_operatorController, Button.kBack.value);
 
-    // op Start -> auto target
+    // op Start -> auto targeting
+    // op Select -> limelight targeting
     // op A  -> turret home
     // op B  -> manual control with operator controller
     opStartbutton.whenPressed(new turretAutoTargeting(new Translation2d(2.0,0), m_turretSubsystem, m_drive, m_limelight));
+    opSelectbutton.whenPressed(new turretLimelightCommand(m_turretSubsystem, m_limelight, m_shooter));
     opAbutton.whenPressed(new turretHomingCommand(m_turretSubsystem));
     opBbutton.whenPressed(new turretManualMode(m_turretSubsystem));
     
