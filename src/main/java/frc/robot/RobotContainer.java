@@ -97,7 +97,7 @@ public class RobotContainer {
     //opBbutton.whenPressed(new turretHomingCommand());
     //ybutton.whenPressed(() -> m_controlPanelMotors.setPosition(0), m_controlPanelMotors);
     //xbutton.whenPressed(() -> m_controlPanelMotors.setPosition(1 * 4096), m_controlPanelMotors);
-    // abutton.whenPressed(() -> m_shooter.setShooterRPM(2000));
+    //abutton.whenPressed(() -> m_shooter.setShooterRPM(2000));
     //bbutton.whenPressed(new indexerSingleIntakeCommand(m_indexer));
     //abutton.whenPressed(new indexerStageForShootingCommand(m_indexer));
     //xbutton.whenPressed(new indexerSingleFeedCommand(m_indexer));
@@ -106,11 +106,15 @@ public class RobotContainer {
     //xbutton.whenPressed(() -> m_shooter.setShooterRPM(2500));
     //ybutton.whenPressed(() -> m_shooter.setShooterRPM(3000));
     //selectbutton.whenPressed(() -> m_shooter.testMode());
-    bbutton.toggleWhenPressed(new intakeDeployCommand(m_intake));
+    //bbutton.toggleWhenPressed(new intakeDeployCommand(m_intake));
     //abutton.toggleWhenPressed(new intakeRetractCommand(m_intake));
     //abutton.whenPressed(() -> m_shooter.setShooterRPM(2000));
     //xbutton.whenPressed(() -> m_shooter.setShooterRPM(2500));
-    //ybutton.whenPressed(() ->m_shooter.setShooterRPM(3000));
+    //ybutton.whenPressed(() -> m_shooter.setShooterRPM(3000));
+    abutton.whenPressed(() -> m_turretSubsystem.setAngleDegrees(0));
+    xbutton.whenPressed(() -> m_turretSubsystem.setAngleDegrees(5));
+    ybutton.whenPressed(() -> m_turretSubsystem.setAngleDegrees(-5));
+    bbutton.whenPressed(() -> m_turretSubsystem.setAngleDegrees(-10));
   }
   public Command getNoAutonomousCommand() {
     return new RunCommand(() -> m_drive.tankDriveVolts(0, 0));
