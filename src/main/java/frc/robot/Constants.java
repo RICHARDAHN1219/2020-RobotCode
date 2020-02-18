@@ -68,14 +68,15 @@ public final class Constants {
         public static final int turret = 11;
         public static final int kSoftMaxTurretAngle = 90;
         public static final int kSoftMinTurretAngle = -90;
-        public static final int kEncoderCPR = 2048;
+        public static final int kEncoderCPR = 4096;  // CTRE Mag encoder AKA Quadrature encoder
 
-        // BAG motor controlled by Talon
+        // motor controlled by Talon
         // Turret inner teeth = 264
         // gear teeth = 20
-        // gearbox = 35:1
-        // Total motor to turret rotation ration: 1/462 = (1/35) * (20/264)
-        public static final double kGearRation = 1 / 462.0; // turret rotations per motor rotation
+        // gearbox = 30:1
+        // Total motor to turret rotation ratio: 1/462 = (1/30) * (20/264)
+        // Total motor to encoder rotation ratio: 1/13.2 = 20/264 
+        public static final double kGearRation = 20.0 / 264.0;
         public static final double kTurretRotationsPerTick = kGearRation / kEncoderCPR;
         public static final double kDegreesPerTick = 360 * kTurretRotationsPerTick;
         // TODO: test and increase max velocity and acceleration
