@@ -37,10 +37,10 @@ public class turretSubsystem extends SubsystemBase {
 
   public turretSubsystem() {
     turretDrive.configFactoryDefault();
-    turretDrive.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, kIndex, kTimeout);
+    turretDrive.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, kIndex, kTimeout);
 
-    // fix rotational direction
-    turretDrive.setInverted(false);
+    // TODO: fix rotational direction and sensor phase
+    turretDrive.setInverted(false;   // CCW is positive direction
     turretDrive.setSensorPhase(false);
 
     // set soft limits
