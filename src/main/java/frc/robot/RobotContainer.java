@@ -54,6 +54,7 @@ import frc.robot.subsystems.blinkinSubsystem;
 public class RobotContainer {
   // Subsystems
   private final driveSubsystem m_drive = new driveSubsystem();
+  private final limelightSubsystem m_limelight = new limelightSubsystem("limelight-one");
   public final static blinkinSubsystem m_blinkin = new blinkinSubsystem(pwmConstants.blinkin);
   private final turretSubsystem m_turretSubsystem = new turretSubsystem();
   public static final shooterSubsystem m_shooter = new shooterSubsystem();
@@ -61,10 +62,9 @@ public class RobotContainer {
   private final elevatorSubsystem m_elevatorSubsystem = new elevatorSubsystem();
   private final controlPanelSubsystem m_controlPanelMotors = new controlPanelSubsystem();
   private final intakeSubsystem m_intake = new intakeSubsystem();
-  private final limelightSubsystem m_limelight = new limelightSubsystem("limelight-one");
   // Commands
   //public static final shooterCommand m_shooterCommand = new shooterCommand(m_shooter, m_indexer);
-  //private final limelightTurretVisionCommand m_turretVisionCommand = new limelightTurretVisionCommand(m_turretSubsystem);
+  //private final limelightTurretVisionCommand m_turretVisionCommand = new limelightTurretVisionCommand(m_turretSubsystem, m_limelight, m_shooter);
   //private final driveCommand m_driveCommand = new driveCommand(m_driveSubsystem);
   //private final index1PowerCell m_index1PowerCell = new index1PowerCell(m_indexer);
 
@@ -81,7 +81,7 @@ public class RobotContainer {
         new RunCommand(() -> m_drive.arcadeDrive(0.5 *  -m_driveController.getY(GenericHID.Hand.kLeft),
             0.6 * -m_driveController.getX(GenericHID.Hand.kRight)), m_drive));
 
-    //m_turretSubsystem.setDefaultCommand(new limelightTurretVisionCommand(m_turretSubsystem));
+    m_turretSubsystem.setDefaultCommand(new limelightTurretVisionCommand(m_turretSubsystem, m_limelight, m_shooter));
   }
 
   private void configureButtonBindings() {

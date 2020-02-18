@@ -12,25 +12,30 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Robot;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.limelightSubsystem;
+import frc.robot.subsystems.shooterSubsystem;
 import frc.robot.subsystems.turretSubsystem;
 
-@Deprecated
 /**
  * limelightTurretVisionCommand() - Deprecated. Use this only if turretAutoTargeting doesn't work.
  */
 public class limelightTurretVisionCommand extends CommandBase {
   turretSubsystem m_turret;
   limelightSubsystem m_limelight;
+  shooterSubsystem m_shooter;
 
-  public limelightTurretVisionCommand(turretSubsystem subsystem, limelightSubsystem m_limelight) {
-    addRequirements(subsystem);
-    m_turret = subsystem;
+  public limelightTurretVisionCommand(turretSubsystem subsystem1, limelightSubsystem subsystem2, shooterSubsystem subsystem3) {
+    addRequirements(subsystem1);
+    addRequirements(subsystem2);
+    addRequirements(subsystem3);
+    m_turret = subsystem1;
+    m_limelight = subsystem2;
+    m_shooter = subsystem3;
   }
 
   @Override
   public void initialize() {
-    m_limelight.setLEDMode(2);
-    m_limelight.setCAMMode(0);
+    //m_limelight.setLEDMode(2);
+    //m_limelight.setCAMMode(0);
   }
 
   @Override
@@ -38,7 +43,8 @@ public class limelightTurretVisionCommand extends CommandBase {
     if (Robot.manualMode==false) {
       // These numbers must be tuned for Comp Robot!  Be careful!
       final double STEER_K = 0.1; //how hard to turn toward the target
-      double tv = m_limelight.getTV();
+      double rpm = m_shooter.getRPMforDistanceMeter(m_limelight.getDist());
+      double tv = m_limelight.getTV();;
       double tx = m_limelight.getTX();
       //boolean m_LimelightHasValidTarget = false;
       double m_LimelightSteerCommand = 0.0;
@@ -67,6 +73,8 @@ public class limelightTurretVisionCommand extends CommandBase {
       m_LimelightDriveCommand = drive_cmd;
       */
       m_turret.setPercentOutput(m_LimelightSteerCommand);
+      RobotContainer.m_shooter.setShooterRPM(rpm);
+
     }
     
     else if (Robot.manualMode = true) {
@@ -80,8 +88,8 @@ public class limelightTurretVisionCommand extends CommandBase {
 
   @Override
   public void end(boolean interrupted) {
-    m_limelight.setLEDMode(1);
-    m_limelight.setCAMMode(1);
+    //m_limelight.setLEDMode(1);
+   // m_limelight.setCAMMode(1);
   }
 
   @Override
