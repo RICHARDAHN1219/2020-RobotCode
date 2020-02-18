@@ -67,8 +67,8 @@ public static final class turretConstants {
     public static final int turret = 11;
     public static final int kSoftMaxTurretAngle = 90;
     public static final int kSoftMinTurretAngle = -90;
-    public static final int kEncoderCPR = 2048;
-
+    public static final int kEncoderCPR = 4096;   // CTRE Quadrature?
+ 
     // BAG motor controlled by Talon
     // Turret inner teeth = 264. * 360
     // gear teeth = 20
