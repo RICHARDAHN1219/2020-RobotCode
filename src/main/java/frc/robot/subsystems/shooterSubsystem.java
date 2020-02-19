@@ -9,63 +9,153 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
-
-import frc.robot.Robot;
+import com.revrobotics.CANEncoder;
+import com.revrobotics.CANPIDController;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.ControlType;
+import com.revrobotics.EncoderType;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.team2930.lib.util.linearInterpolator;
 import frc.robot.Constants.shooterConstants;
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.FeedbackDevice;
-import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 
 public class shooterSubsystem extends SubsystemBase {
 
-  private WPI_TalonFX shooter1 = new WPI_TalonFX(shooterConstants.shooter1);
-  private WPI_TalonFX shooter2 = new WPI_TalonFX(shooterConstants.shooter2);
-  public double shooterRPM = 2500;
+  private CANSparkMax neo_shooter1 = new CANSparkMax(shooterConstants.shooter1, MotorType.kBrushless);
+  private CANSparkMax neo_shooter2 = new CANSparkMax(shooterConstants.shooter2, MotorType.kBrushless);
+  private CANPIDController m_pidController;
+  private CANEncoder m_encoder;
+  private double kP, kI, kD, kIz, kFF, kMaxOutput, kMinOutput;
+  private double m_desiredRPM = 0;
+  private boolean m_atSpeed = false;
+  private long m_initalTime = 0;
+  private linearInterpolator m_lt;
+  private double data[][] = {
+    // distance in Feed -> RPM
+    { 4,  2650 }, 
+    { 5,  2550 },
+    { 6,  2550 },
+    { 7,  2550 },
+    { 8,  2600 },
+    { 9,  2650 },
+    { 10, 2700 },
+    
+    { 25, 4300},
+  };
 
   public shooterSubsystem() {
-    shooter2.follow(shooter1);
-    shooter2.setInverted(true);
-    shooter1.configSupplyCurrentLimit(Robot.m_currentlimitMain);
-    shooter2.configSupplyCurrentLimit(Robot.m_currentlimitMain);
-    shooter1.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor, shooterConstants.shooterSlotIdx, shooterConstants.shooterTimeout);
-    shooter1.setSensorPhase(true);
-    shooter1.configNominalOutputForward(0, shooterConstants.shooterTimeout);
-    shooter1.configNominalOutputReverse(0, shooterConstants.shooterTimeout);
-    shooter1.configPeakOutputForward(1, shooterConstants.shooterTimeout);
-    shooter1.configPeakOutputReverse(-1, shooterConstants.shooterTimeout);
-    shooter1.setNeutralMode(NeutralMode.Coast);
-    shooter2.setNeutralMode(NeutralMode.Coast);
-    setShooterPID(0.1, 0, 0, 0);
+
+    neo_shooter1.restoreFactoryDefaults();
+    neo_shooter2.restoreFactoryDefaults();
+
+    //Current Limits for use on competition bot
+    //neo_shooter1.setSmartCurrentLimit(35);
+    //neo_shooter2.setSmartCurrentLimit(35);
+    
+    // Set coast mode
+    neo_shooter1.setIdleMode(CANSparkMax.IdleMode.kCoast);
+    neo_shooter2.setIdleMode(CANSparkMax.IdleMode.kCoast);
+
+    neo_shooter2.follow(neo_shooter1, true);
+    m_pidController = neo_shooter1.getPIDController();
+    m_encoder = neo_shooter1.getEncoder(EncoderType.kHallSensor, 4096);
+    kMaxOutput = 1; 
+    kMinOutput = -1;
+    m_pidController.setOutputRange(kMinOutput, kMaxOutput);
+
+    setShooterPID(0.0003, 0.00000025, 0, 0.0002, 250);
+
+    SmartDashboard.putNumber("ShooterRPM", m_desiredRPM);
+    SmartDashboard.putNumber("UpdatedRPM", -1);
+
+    m_lt = new linearInterpolator(data);
   }
 
   @Override
   public void periodic() {
-    SmartDashboard.putNumber("ShooterRPM", (int) (shooter1.getSelectedSensorVelocity() * 600 / 4096));
+    SmartDashboard.putNumber("ActualShooterRPM", (int) m_encoder.getVelocity());
+    //m_desiredRPM = SmartDashboard.getNumber("DesiredShooterRPM", 0);
+    double rpm = SmartDashboard.getNumber("ShooterRPM", -1);
+    if (rpm != -1) {
+      if (m_desiredRPM != rpm ) {
+        setShooterRPM(rpm);
+        System.out.println("New shooter desired RPM: "  + m_desiredRPM);
+        // lets' confirm we're changing this
+        SmartDashboard.putNumber("UpdatedRPM", m_desiredRPM);
+        m_initalTime = System.nanoTime();
+        m_atSpeed = false;
+      }
+    }
+
+    m_initalTime = System.nanoTime();
+    if (isAtSpeed()) {
+      if (!m_atSpeed) {
+        SmartDashboard.putNumber("Time2RPM", System.nanoTime() - m_initalTime);
+      }
+      m_atSpeed = true;
+    }
+    else {
+      m_atSpeed = false;
+      m_initalTime = System.nanoTime();
+    }
+    SmartDashboard.putBoolean("isAtSpeed", m_atSpeed);
   }
 
   public void setShooterRPM (double desiredRPM) {
-    shooter1.set(ControlMode.Velocity, desiredRPM * 4096 / 600); //RPM must be less than 6380
+    m_desiredRPM = desiredRPM;
+    m_pidController.setReference(desiredRPM, ControlType.kVelocity);
   }
 
-  public void setShooterPID (double P, double I, double D, double F) {
-    shooter1.config_kP(shooterConstants.shooterSlotIdx, P, shooterConstants.shooterTimeout);
-    shooter1.config_kI(shooterConstants.shooterSlotIdx, I, shooterConstants.shooterTimeout);
-    shooter1.config_kD(shooterConstants.shooterSlotIdx, D, shooterConstants.shooterTimeout);
-    shooter1.config_kF(shooterConstants.shooterSlotIdx, F, shooterConstants.shooterTimeout);
+  public void testMode(){
+    //m_desiredRPM = SmartDashboard.getNumber("DesiredShooterRPM", 0);
+    //System.out.println("Shooter desired ROM: "  + m_desiredRPM);
+    //m_pidController.setReference(m_desiredRPM, ControlType.kVelocity);
+    //System.out.println("Activating Test Mode");
   }
 
+  public void setShooterPID (double P, double I, double D, double F, double iZ) {
+    m_pidController.setP(P);
+    m_pidController.setI(I);
+    m_pidController.setD(D);
+    m_pidController.setFF(F);
+    m_pidController.setIZone(iZ);
+  }
+
+  //Current limiting on the fly switching removed due to the SparkMAX API not supporting that sort of switch.
   public void setPercentOutput(double percent) {
-    shooter1.set(ControlMode.PercentOutput, percent);
+    neo_shooter1.set(percent);
   }
 
-  public void disableCurrentLimit() {
-    //shooter1.configGetSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(false, 35, 35, 1));
+  public boolean isAtSpeed(){
+    double error = m_desiredRPM - m_encoder.getVelocity();
+    SmartDashboard.putNumber("RPM_Error", error);
+    if (Math.abs(error) < 100){
+      return true;
+    } else {
+      return false;
+    }
   }
 
-  public void enableCurrentLimit() {
-   // shooter1.configGetSupplyCurrentLimit(Robot.m_currentlimitMain);
+  /**
+   * getRPMforDistanceFeet() - return RPM based on distance to target in FEET
+   * 
+   * @param distanceFeet distance in FEET to goal
+   * @return RPM for flywheel
+   */
+  public double getRPMforDistanceFeet(double distanceFeet) {
+    return m_lt.getInterpolatedValue(distanceFeet);
   }
 
+    /**
+   * getRPMforDistanceFeet() - return RPM based on distance to target in METERS
+   * 
+   * @param distanceFeet distance in METERS to goal
+   * @return RPM for flywheel
+   */
+  public double getRPMforDistanceMeter(double distanceMeters) {
+    return getRPMforDistanceFeet(distanceMeters * 3.28084);
+  }
+
+  public void stop() {
+    setPercentOutput(0.0);
+  }
 }

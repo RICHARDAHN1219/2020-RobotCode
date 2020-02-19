@@ -59,22 +59,42 @@ public final class Constants {
     public static final class AutoConstants {
         public static final double kMaxSpeedMetersPerSecond = .5;
         public static final double kMaxAccelerationMetersPerSecondSquared = 0.25;
-
         // Reasonable baseline values for a RAMSETE follower in units of meters and seconds
         public static final double kRamseteB = 2;
         public static final double kRamseteZeta = 0.7;
     }
     public static final class turretConstants {
         public static final int turret = 11;
-        public static final int kSoftMaxTurretAngle = 1;
-        public static final int kSoftMinTurretAngle = 1;
-        public static final int kTurretRotationsPerTick = 1;
+        public static final int kSoftMaxTurretAngle = 90;
+        public static final int kSoftMinTurretAngle = -90;
+        public static final int kEncoderCPR = 4096; // CTRE Quadrature?
+
+        // BAG motor controlled by Talon
+        // Turret inner teeth = 264. * 360
+        // gear teeth = 20
+        // gearbox = 30:1
+        // Total motor to turret rotation ration: 1/396
+        // public static final double kGearRation = 1 / 396.0; // turret rotations per motor
+        // rotation
+        // POST gearbox encoder ratio is:
+        // 20:264 or 1/13.2
+        public static final double kGearRation = 1 / 13.2; // turret rotations per encoder rotation
+        public static final double kTurretRotationsPerTick = kGearRation / kEncoderCPR;
+        public static final double kDegreesPerTick = 360 * kTurretRotationsPerTick;
+        // TODO: test and increase max velocity and acceleration
+        // Max velocity: 90 deg/s
+        // Max acceleration: 45 deg/s^2
+        public static final double kMaxDegreesPerSecond = 90;
+        public static final double kMaxDegreesPerSecondSquared = 45;
+        public static final int kTimeout = 30; // Talon command timeout
+        public static final int kIndex = 0; // Talon PID index
     }
     public static final class shooterConstants {
         public static final int shooter1 = 4;
         public static final int shooter2 = 5;
         public static final int shooterTimeout = 30;
         public static final int shooterSlotIdx = 0;
+        public static final int shooterHood = 1;
     }
     public static final class elevatorConstants {
         public static final int solenoid1 = 6;
@@ -85,8 +105,8 @@ public final class Constants {
         public static final int elevatorSlotIdx = 1;
     }
     public static final class indexConstants {
-        public static final int index1_1 = 8;
-        public static final int index1_2 = 9;
+        public static final int indexIntake = 8;
+        public static final int indexBelts = 9;
         public static final int indexKicker = 10;
     }
     public static final class controlPanelConstants {
@@ -100,5 +120,10 @@ public final class Constants {
     }
     public static final class intakeConstants {
         public static final int intakeMotor = 20;
+        public static final int intakeSolenoid = 6;
+        public static final int intakeSolenoid2 = 7;
+    }
+    public static final class pwmConstants {
+        public static final int blinkin = 0;
     }
 }

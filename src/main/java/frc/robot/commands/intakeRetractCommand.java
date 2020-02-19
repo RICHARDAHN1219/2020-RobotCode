@@ -7,32 +7,29 @@
 
 package frc.robot.commands;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.indexerSubsystem;
+import frc.robot.subsystems.intakeSubsystem;
 
-public class indexStage1Command extends CommandBase {
-  indexerSubsystem m_indexer;
+public class intakeRetractCommand extends CommandBase {
 
-  public indexStage1Command(indexerSubsystem indexer) {
-    addRequirements(indexer);
-    m_indexer = indexer;
+  intakeSubsystem m_intake;
+
+  public intakeRetractCommand(intakeSubsystem intake) {
+    addRequirements(intake);
+    m_intake = intake;
   }
 
   @Override
   public void initialize() {
+    m_intake.retractIntake();
   }
 
   @Override
   public void execute() {
-    //indexStage1_1.set(ControlMode.PercentOutput, 0.75);
-    m_indexer.setStage1PercentOutput(0.75);
   }
 
   @Override
   public void end(boolean interrupted) {
-    //indexStage1_1.set(ControlMode.PercentOutput, 0);
-    m_indexer.setStage1PercentOutput(0.0);
   }
 
   @Override
@@ -40,4 +37,3 @@ public class indexStage1Command extends CommandBase {
     return false;
   }
 }
-

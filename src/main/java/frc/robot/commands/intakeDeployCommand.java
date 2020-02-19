@@ -8,34 +8,33 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.Robot;
+import frc.robot.subsystems.intakeSubsystem;
 
-public class manualMode extends CommandBase {
+public class intakeDeployCommand extends CommandBase {
 
-  public manualMode() {
+  intakeSubsystem m_intake;
+
+  public intakeDeployCommand(intakeSubsystem intake) {
+    addRequirements(intake);
+    m_intake = intake;
   }
 
   @Override
   public void initialize() {
-    if (Robot.manualMode=false){
-      System.out.println("Overriding Limelight Control");
-      Robot.manualMode = true;
-    } 
-    else {
-      Robot.manualMode = false;
-    }
+    m_intake.deployIntake();
   }
 
   @Override
   public void execute() {
   }
-  
+
   @Override
   public void end(boolean interrupted) {
+    m_intake.retractIntake();
   }
 
   @Override
   public boolean isFinished() {
-    return true;
+    return false;
   }
 }
