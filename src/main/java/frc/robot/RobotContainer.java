@@ -59,9 +59,11 @@ public class RobotContainer {
   public static final Compressor airCompressor = new Compressor();
 
   // Subsystems
+  // NOTE: blinkin needs to be first and public static to be accessed by other subcsystems
+  public final static blinkinSubsystem m_blinkin = new blinkinSubsystem(pwmConstants.blinkin);
+  // All other subsystems should be private
   private final driveSubsystem m_drive = new driveSubsystem();
   private final limelightSubsystem m_limelight = new limelightSubsystem("limelight-one");
-  private final static blinkinSubsystem m_blinkin = new blinkinSubsystem(pwmConstants.blinkin);
   private final turretSubsystem m_turretSubsystem = new turretSubsystem();
   private final shooterSubsystem m_shooter = new shooterSubsystem();
   private final indexerSubsystem m_indexer = new indexerSubsystem();
@@ -70,7 +72,7 @@ public class RobotContainer {
   private final intakeSubsystem m_intake = new intakeSubsystem();
 
   // Commands
-  //public static final shooterCommand m_shooterCommand = new shooterCommand(m_shooter, m_indexer);
+  //private final shooterCommand m_shooterCommand = new shooterCommand(m_shooter, m_indexer);
   //private final limelightTurretVisionCommand m_turretVisionCommand = new limelightTurretVisionCommand(m_turretSubsystem, m_limelight, m_shooter);
   //private final driveCommand m_driveCommand = new driveCommand(m_driveSubsystem);
   //private final index1PowerCell m_index1PowerCell = new index1PowerCell(m_indexer);

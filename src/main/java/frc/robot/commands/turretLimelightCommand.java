@@ -6,7 +6,6 @@
 /*----------------------------------------------------------------------------*/
 package frc.robot.commands;
 
-import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
@@ -69,7 +68,7 @@ public class turretLimelightCommand extends CommandBase {
      * if (drive_cmd > MAX_DRIVE) { drive_cmd = MAX_DRIVE; } m_LimelightDriveCommand = drive_cmd;
      */
     m_turret.setPercentOutput(m_LimelightSteerCommand);
-    RobotContainer.m_shooter.setShooterRPM(rpm);
+    m_shooter.setShooterRPM(rpm);
 
   }
 
