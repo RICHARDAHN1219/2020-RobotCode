@@ -6,9 +6,17 @@ import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.subsystems.elevatorSubsystem;
+import frc.robot.subsystems.turretSubsystem;
+import com.ctre.phoenix.motorcontrol.*;
+import edu.wpi.first.wpilibj.DriverStation;
 
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
+  public static boolean manualMode = false;
+  public static boolean turretHome = false;
+  public char stage2ColorChar = 'U';
+
   private RobotContainer m_robotContainer;
   // TODO: current limits belong in Constants.java
   public static SupplyCurrentLimitConfiguration m_currentlimitMain = new SupplyCurrentLimitConfiguration(true, 35, 1, 1);
@@ -66,7 +74,34 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopPeriodic() {
-    //RobotContainer.m_shooter.testMode();
+    //Does the target color also have to be a number 
+    String gameData;
+    gameData = DriverStation.getInstance().getGameSpecificMessage();
+    if (gameData.length() > 0) {
+      switch (gameData.charAt(0)) {
+      case 'B':
+        // Blue case code
+       stage2ColorChar = 'B';
+        break;
+      case 'G':
+        // Green case code
+       stage2ColorChar = 'G';
+        break;
+      case 'R':
+        // Red case code
+        stage2ColorChar = 'R';
+        break;
+      case 'Y':
+        // Yellow case code
+        stage2ColorChar = 'Y';
+        break;
+      default:
+        // This is corrupt data
+        break;
+      }
+    } else {
+      // Code for no data received yet
+    }
   }
 
   @Override

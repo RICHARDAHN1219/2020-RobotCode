@@ -14,6 +14,7 @@ import static frc.robot.Constants.AutoConstants.kRamseteZeta;
 import static frc.robot.Constants.driveConstants.kDriveKinematics;
 import java.util.List;
 
+import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.XboxController.Button;
@@ -54,16 +55,20 @@ import frc.robot.subsystems.controlPanelSubsystem;
 import frc.robot.subsystems.blinkinSubsystem;
 
 public class RobotContainer {
+
+  public static final Compressor airCompressor = new Compressor();
+
   // Subsystems
   private final driveSubsystem m_drive = new driveSubsystem();
   private final limelightSubsystem m_limelight = new limelightSubsystem("limelight-one");
-  public final static blinkinSubsystem m_blinkin = new blinkinSubsystem(pwmConstants.blinkin);
+  private final static blinkinSubsystem m_blinkin = new blinkinSubsystem(pwmConstants.blinkin);
   private final turretSubsystem m_turretSubsystem = new turretSubsystem();
-  public static final shooterSubsystem m_shooter = new shooterSubsystem();
-  public static final indexerSubsystem m_indexer = new indexerSubsystem();
+  private final shooterSubsystem m_shooter = new shooterSubsystem();
+  private final indexerSubsystem m_indexer = new indexerSubsystem();
   private final elevatorSubsystem m_elevatorSubsystem = new elevatorSubsystem();
   private final controlPanelSubsystem m_controlPanelMotors = new controlPanelSubsystem();
   private final intakeSubsystem m_intake = new intakeSubsystem();
+
   // Commands
   //public static final shooterCommand m_shooterCommand = new shooterCommand(m_shooter, m_indexer);
   //private final limelightTurretVisionCommand m_turretVisionCommand = new limelightTurretVisionCommand(m_turretSubsystem, m_limelight, m_shooter);
@@ -125,6 +130,7 @@ public class RobotContainer {
     //xbutton.whenPressed(() -> m_shooter.setShooterRPM(2500)), m_shooter;
     //ybutton.whenPressed(() -> m_shooter.setShooterRPM(3000), m_shooter);
   }
+  
   public Command getNoAutonomousCommand() {
     return new RunCommand(() -> m_drive.tankDriveVolts(0, 0));
   }
