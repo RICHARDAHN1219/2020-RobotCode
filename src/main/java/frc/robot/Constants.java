@@ -126,4 +126,12 @@ public final class Constants {
     public static final class pwmConstants {
         public static final int blinkin = 0;
     }
+    public static final class digitalIOConstants {
+        // assign digital IO (DIO) ports 0-9
+        public static final int dio0_indexerSensor1 = 0;
+        public static final int dio1_indexerSensor2 = 1;
+        public static final int dio2_indexerSensor3 = 2;
+        public static final int dio7_turretLimit = 7;
+    }
+
 }
