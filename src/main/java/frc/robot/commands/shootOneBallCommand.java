@@ -45,7 +45,7 @@ public class shootOneBallCommand extends CommandBase {
 
   @Override
   public void execute() {
-    m_shooter.setShooterRPM(m_shooter.getRPMforDistanceMeter(m_shooter.getDist()));
+    m_shooter.setShooterRPM(m_shooter.getRPMforDistanceMeter(m_limelight.getDist(0.6096, 2.5019, 32)));
     tv = m_limelight.getTV();
     tx = m_limelight.getTX();
 

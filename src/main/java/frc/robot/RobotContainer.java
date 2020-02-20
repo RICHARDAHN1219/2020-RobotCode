@@ -111,7 +111,7 @@ public class RobotContainer {
     // op Select -> limelight targeting
     // op A  -> turret home
     // op B  -> manual control with operator controller
-    opStartbutton.whenPressed(new turretAutoTargeting(new Translation2d(2.0,0), m_turretSubsystem, m_drive, m_shooter));
+    opStartbutton.whenPressed(new turretAutoTargeting(new Translation2d(2.0,0), m_turretSubsystem, m_drive));
     opSelectbutton.whenPressed(new turretLimelightCommand(m_turretSubsystem, m_shooter));
     opAbutton.whenPressed(new turretHomingCommand(m_turretSubsystem));
     opBbutton.whenPressed(new turretManualMode(m_turretSubsystem));

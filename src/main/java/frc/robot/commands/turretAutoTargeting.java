@@ -25,6 +25,9 @@ public class turretAutoTargeting extends CommandBase {
   private shooterSubsystem m_shooter;
   private double m_targetAngleDegrees = 0.0;
   private double m_errorDegrees = 0.0;
+  double h1 = 0.6096;
+  double h2 = 2.5019;
+  double a1 = 32;
 
   // kP for limelight must be 1.0 or less
   private double kPlimelight = 0.5;
@@ -40,11 +43,10 @@ public class turretAutoTargeting extends CommandBase {
    * @param drive  Subsystem
    * @param limelight Subsystem
    */
-  public turretAutoTargeting(Translation2d target, turretSubsystem turret, driveSubsystem drive, shooterSubsystem shooter) {
+  public turretAutoTargeting(Translation2d target, turretSubsystem turret, driveSubsystem drive) {
     m_target = target;
     m_turret = turret;
     m_drive = drive;
-    m_shooter = shooter;
     // NOTE: do not add drive to addRequirements() or else we cannot drive while targeting
     // IMPORTANT: use READ ONLY methods from m_drive
     addRequirements(turret);
@@ -85,7 +87,7 @@ public class turretAutoTargeting extends CommandBase {
 
     SmartDashboard.putNumber("Angle2Target", m_targetAngleDegrees);
     SmartDashboard.putNumber("Dist2Target", dist_pose);
-    SmartDashboard.putNumber("LL_Dist2Target", m_shooter.getDist());
+    SmartDashboard.putNumber("LL_Dist2Target", m_limelight.getDist(h1, h2, a1));
     SmartDashboard.putNumber("AngleError", m_errorDegrees);
     SmartDashboard.putNumber("LL_Angle", ll_angleDegrees);
   }

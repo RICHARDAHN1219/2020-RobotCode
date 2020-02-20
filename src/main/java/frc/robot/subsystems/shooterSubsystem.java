@@ -203,7 +203,4 @@ public class shooterSubsystem extends SubsystemBase {
   public void stop() {
     setPercentOutput(0.0);
   }
-  public double getDist(){
-    return dist;
-  }
 }
