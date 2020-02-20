@@ -14,6 +14,8 @@ import static frc.robot.Constants.AutoConstants.kRamseteZeta;
 import static frc.robot.Constants.driveConstants.kDriveKinematics;
 import java.util.List;
 
+import com.fearxzombie.limelight;
+
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
@@ -47,7 +49,6 @@ import frc.robot.commands.turretManualMode;
 import frc.robot.subsystems.driveSubsystem;
 import frc.robot.subsystems.elevatorSubsystem;
 import frc.robot.subsystems.indexerSubsystem;
-import frc.robot.subsystems.limelightSubsystem;
 import frc.robot.subsystems.intakeSubsystem;
 import frc.robot.subsystems.turretSubsystem;
 import frc.robot.subsystems.shooterSubsystem;
@@ -63,7 +64,8 @@ public class RobotContainer {
   public final static blinkinSubsystem m_blinkin = new blinkinSubsystem(pwmConstants.blinkin);
   // All other subsystems should be private
   private final driveSubsystem m_drive = new driveSubsystem();
-  private final limelightSubsystem m_limelight = new limelightSubsystem("limelight-one");
+  //public so that it can get the right instance.
+  public static final limelight m_limelight = new limelight("limelight-one");
   private final turretSubsystem m_turretSubsystem = new turretSubsystem();
   private final shooterSubsystem m_shooter = new shooterSubsystem();
   private final indexerSubsystem m_indexer = new indexerSubsystem();
@@ -90,7 +92,7 @@ public class RobotContainer {
         new RunCommand(() -> m_drive.arcadeDrive(0.5 *  -m_driveController.getY(GenericHID.Hand.kLeft),
             0.6 * -m_driveController.getX(GenericHID.Hand.kRight)), m_drive));
 
-    m_turretSubsystem.setDefaultCommand(new turretLimelightCommand(m_turretSubsystem, m_limelight, m_shooter));
+    m_turretSubsystem.setDefaultCommand(new turretLimelightCommand(m_turretSubsystem, m_shooter));
   }
 
   private void configureButtonBindings() {
@@ -109,8 +111,8 @@ public class RobotContainer {
     // op Select -> limelight targeting
     // op A  -> turret home
     // op B  -> manual control with operator controller
-    opStartbutton.whenPressed(new turretAutoTargeting(new Translation2d(2.0,0), m_turretSubsystem, m_drive, m_limelight));
-    opSelectbutton.whenPressed(new turretLimelightCommand(m_turretSubsystem, m_limelight, m_shooter));
+    opStartbutton.whenPressed(new turretAutoTargeting(new Translation2d(2.0,0), m_turretSubsystem, m_drive, m_shooter));
+    opSelectbutton.whenPressed(new turretLimelightCommand(m_turretSubsystem, m_shooter));
     opAbutton.whenPressed(new turretHomingCommand(m_turretSubsystem));
     opBbutton.whenPressed(new turretManualMode(m_turretSubsystem));
     

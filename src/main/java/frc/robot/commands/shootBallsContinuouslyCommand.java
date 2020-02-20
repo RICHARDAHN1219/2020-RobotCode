@@ -7,11 +7,12 @@
 
 package frc.robot.commands;
 
+import com.fearxzombie.limelight;
+
 import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.indexerSubsystem;
-import frc.robot.subsystems.limelightSubsystem;
 import frc.robot.subsystems.shooterSubsystem;
 import frc.robot.subsystems.turretSubsystem;
 
@@ -20,22 +21,20 @@ public class shootBallsContinuouslyCommand extends CommandBase {
   indexerSubsystem m_indexer;
   turretSubsystem m_turret;
   shooterSubsystem m_shooter;
-  limelightSubsystem m_limelight;
+  limelight m_limelight;
 
   private double steer_k = 0.1;
   private double tv;
   private double tx;
   private double limelightSteerCommand = 0;
 
-  public shootBallsContinuouslyCommand(indexerSubsystem indexer, turretSubsystem turret, shooterSubsystem shooter, limelightSubsystem limelight) {
+  public shootBallsContinuouslyCommand(indexerSubsystem indexer, turretSubsystem turret, shooterSubsystem shooter) {
     addRequirements(indexer);
     addRequirements(turret);
     addRequirements(shooter);
-    addRequirements(limelight);
     m_indexer = indexer;
     m_turret = turret;
     m_shooter = shooter;
-    m_limelight = limelight;
   }
 
   @Override
@@ -44,7 +43,7 @@ public class shootBallsContinuouslyCommand extends CommandBase {
 
   @Override
   public void execute() {
-    m_shooter.setShooterRPM(m_shooter.getRPMforDistanceMeter(m_limelight.getDist()));
+    m_shooter.setShooterRPM(m_shooter.getRPMforDistanceMeter(m_shooter.getDist()));
     tv = m_limelight.getTV();
     tx = m_limelight.getTX();
 
