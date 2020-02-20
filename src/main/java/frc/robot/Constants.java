@@ -72,7 +72,7 @@ public final class Constants {
         // BAG motor controlled by Talon
         // Turret inner teeth = 264. * 360
         // gear teeth = 20
-        // gearbox = 30:1
+        // gearbox = 35:1
         // Total motor to turret rotation ration: 1/396
         // public static final double kGearRation = 1 / 396.0; // turret rotations per motor
         // rotation
