@@ -11,10 +11,10 @@ import edu.wpi.first.wpilibj.kinematics.DifferentialDriveKinematics;
 
 public final class Constants {
     public static final class driveConstants {
-        public static final int falcon1_leftLead = 1;
-        public static final int falcon2_leftFollow = 3;
-        public static final int falcon3_rightLead = 0;
-        public static final int falcon4_rightFollow = 2;
+        public static final int falcon1_leftLead = 12;
+        public static final int falcon2_leftFollow = 12;
+        public static final int falcon3_rightLead = 14;
+        public static final int falcon4_rightFollow = 15;
         public static final int driveTimeout = 30;
         public static final int pigeonCANid = 15;
         public static final int driveController = 0;
@@ -64,7 +64,7 @@ public final class Constants {
         public static final double kRamseteZeta = 0.7;
     }
     public static final class turretConstants {
-        public static final int turret = 11;
+        public static final int turret = 9;
         public static final int kSoftMaxTurretAngle = 90;
         public static final int kSoftMinTurretAngle = -90;
         public static final int kEncoderCPR = 4096; // CTRE Quadrature?
@@ -119,7 +119,7 @@ public final class Constants {
         public static final Gains gains = new Gains(0.15, 0.0, 0.0, 0.0, 0, 1.0);
     }
     public static final class intakeConstants {
-        public static final int intakeMotor = 20;
+        public static final int intakeMotor = 8;
         public static final int intakeSolenoid = 6;
         public static final int intakeSolenoid2 = 7;
     }

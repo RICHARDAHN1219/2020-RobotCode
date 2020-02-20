@@ -92,7 +92,7 @@ public class RobotContainer {
         new RunCommand(() -> m_drive.arcadeDrive(0.5 *  -m_driveController.getY(GenericHID.Hand.kLeft),
             0.6 * -m_driveController.getX(GenericHID.Hand.kRight)), m_drive));
 
-    m_turretSubsystem.setDefaultCommand(new turretLimelightCommand(m_turretSubsystem, m_shooter));
+    m_turretSubsystem.setDefaultCommand(new turretLimelightCommand(m_turretSubsystem, m_shooter, m_limelight));
   }
 
   private void configureButtonBindings() {
@@ -111,8 +111,8 @@ public class RobotContainer {
     // op Select -> limelight targeting
     // op A  -> turret home
     // op B  -> manual control with operator controller
-    opStartbutton.whenPressed(new turretAutoTargeting(new Translation2d(2.0,0), m_turretSubsystem, m_drive));
-    opSelectbutton.whenPressed(new turretLimelightCommand(m_turretSubsystem, m_shooter));
+    opStartbutton.whenPressed(new turretAutoTargeting(new Translation2d(2.0,0), m_turretSubsystem, m_drive, m_limelight));
+    opSelectbutton.whenPressed(new turretLimelightCommand(m_turretSubsystem, m_shooter, m_limelight));
     opAbutton.whenPressed(new turretHomingCommand(m_turretSubsystem));
     opBbutton.whenPressed(new turretManualMode(m_turretSubsystem));
     
