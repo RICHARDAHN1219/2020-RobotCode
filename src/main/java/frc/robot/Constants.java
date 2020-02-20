@@ -64,7 +64,7 @@ public final class Constants {
         public static final double kRamseteZeta = 0.7;
     }
     public static final class turretConstants {
-        public static final int turret = 9;
+        public static final int turret = 99;
         public static final int kSoftMaxTurretAngle = 90;
         public static final int kSoftMinTurretAngle = -90;
         public static final int kEncoderCPR = 4096; // CTRE Quadrature?
@@ -106,8 +106,8 @@ public final class Constants {
     }
     public static final class indexConstants {
         public static final int indexIntake = 8;
-        public static final int indexBelts = 9;
-        public static final int indexKicker = 10;
+        public static final int indexBelts = 10;
+        public static final int indexKicker = 11;
     }
     public static final class controlPanelConstants {
         public static final int motor = 13;
@@ -119,7 +119,7 @@ public final class Constants {
         public static final Gains gains = new Gains(0.15, 0.0, 0.0, 0.0, 0, 1.0);
     }
     public static final class intakeConstants {
-        public static final int intakeMotor = 8;
+        public static final int intakeMotor = 9;
         public static final int intakeSolenoid = 6;
         public static final int intakeSolenoid2 = 7;
     }
