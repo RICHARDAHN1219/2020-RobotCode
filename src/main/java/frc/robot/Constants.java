@@ -64,6 +64,7 @@ public final class Constants {
         public static final double kRamseteZeta = 0.7;
     }
     public static final class turretConstants {
+        //TODO get the real turret motor ID
         public static final int turret = 99;
         public static final int kSoftMaxTurretAngle = 90;
         public static final int kSoftMinTurretAngle = -90;
