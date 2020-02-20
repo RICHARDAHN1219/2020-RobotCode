@@ -20,15 +20,18 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.RobotContainer;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
 import frc.robot.subsystems.blinkinSubsystem;
+import static frc.robot.Constants.digitalIOConstants.dio0_indexerSensor1;
+import static frc.robot.Constants.digitalIOConstants.dio1_indexerSensor2;
+import static frc.robot.Constants.digitalIOConstants.dio2_indexerSensor3;
 
 public class indexerSubsystem extends SubsystemBase {
 
   private WPI_TalonSRX indexIntake = new WPI_TalonSRX(indexConstants.indexIntake);
   private WPI_TalonFX indexBelts = new WPI_TalonFX(indexConstants.indexBelts);
   private WPI_TalonFX indexKicker = new WPI_TalonFX(indexConstants.indexKicker);
-  private DigitalInput Sensor1 = new DigitalInput(0);
-  private DigitalInput Sensor2 = new DigitalInput(1);
-  private DigitalInput Sensor3 = new DigitalInput(2);
+  private DigitalInput Sensor1 = new DigitalInput(dio0_indexerSensor1);
+  private DigitalInput Sensor2 = new DigitalInput(dio1_indexerSensor2);
+  private DigitalInput Sensor3 = new DigitalInput(dio2_indexerSensor3);
   private boolean ballReady4IndexerLast = false;
   private boolean ballStagedLast = false;
   private boolean ballExitingLast = false;
