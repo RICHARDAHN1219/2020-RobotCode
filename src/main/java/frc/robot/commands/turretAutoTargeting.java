@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Translation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.RobotContainer;
 import frc.robot.subsystems.driveSubsystem;
 import frc.robot.subsystems.shooterSubsystem;
 import frc.robot.subsystems.turretSubsystem;
@@ -47,6 +48,7 @@ public class turretAutoTargeting extends CommandBase {
     m_target = target;
     m_turret = turret;
     m_drive = drive;
+    m_limelight = RobotContainer.m_limelight;
     // NOTE: do not add drive to addRequirements() or else we cannot drive while targeting
     // IMPORTANT: use READ ONLY methods from m_drive
     addRequirements(turret);

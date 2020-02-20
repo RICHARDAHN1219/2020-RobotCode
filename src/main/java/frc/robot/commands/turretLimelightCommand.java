@@ -10,6 +10,7 @@ import com.fearxzombie.limelight;
 
 import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Robot;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.shooterSubsystem;
 import frc.robot.subsystems.turretSubsystem;
@@ -19,14 +20,15 @@ import frc.robot.subsystems.turretSubsystem;
  */
 public class turretLimelightCommand extends CommandBase {
   turretSubsystem m_turret;
-  limelight m_limelight;
   shooterSubsystem m_shooter;
+  limelight m_limelight;
 
   public turretLimelightCommand(turretSubsystem subsystem1, shooterSubsystem subsystem3) {
     addRequirements(subsystem1);
     addRequirements(subsystem3);
     m_turret = subsystem1;
     m_shooter = subsystem3;
+    m_limelight = RobotContainer.m_limelight;
   }
 
   @Override

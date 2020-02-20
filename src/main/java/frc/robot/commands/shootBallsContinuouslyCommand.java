@@ -35,6 +35,7 @@ public class shootBallsContinuouslyCommand extends CommandBase {
     m_indexer = indexer;
     m_turret = turret;
     m_shooter = shooter;
+    m_limelight = RobotContainer.m_limelight;
   }
 
   @Override
