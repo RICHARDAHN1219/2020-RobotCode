@@ -8,37 +8,38 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.turretSubsystem;
+import frc.robot.subsystems.indexerSubsystem;
 
-public class turretHomingCommand extends CommandBase {
-  
-  private turretSubsystem m_turret;
+public class indexerStageForShootingCommand extends CommandBase {
 
-  public turretHomingCommand(turretSubsystem turret) {
-    m_turret = turret;
-    addRequirements(turret);
-  }
+  indexerSubsystem m_indexer;
 
-  public void home() {
-    m_turret.setAngleDegrees(0);
+  public indexerStageForShootingCommand(indexerSubsystem indexer) {
+    addRequirements(indexer);
+    m_indexer = indexer;
   }
 
   @Override
   public void initialize() {
+    m_indexer.runIndexer();
   }
 
   @Override
   public void execute() {
+    m_indexer.runIndexer();
   }
 
   @Override
   public void end(boolean interrupted) {
-    m_turret.stop();
+    m_indexer.stopIndexer();
   }
 
   @Override
   public boolean isFinished() {
-    // Move to home and stay there until another command is initiated.
+    if (m_indexer.ballExiting() == true) {
+      return true;
+    }
+    
     return false;
   }
 }

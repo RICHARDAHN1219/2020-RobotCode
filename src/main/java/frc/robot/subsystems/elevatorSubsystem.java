@@ -39,7 +39,9 @@ public class elevatorSubsystem extends SubsystemBase {
     elevatorWinch.setIdleMode(CANSparkMax.IdleMode.kBrake);
     elevatorEncoder.setInverted(false);
 
-    RobotContainer.airCompressor.start();
+
+    // Compressor not needed when solenoid is present.
+    // RobotContainer.airCompressor.start();
 
   }
 
