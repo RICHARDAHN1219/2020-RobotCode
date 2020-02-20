@@ -23,12 +23,12 @@ public class turretLimelightCommand extends CommandBase {
   shooterSubsystem m_shooter;
   limelight m_limelight;
 
-  public turretLimelightCommand(turretSubsystem subsystem1, shooterSubsystem subsystem3) {
-    addRequirements(subsystem1);
-    addRequirements(subsystem3);
-    m_turret = subsystem1;
-    m_shooter = subsystem3;
-    m_limelight = RobotContainer.m_limelight;
+  public turretLimelightCommand(turretSubsystem turret, shooterSubsystem shooter, limelight ll_util) {
+    addRequirements(turret);
+    addRequirements(shooter);
+    m_turret = turret;
+    m_shooter = shooter;
+    m_limelight = ll_util;
   }
 
   @Override

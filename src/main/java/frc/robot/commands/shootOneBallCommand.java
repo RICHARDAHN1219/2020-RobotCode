@@ -29,14 +29,14 @@ public class shootOneBallCommand extends CommandBase {
   private double limelightSteerCommand = 0;
   private boolean finished;
   
-  public shootOneBallCommand(indexerSubsystem indexer, turretSubsystem turret, shooterSubsystem shooter) {
+  public shootOneBallCommand(indexerSubsystem indexer, turretSubsystem turret, shooterSubsystem shooter, limelight ll_util) {
     addRequirements(indexer);
     addRequirements(turret);
     addRequirements(shooter);
     m_indexer = indexer;
     m_turret = turret;
     m_shooter = shooter;
-    m_limelight = RobotContainer.m_limelight;
+    m_limelight = ll_util;
   }
 
   @Override

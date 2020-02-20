@@ -28,14 +28,14 @@ public class shootBallsContinuouslyCommand extends CommandBase {
   private double tx;
   private double limelightSteerCommand = 0;
 
-  public shootBallsContinuouslyCommand(indexerSubsystem indexer, turretSubsystem turret, shooterSubsystem shooter) {
+  public shootBallsContinuouslyCommand(indexerSubsystem indexer, turretSubsystem turret, shooterSubsystem shooter, limelight ll_util) {
     addRequirements(indexer);
     addRequirements(turret);
     addRequirements(shooter);
     m_indexer = indexer;
     m_turret = turret;
     m_shooter = shooter;
-    m_limelight = RobotContainer.m_limelight;
+    m_limelight = ll_util;
   }
 
   @Override

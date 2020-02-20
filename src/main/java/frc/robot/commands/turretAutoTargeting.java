@@ -44,11 +44,11 @@ public class turretAutoTargeting extends CommandBase {
    * @param drive  Subsystem
    * @param limelight Subsystem
    */
-  public turretAutoTargeting(Translation2d target, turretSubsystem turret, driveSubsystem drive) {
+  public turretAutoTargeting(Translation2d target, turretSubsystem turret, driveSubsystem drive, limelight ll_util) {
     m_target = target;
     m_turret = turret;
     m_drive = drive;
-    m_limelight = RobotContainer.m_limelight;
+    m_limelight = ll_util;
     // NOTE: do not add drive to addRequirements() or else we cannot drive while targeting
     // IMPORTANT: use READ ONLY methods from m_drive
     addRequirements(turret);
