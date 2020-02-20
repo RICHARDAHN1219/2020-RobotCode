@@ -7,21 +7,28 @@
 
 package frc.robot.commands;
 
+import com.fearxzombie.limelight;
+
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Translation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.RobotContainer;
 import frc.robot.subsystems.driveSubsystem;
-import frc.robot.subsystems.limelightSubsystem;
+import frc.robot.subsystems.shooterSubsystem;
 import frc.robot.subsystems.turretSubsystem;
 
 public class turretAutoTargeting extends CommandBase {
   private turretSubsystem m_turret;
   private Translation2d m_target;
   private driveSubsystem m_drive;
-  private limelightSubsystem m_limelight;
+  private limelight m_limelight;
+  private shooterSubsystem m_shooter;
   private double m_targetAngleDegrees = 0.0;
   private double m_errorDegrees = 0.0;
+  double h1 = 0.6096;
+  double h2 = 2.5019;
+  double a1 = 32;
 
   // kP for limelight must be 1.0 or less
   private double kPlimelight = 0.5;
@@ -37,15 +44,14 @@ public class turretAutoTargeting extends CommandBase {
    * @param drive  Subsystem
    * @param limelight Subsystem
    */
-  public turretAutoTargeting(Translation2d target, turretSubsystem turret, driveSubsystem drive,
-      limelightSubsystem limelight) {
+  public turretAutoTargeting(Translation2d target, turretSubsystem turret, driveSubsystem drive, limelight ll_util) {
     m_target = target;
     m_turret = turret;
     m_drive = drive;
-    m_limelight = limelight;
+    m_limelight = ll_util;
     // NOTE: do not add drive to addRequirements() or else we cannot drive while targeting
     // IMPORTANT: use READ ONLY methods from m_drive
-    addRequirements(turret, limelight);
+    addRequirements(turret);
   }
 
   // Called when the command is initially scheduled.
@@ -83,7 +89,7 @@ public class turretAutoTargeting extends CommandBase {
 
     SmartDashboard.putNumber("Angle2Target", m_targetAngleDegrees);
     SmartDashboard.putNumber("Dist2Target", dist_pose);
-    SmartDashboard.putNumber("LL_Dist2Target", m_limelight.getDist());
+    SmartDashboard.putNumber("LL_Dist2Target", m_limelight.getDist(h1, h2, a1));
     SmartDashboard.putNumber("AngleError", m_errorDegrees);
     SmartDashboard.putNumber("LL_Angle", ll_angleDegrees);
   }

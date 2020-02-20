@@ -26,8 +26,6 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
     m_robotContainer = new RobotContainer();
-    NetworkTableInstance.getDefault().getTable("limelight").getEntry("camMode").setNumber(1);
-    NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").setNumber(1);
   }
 
   @Override

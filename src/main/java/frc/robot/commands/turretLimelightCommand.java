@@ -6,10 +6,12 @@
 /*----------------------------------------------------------------------------*/
 package frc.robot.commands;
 
+import com.fearxzombie.limelight;
+
 import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Robot;
 import frc.robot.RobotContainer;
-import frc.robot.subsystems.limelightSubsystem;
 import frc.robot.subsystems.shooterSubsystem;
 import frc.robot.subsystems.turretSubsystem;
 
@@ -18,17 +20,15 @@ import frc.robot.subsystems.turretSubsystem;
  */
 public class turretLimelightCommand extends CommandBase {
   turretSubsystem m_turret;
-  limelightSubsystem m_limelight;
   shooterSubsystem m_shooter;
+  limelight m_limelight;
 
-  public turretLimelightCommand(turretSubsystem subsystem1, limelightSubsystem subsystem2,
-      shooterSubsystem subsystem3) {
-    addRequirements(subsystem1);
-    addRequirements(subsystem2);
-    addRequirements(subsystem3);
-    m_turret = subsystem1;
-    m_limelight = subsystem2;
-    m_shooter = subsystem3;
+  public turretLimelightCommand(turretSubsystem turret, shooterSubsystem shooter, limelight ll_util) {
+    addRequirements(turret);
+    addRequirements(shooter);
+    m_turret = turret;
+    m_shooter = shooter;
+    m_limelight = ll_util;
   }
 
   @Override
@@ -41,7 +41,7 @@ public class turretLimelightCommand extends CommandBase {
   public void execute() {
     // These numbers must be tuned for Comp Robot! Be careful!
     final double STEER_K = 0.1; // how hard to turn toward the target
-    double rpm = m_shooter.getRPMforDistanceMeter(m_limelight.getDist());
+    double rpm = m_shooter.getRPMforDistanceMeter(m_limelight.getDist(0.6096, 2.5019, 32));
     double tv = m_limelight.getTV();;
     double tx = m_limelight.getTX();
     // boolean m_LimelightHasValidTarget = false;
