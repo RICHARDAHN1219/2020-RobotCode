@@ -22,10 +22,6 @@ import static frc.robot.Constants.turretConstants.kTimeout;
 import static frc.robot.Constants.turretConstants.kIndex;
 import static frc.robot.Constants.turretConstants.kMaxDegreesPerSecond;
 import static frc.robot.Constants.turretConstants.kMaxDegreesPerSecondSquared;
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.FeedbackDevice;
-import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 public class turretSubsystem extends SubsystemBase {
 
