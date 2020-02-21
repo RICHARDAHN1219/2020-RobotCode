@@ -113,13 +113,13 @@ public class RobotContainer {
     final POVButton opDPadUp = new POVButton(m_operatorController, 0);
     final POVButton opDPadDown = new POVButton(m_operatorController, 180);
 
-    /*
+    
     // Driver Controls
       // Y Button - toggle to deploy the elevator
       driverYButton.whenPressed(new elevatorDeployCommand(m_elevator));
       // Left Trigger - climber up (lower robot)
       // Right Trigger - climber down (raise robot)
-    
+    /*
     // Operator Controls
       // Left Joystick - manual turret control
       // Left Trigger - manually move the indexer backwards
