@@ -140,10 +140,7 @@ public class RobotContainer {
   public Command getNoAutonomousCommand() {
     return new RunCommand(() -> m_drive.tankDriveVolts(0, 0));
   }
-  public Command getNoAutonomousCommand() {
-    return new RunCommand(() -> m_drive.tankDriveVolts(0, 0));
-  }
-  
+ 
   public Command getAutonomousCommand() {
 
     // Drive forward 1 meter
