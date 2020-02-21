@@ -20,7 +20,8 @@ import frc.robot.library.Util.Util;
 //import frc.robot.commands.limelightTurretVisionCommand;
 //import edu.wpi.first.wpilibj.controller.RamseteController;
 import frc.robot.commands.limelightTurretVisionCommand;
-import frc.robot.RobotContainer;;
+import frc.robot.RobotContainer;
+import frc.robot.library.vision.limelight;
 
 
 
@@ -45,8 +46,11 @@ public class MotionProfileGenerator extends CommandBase {
  * Either move the robot forward while adjusting rotation with turret in initial position
  * OR
  * Rotate the robot with the turret in its initial position
+ * 
+ * First, have the robot flash the LL to the vision target to generate path
  */
  public void createPosePath() {
+    limelight.getDist(0.6096, 2.5019,32);
     if (Util.angleCorrection >= Math.toDegrees(45) && Robot.turretHome == true && Util.distanceToObjective() >= 2.5) {
         //TrajectoryConstants.m_x = deltaOverall_x;
         //TrajectoryConstants.m_y = deltaOverall_y;
@@ -84,6 +88,7 @@ public class MotionProfileGenerator extends CommandBase {
       }
       }  
     }
+    //MAYBE, remember to make sure to stop when another robot is in the way
 
   }
 
