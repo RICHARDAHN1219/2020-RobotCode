@@ -35,6 +35,8 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.driveConstants;
 import frc.robot.Constants.pwmConstants;
 import frc.robot.commands.driveCommand;
+import frc.robot.commands.elevatorDeployCommand;
+import frc.robot.commands.elevatorWinchCommand;
 import frc.robot.commands.indexerSingleIntakeCommand;
 import frc.robot.commands.indexerRestageCommand;
 import frc.robot.commands.indexerSingleFeedCommand;
@@ -93,6 +95,7 @@ public class RobotContainer {
             0.6 * -m_driveController.getX(GenericHID.Hand.kRight)), m_drive));
 
     m_turretSubsystem.setDefaultCommand(new turretLimelightCommand(m_turretSubsystem, m_shooter, m_limelight));
+    m_elevatorSubsystem.setDefaultCommand(new elevatorWinchCommand(m_elevatorSubsystem));
   }
 
   private void configureButtonBindings() {
@@ -115,6 +118,8 @@ public class RobotContainer {
     opSelectbutton.whenPressed(new turretLimelightCommand(m_turretSubsystem, m_shooter, m_limelight));
     opAbutton.whenPressed(new turretHomingCommand(m_turretSubsystem));
     opBbutton.whenPressed(new turretManualMode(m_turretSubsystem));
+
+    ybutton.toggleWhenPressed(new elevatorDeployCommand(m_elevatorSubsystem));
     
     //opBbutton.whenPressed(new turretHomingCommand());
     //ybutton.whenPressed(() -> m_controlPanelMotors.setPosition(0), m_controlPanelMotors);

@@ -11,71 +11,36 @@ import com.revrobotics.CANEncoder;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.EncoderType;
-
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.elevatorConstants;
-import frc.robot.RobotContainer;
 
 public class elevatorSubsystem extends SubsystemBase {
 
-  private Solenoid stage1Solenoid = new Solenoid(elevatorConstants.solenoid1); // TODO: get correct ids
-  private Solenoid stage2Solenoid = new Solenoid(elevatorConstants.solenoid2);
+  private Solenoid elevatorDeploySolenoid = new Solenoid(elevatorConstants.solenoid1); // TODO: get correct ids
   private Solenoid brakeSolenoid = new Solenoid(elevatorConstants.brakeSolenoid);
-
-  public final static CANSparkMax elevatorWinch = new CANSparkMax(elevatorConstants.elevatorWinch, MotorType.kBrushless);
+  private CANSparkMax elevatorWinch = new CANSparkMax(elevatorConstants.elevatorWinch, MotorType.kBrushless);
   private final CANEncoder elevatorEncoder = elevatorWinch.getEncoder(EncoderType.kHallSensor, 2048);
+  private boolean elevatorDeployed = false;
 
   /**
    * Creates a new Climber.
    */
   public elevatorSubsystem() {
-
-    stage1Solenoid.set(false);
-    stage2Solenoid.set(false);
+    elevatorDeploySolenoid.set(false);
 
     elevatorWinch.restoreFactoryDefaults();
     elevatorWinch.setIdleMode(CANSparkMax.IdleMode.kBrake);
     elevatorEncoder.setInverted(false);
-
-
-    // Compressor not needed when solenoid is present.
-    // RobotContainer.airCompressor.start();
-
   }
 
-  public void deployStage1() {
-    stage1Solenoid.set(true);
+  public void deployElevator() {
+    elevatorDeploySolenoid.set(true);
   }
 
-  public void deployStage2() {
-    stage2Solenoid.set(true);
-  }
-
-  public void retract1() {
-    stage1Solenoid.set(false);
-  }
-
-  public void retract2() {
-    stage2Solenoid.set(false);
-  }
-
-  public void raiseRobot() {
-    brakeOff();
-    elevatorWinch.setVoltage(6);
-    //TODO: experimentally find correct voltage
-  }
-
-  public void lowerRobot() {
-    brakeOff();
-    elevatorWinch.setVoltage(-2);
-     //TODO: experimentally find correct voltage
-  }
-
-  public void stopWinch() {
-    elevatorWinch.setVoltage(0);
-    brakeOn();
+  public void retractElevator() {
+    elevatorDeploySolenoid.set(false);
   }
 
   public void brakeOn() {
@@ -84,6 +49,18 @@ public class elevatorSubsystem extends SubsystemBase {
 
   public void brakeOff() {
     brakeSolenoid.set(false);
+  }
+
+  public void setWinchPercentOutput(double Percent) {
+    elevatorWinch.set(Percent);
+  }
+
+  public void setElevatorDeployed(boolean state) {
+    elevatorDeployed = state;
+  }
+
+  public boolean getElevatorDeployed() {
+    return elevatorDeployed;
   }
 
   @Override
