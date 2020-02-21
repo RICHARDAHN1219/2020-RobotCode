@@ -66,6 +66,7 @@ public class RobotContainer {
   private final driveSubsystem m_drive = new driveSubsystem();
   //public so that it can get the right instance.
   public static final limelight m_limelight = new limelight("limelight-one");
+
   private final turretSubsystem m_turretSubsystem = new turretSubsystem();
   private final shooterSubsystem m_shooter = new shooterSubsystem();
   private final indexerSubsystem m_indexer = new indexerSubsystem();
@@ -104,6 +105,7 @@ public class RobotContainer {
     final JoystickButton selectbutton = new JoystickButton(m_driveController, Button.kBack.value);
     final JoystickButton opAbutton = new JoystickButton(m_operatorController, Button.kA.value);
     final JoystickButton opBbutton = new JoystickButton(m_operatorController, Button.kB.value);
+
     final JoystickButton opStartbutton = new JoystickButton(m_operatorController, Button.kStart.value);
     final JoystickButton opSelectbutton = new JoystickButton(m_operatorController, Button.kBack.value);
 
@@ -138,7 +140,7 @@ public class RobotContainer {
   public Command getNoAutonomousCommand() {
     return new RunCommand(() -> m_drive.tankDriveVolts(0, 0));
   }
-  
+ 
   public Command getAutonomousCommand() {
 
     // Drive forward 1 meter
@@ -167,7 +169,7 @@ public class RobotContainer {
     var initalTime = System.nanoTime();
 
     // trajectory to follow. All units in meters.
-   var trajectory = TrajectoryGenerator.generateTrajectory(
+    var trajectory = TrajectoryGenerator.generateTrajectory(
         startPose,
         translationList,
         endPose,
