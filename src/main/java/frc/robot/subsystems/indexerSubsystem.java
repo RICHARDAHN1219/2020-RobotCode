@@ -18,8 +18,6 @@ import frc.robot.Constants.indexConstants;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.RobotContainer;
-import edu.wpi.first.wpilibj.GenericHID.Hand;
-import frc.robot.subsystems.blinkinSubsystem;
 import static frc.robot.Constants.digitalIOConstants.dio0_indexerSensor1;
 import static frc.robot.Constants.digitalIOConstants.dio1_indexerSensor2;
 import static frc.robot.Constants.digitalIOConstants.dio2_indexerSensor3;

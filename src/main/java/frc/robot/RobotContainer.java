@@ -15,6 +15,7 @@ import static frc.robot.Constants.driveConstants.kDriveKinematics;
 import java.util.List;
 
 import com.fearxzombie.limelight;
+import com.fearxzombie.limelight_mode;
 
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.GenericHID;
@@ -24,7 +25,6 @@ import edu.wpi.first.wpilibj.controller.RamseteController;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.geometry.Translation2d;
-import edu.wpi.first.wpilibj.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryConfig;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.trajectory.constraint.DifferentialDriveVoltageConstraint;
@@ -34,16 +34,6 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.driveConstants;
 import frc.robot.Constants.pwmConstants;
-import frc.robot.commands.driveCommand;
-import frc.robot.commands.elevatorDeployCommand;
-import frc.robot.commands.elevatorWinchCommand;
-import frc.robot.commands.indexerSingleIntakeCommand;
-import frc.robot.commands.indexerRestageCommand;
-import frc.robot.commands.indexerSingleFeedCommand;
-import frc.robot.commands.indexerStageForShootingCommand;
-import frc.robot.commands.intakeDeployCommand;
-import frc.robot.commands.intakeRetractCommand;
-import frc.robot.commands.indexerEjectCommand;
 import frc.robot.commands.turretLimelightCommand;
 import frc.robot.commands.turretAutoTargeting;
 import frc.robot.commands.turretHomingCommand;
@@ -56,17 +46,20 @@ import frc.robot.subsystems.turretSubsystem;
 import frc.robot.subsystems.shooterSubsystem;
 import frc.robot.subsystems.controlPanelSubsystem;
 import frc.robot.subsystems.blinkinSubsystem;
+import frc.robot.commands.elevatorWinchCommand;
+import frc.robot.commands.elevatorDeployCommand;
 
 public class RobotContainer {
 
   public static final Compressor airCompressor = new Compressor();
 
   // Subsystems
-  // NOTE: blinkin needs to be first and public static to be accessed by other subcsystems
+  // NOTE: blinkin needs to be first and public static to be accessed by other
+  // subcsystems
   public final static blinkinSubsystem m_blinkin = new blinkinSubsystem(pwmConstants.blinkin);
   // All other subsystems should be private
   private final driveSubsystem m_drive = new driveSubsystem();
-  //public so that it can get the right instance.
+  // public so that it can get the right instance.
   public static final limelight m_limelight = new limelight("limelight-one");
   private final turretSubsystem m_turretSubsystem = new turretSubsystem();
   private final shooterSubsystem m_shooter = new shooterSubsystem();
@@ -76,16 +69,21 @@ public class RobotContainer {
   private final intakeSubsystem m_intake = new intakeSubsystem();
 
   // Commands
-  //private final shooterCommand m_shooterCommand = new shooterCommand(m_shooter, m_indexer);
-  //private final limelightTurretVisionCommand m_turretVisionCommand = new limelightTurretVisionCommand(m_turretSubsystem, m_limelight, m_shooter);
-  //private final driveCommand m_driveCommand = new driveCommand(m_driveSubsystem);
-  //private final index1PowerCell m_index1PowerCell = new index1PowerCell(m_indexer);
+  // private final shooterCommand m_shooterCommand = new shooterCommand(m_shooter,
+  // m_indexer);
+  // private final limelightTurretVisionCommand m_turretVisionCommand = new
+  // limelightTurretVisionCommand(m_turretSubsystem, m_limelight, m_shooter);
+  // private final driveCommand m_driveCommand = new
+  // driveCommand(m_driveSubsystem);
+  // private final index1PowerCell m_index1PowerCell = new
+  // index1PowerCell(m_indexer);
 
   public static XboxController m_driveController = new XboxController(driveConstants.driveController);
   public static XboxController m_operatorController = new XboxController(driveConstants.operatorController);
+
   public RobotContainer() {
     configureButtonBindings();
-
+    m_limelight.setLEDMode(limelight_mode.led.on);
     // default command is arcade drive command
     // TODO: un-NERF the drive command.
     m_drive.setDefaultCommand(
