@@ -18,8 +18,7 @@ public class intakeSubsystem extends SubsystemBase {
 
   private WPI_TalonSRX intake = new WPI_TalonSRX(intakeConstants.intakeMotor);
   public static Solenoid intakeSolenoid = new Solenoid(intakeConstants.intakeSolenoid);
-  public static Solenoid intakeSolenoid2 = new Solenoid(7);
-  
+    
   public intakeSubsystem() {
     intake.configSupplyCurrentLimit(Robot.m_currentlimitSecondary);
   }
@@ -38,13 +37,11 @@ public class intakeSubsystem extends SubsystemBase {
 
   public void deployIntake() {
     intakeSolenoid.set(true);
-    intakeSolenoid2.set(true);
     setIntakePercentOutput(0.75);
   }
 
   public void retractIntake() {
     intakeSolenoid.set(false);
-    intakeSolenoid2.set(false);
     setIntakePercentOutput(0);
   }
 }

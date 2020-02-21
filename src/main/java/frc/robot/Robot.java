@@ -5,6 +5,7 @@ import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DriverStation;
 
 public class Robot extends TimedRobot {
@@ -18,6 +19,7 @@ public class Robot extends TimedRobot {
   public static SupplyCurrentLimitConfiguration m_currentlimitMain = new SupplyCurrentLimitConfiguration(true, 35, 1, 1);
   public static SupplyCurrentLimitConfiguration m_currentlimitSecondary = new SupplyCurrentLimitConfiguration(true, 25, 1, 1);
   public PowerDistributionPanel m_pdp = new PowerDistributionPanel();
+  public Compressor Compressor;
 
   @Override
   public void robotInit() {

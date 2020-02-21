@@ -21,12 +21,6 @@ public class elevatorDeployCommand extends CommandBase {
 
   @Override
   public void initialize() {
-    if (m_elevator.getElevatorDeployed() == true) {
-      m_elevator.retractElevator();
-    }
-    if (m_elevator.getElevatorDeployed() == false) {
-      m_elevator.deployElevator();
-    }
   }
 
   @Override
@@ -35,16 +29,11 @@ public class elevatorDeployCommand extends CommandBase {
 
   @Override
   public void end(boolean interrupted) {
-    if (m_elevator.getElevatorDeployed() == true) {
-      m_elevator.setElevatorDeployed(false);
-    }
-    if (m_elevator.getElevatorDeployed() == false) {
-      m_elevator.setElevatorDeployed(true);
-    }
+      m_elevator.retractElevator();
   }
 
   @Override
   public boolean isFinished() {
-    return true;
+    return false;
   }
 }

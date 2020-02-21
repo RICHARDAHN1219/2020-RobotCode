@@ -121,8 +121,7 @@ public final class Constants {
     }
     public static final class intakeConstants {
         public static final int intakeMotor = 9;
-        public static final int intakeSolenoid = 6;
-        public static final int intakeSolenoid2 = 7;
+        public static final int intakeSolenoid = 7;
     }
     public static final class pwmConstants {
         public static final int blinkin = 0;
