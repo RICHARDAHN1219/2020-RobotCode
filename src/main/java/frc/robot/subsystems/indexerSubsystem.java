@@ -44,10 +44,12 @@ public class indexerSubsystem extends SubsystemBase {
   private int ballCount = 0;
   private int restageState = 0;
   private boolean periodic = true;
-  private blinkinSubsystem m_blinkin = RobotContainer.m_blinkin;
+  private blinkinSubsystem m_blinkin = null;
   private boolean finishedSingleFeed;
 
-  public indexerSubsystem() {
+  public indexerSubsystem(blinkinSubsystem blinkin){
+    m_blinkin = blinkin;
+
     indexBelts.configFactoryDefault();
     indexKicker.configFactoryDefault();
     indexIntake.configFactoryDefault();

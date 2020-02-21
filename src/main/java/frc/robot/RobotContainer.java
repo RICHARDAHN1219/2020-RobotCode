@@ -61,7 +61,7 @@ public class RobotContainer {
 
   // Subsystems
   // NOTE: blinkin needs to be first and public static to be accessed by other subcsystems
-  public final static blinkinSubsystem m_blinkin = new blinkinSubsystem(pwmConstants.blinkin);
+  private final static blinkinSubsystem m_blinkin = new blinkinSubsystem(pwmConstants.blinkin);
   // All other subsystems should be private
   private final driveSubsystem m_drive = new driveSubsystem();
   //public so that it can get the right instance.
@@ -69,7 +69,7 @@ public class RobotContainer {
 
   private final turretSubsystem m_turretSubsystem = new turretSubsystem();
   private final shooterSubsystem m_shooter = new shooterSubsystem();
-  private final indexerSubsystem m_indexer = new indexerSubsystem();
+  private final indexerSubsystem m_indexer = new indexerSubsystem(m_blinkin);
   private final elevatorSubsystem m_elevatorSubsystem = new elevatorSubsystem();
   private final controlPanelSubsystem m_controlPanelMotors = new controlPanelSubsystem();
   private final intakeSubsystem m_intake = new intakeSubsystem();
