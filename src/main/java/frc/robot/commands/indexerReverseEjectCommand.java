@@ -8,25 +8,20 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.elevatorSubsystem;
+import frc.robot.subsystems.indexerSubsystem;
 
-public class elevatorDeployCommand extends CommandBase {
+public class indexerReverseEjectCommand extends CommandBase {
 
-  elevatorSubsystem m_elevator;
+  private indexerSubsystem m_indexer;
 
-  public elevatorDeployCommand(elevatorSubsystem elevator) {
-    addRequirements(elevator);
-    m_elevator = elevator;
+  public indexerReverseEjectCommand(indexerSubsystem indexer) {
+    addRequirements(indexer);
+    m_indexer = indexer;
   }
 
   @Override
   public void initialize() {
-    if (m_elevator.getElevatorDeployed() == true) {
-      m_elevator.retractElevator();
-    }
-    if (m_elevator.getElevatorDeployed() == false) {
-      m_elevator.deployElevator();
-    }
+    m_indexer.reverseIndexer();
   }
 
   @Override
@@ -35,16 +30,11 @@ public class elevatorDeployCommand extends CommandBase {
 
   @Override
   public void end(boolean interrupted) {
-    if (m_elevator.getElevatorDeployed() == true) {
-      m_elevator.setElevatorDeployed(false);
-    }
-    if (m_elevator.getElevatorDeployed() == false) {
-      m_elevator.setElevatorDeployed(true);
-    }
+    m_indexer.stopIndexer();
   }
 
   @Override
   public boolean isFinished() {
-    return true;
+    return false;
   }
 }
