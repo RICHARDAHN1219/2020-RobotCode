@@ -11,10 +11,10 @@ import edu.wpi.first.wpilibj.kinematics.DifferentialDriveKinematics;
 
 public final class Constants {
     public static final class driveConstants {
-        public static final int falcon1_leftLead = 1;
-        public static final int falcon2_leftFollow = 3;
-        public static final int falcon3_rightLead = 0;
-        public static final int falcon4_rightFollow = 2;
+        public static final int falcon1_leftLead = 12;
+        public static final int falcon2_leftFollow = 12;
+        public static final int falcon3_rightLead = 14;
+        public static final int falcon4_rightFollow = 15;
         public static final int driveTimeout = 30;
         public static final int pigeonCANid = 15;
         public static final int driveController = 0;
@@ -65,18 +65,22 @@ public final class Constants {
         public static final double kRamseteZeta = 0.7;
     }
     public static final class turretConstants {
-        public static final int turret = 11;
+        //TODO get the real turret motor ID
+        public static final int turret = 99;
         public static final int kSoftMaxTurretAngle = 90;
         public static final int kSoftMinTurretAngle = -90;
-        public static final int kEncoderCPR = 4096;  // CTRE Mag encoder AKA Quadrature encoder
+        public static final int kEncoderCPR = 4096; // CTRE Quadrature?
 
-        // motor controlled by Talon
-        // Turret inner teeth = 264
+        // BAG motor controlled by Talon
+        // Turret inner teeth = 264. * 360
         // gear teeth = 20
-        // gearbox = 30:1
-        // Total motor to turret rotation ratio: 1/462 = (1/30) * (20/264)
-        // Total motor to encoder rotation ratio: 1/13.2 = 20/264 
-        public static final double kGearRation = 20.0 / 264.0;
+        // gearbox = 35:1
+        // Total motor to turret rotation ration: 1/396
+        // public static final double kGearRation = 1 / 396.0; // turret rotations per motor
+        // rotation
+        // POST gearbox encoder ratio is:
+        // 20:264 or 1/13.2
+        public static final double kGearRation = 1 / 13.2; // turret rotations per encoder rotation
         public static final double kTurretRotationsPerTick = kGearRation / kEncoderCPR;
         public static final double kDegreesPerTick = 360 * kTurretRotationsPerTick;
         // TODO: test and increase max velocity and acceleration
@@ -92,18 +96,20 @@ public final class Constants {
         public static final int shooter2 = 5;
         public static final int shooterTimeout = 30;
         public static final int shooterSlotIdx = 0;
+        public static final int shooterHood = 1;
     }
     public static final class elevatorConstants {
-        public static final int elevator1 = 6;
-        public static final int elevator2 = 7;
+        public static final int solenoid1 = 6;
+        public static final int solenoid2 = 7;
         public static final int elevatorWinch = 12;
+        public static final int brakeSolenoid = 14;
         public static final int elevatorPivotTimeout = 30;
         public static final int elevatorSlotIdx = 1;
     }
     public static final class indexConstants {
         public static final int indexIntake = 8;
-        public static final int indexBelts = 9;
-        public static final int indexKicker = 10;
+        public static final int indexBelts = 10;
+        public static final int indexKicker = 11;
     }
     public static final class controlPanelConstants {
         public static final int motor = 13;
@@ -115,10 +121,18 @@ public final class Constants {
         public static final Gains gains = new Gains(0.15, 0.0, 0.0, 0.0, 0, 1.0);
     }
     public static final class intakeConstants {
-        public static final int intakeMotor = 20;
-        public static final int intakeSolenoid = 1;
+        public static final int intakeMotor = 9;
+        public static final int intakeSolenoid = 6;
+        public static final int intakeSolenoid2 = 7;
     }
     public static final class pwmConstants {
         public static final int blinkin = 0;
+    }
+    public static final class digitalIOConstants {
+        // assign digital IO (DIO) ports 0-9
+        public static final int dio0_indexerSensor1 = 0;
+        public static final int dio1_indexerSensor2 = 1;
+        public static final int dio2_indexerSensor3 = 2;
+        public static final int dio7_turretLimit = 7;
     }
 }

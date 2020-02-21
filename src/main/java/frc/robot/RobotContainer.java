@@ -14,6 +14,9 @@ import static frc.robot.Constants.AutoConstants.kRamseteZeta;
 import static frc.robot.Constants.driveConstants.kDriveKinematics;
 import java.util.List;
 
+import com.fearxzombie.limelight;
+
+import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.XboxController.Button;
@@ -36,33 +39,44 @@ import frc.robot.commands.indexerSingleIntakeCommand;
 import frc.robot.commands.indexerRestageCommand;
 import frc.robot.commands.indexerSingleFeedCommand;
 import frc.robot.commands.indexerStageForShootingCommand;
+import frc.robot.commands.intakeDeployCommand;
+import frc.robot.commands.intakeRetractCommand;
 import frc.robot.commands.indexerEjectCommand;
-import frc.robot.commands.limelightTurretVisionCommand;
+import frc.robot.commands.turretLimelightCommand;
+import frc.robot.commands.turretAutoTargeting;
 import frc.robot.commands.turretHomingCommand;
+import frc.robot.commands.turretManualMode;
 import frc.robot.subsystems.driveSubsystem;
 import frc.robot.subsystems.elevatorSubsystem;
 import frc.robot.subsystems.indexerSubsystem;
-import frc.robot.subsystems.limelightSubsystem;
 import frc.robot.subsystems.intakeSubsystem;
 import frc.robot.subsystems.turretSubsystem;
 import frc.robot.subsystems.shooterSubsystem;
 import frc.robot.subsystems.controlPanelSubsystem;
-import frc.robot.subsystems.blinkin;
+import frc.robot.subsystems.blinkinSubsystem;
 
 public class RobotContainer {
+
+  public static final Compressor airCompressor = new Compressor();
+
   // Subsystems
-  public final static blinkin m_blinkin = new blinkin(pwmConstants.blinkin);
+  // NOTE: blinkin needs to be first and public static to be accessed by other subcsystems
+  public final static blinkinSubsystem m_blinkin = new blinkinSubsystem(pwmConstants.blinkin);
+  // All other subsystems should be private
   private final driveSubsystem m_drive = new driveSubsystem();
+  //public so that it can get the right instance.
+  public static final limelight m_limelight = new limelight("limelight-one");
+
   private final turretSubsystem m_turretSubsystem = new turretSubsystem();
-  //public static final shooterSubsystem m_shooter = new shooterSubsystem();
-  public static final indexerSubsystem m_indexer = new indexerSubsystem();
+  private final shooterSubsystem m_shooter = new shooterSubsystem();
+  private final indexerSubsystem m_indexer = new indexerSubsystem();
   private final elevatorSubsystem m_elevatorSubsystem = new elevatorSubsystem();
   private final controlPanelSubsystem m_controlPanelMotors = new controlPanelSubsystem();
   private final intakeSubsystem m_intake = new intakeSubsystem();
-  private final limelightSubsystem m_limelight = new limelightSubsystem("limelight-one");
+
   // Commands
-  //public static final shooterCommand m_shooterCommand = new shooterCommand(m_shooter, m_indexer);
-  //private final limelightTurretVisionCommand m_turretVisionCommand = new limelightTurretVisionCommand(m_turretSubsystem);
+  //private final shooterCommand m_shooterCommand = new shooterCommand(m_shooter, m_indexer);
+  //private final limelightTurretVisionCommand m_turretVisionCommand = new limelightTurretVisionCommand(m_turretSubsystem, m_limelight, m_shooter);
   //private final driveCommand m_driveCommand = new driveCommand(m_driveSubsystem);
   //private final index1PowerCell m_index1PowerCell = new index1PowerCell(m_indexer);
 
@@ -79,7 +93,7 @@ public class RobotContainer {
         new RunCommand(() -> m_drive.arcadeDrive(0.5 *  -m_driveController.getY(GenericHID.Hand.kLeft),
             0.6 * -m_driveController.getX(GenericHID.Hand.kRight)), m_drive));
 
-    //m_turretSubsystem.setDefaultCommand(new limelightTurretVisionCommand(m_turretSubsystem));
+    m_turretSubsystem.setDefaultCommand(new turretLimelightCommand(m_turretSubsystem, m_shooter, m_limelight));
   }
 
   private void configureButtonBindings() {
@@ -91,19 +105,40 @@ public class RobotContainer {
     final JoystickButton selectbutton = new JoystickButton(m_driveController, Button.kBack.value);
     final JoystickButton opAbutton = new JoystickButton(m_operatorController, Button.kA.value);
     final JoystickButton opBbutton = new JoystickButton(m_operatorController, Button.kB.value);
-    //opAbutton.whenPressed(new manualMode());
+
+    final JoystickButton opStartbutton = new JoystickButton(m_operatorController, Button.kStart.value);
+    final JoystickButton opSelectbutton = new JoystickButton(m_operatorController, Button.kBack.value);
+
+    // op Start -> auto targeting
+    // op Select -> limelight targeting
+    // op A  -> turret home
+    // op B  -> manual control with operator controller
+    opStartbutton.whenPressed(new turretAutoTargeting(new Translation2d(2.0,0), m_turretSubsystem, m_drive, m_limelight));
+    opSelectbutton.whenPressed(new turretLimelightCommand(m_turretSubsystem, m_shooter, m_limelight));
+    opAbutton.whenPressed(new turretHomingCommand(m_turretSubsystem));
+    opBbutton.whenPressed(new turretManualMode(m_turretSubsystem));
+    
     //opBbutton.whenPressed(new turretHomingCommand());
     //ybutton.whenPressed(() -> m_controlPanelMotors.setPosition(0), m_controlPanelMotors);
     //xbutton.whenPressed(() -> m_controlPanelMotors.setPosition(1 * 4096), m_controlPanelMotors);
-    // abutton.whenPressed(() -> m_shooter.setShooterRPM(2000));
-    bbutton.whenPressed(new indexerSingleIntakeCommand(m_indexer));
-    abutton.whenPressed(new indexerStageForShootingCommand(m_indexer));
-    xbutton.whenPressed(new indexerSingleFeedCommand(m_indexer));
-    ybutton.whenPressed(new indexerRestageCommand(m_indexer));
-    startbutton.toggleWhenPressed(new indexerEjectCommand(m_indexer));
-    //xbutton.whenPressed(() -> m_shooter.setShooterRPM(2500));
-    //ybutton.whenPressed(() -> m_shooter.setShooterRPM(3000));
-    //selectbutton.whenPressed(() -> m_shooter.testMode());
+    //abutton.whenPressed(() -> m_shooter.setShooterRPM(2000), m_shooter);
+    //bbutton.whenPressed(new indexerSingleIntakeCommand(m_indexer));
+    //abutton.whenPressed(new indexerStageForShootingCommand(m_indexer));
+    //xbutton.whenPressed(new indexerSingleFeedCommand(m_indexer));
+    //ybutton.whenPressed(new indexerRestageCommand(m_indexer));
+    //startbutton.toggleWhenPressed(new indexerEjectCommand(m_indexer));
+    //xbutton.whenPressed(() -> m_shooter.setShooterRPM(2500), m_shooter);
+    //ybutton.whenPressed(() -> m_shooter.setShooterRPM(3000), m_shooter);
+    //selectbutton.whenPressed(() -> m_shooter.testMode(), m_shooter);
+    //bbutton.toggleWhenPressed(new intakeDeployCommand(m_intake));
+    //abutton.toggleWhenPressed(new intakeRetractCommand(m_intake));
+    //abutton.whenPressed(() -> m_shooter.setShooterRPM(2000)), m_shooter;
+    //xbutton.whenPressed(() -> m_shooter.setShooterRPM(2500)), m_shooter;
+    //ybutton.whenPressed(() -> m_shooter.setShooterRPM(3000), m_shooter);
+  }
+  
+  public Command getNoAutonomousCommand() {
+    return new RunCommand(() -> m_drive.tankDriveVolts(0, 0));
   }
   public Command getNoAutonomousCommand() {
     return new RunCommand(() -> m_drive.tankDriveVolts(0, 0));
@@ -137,7 +172,7 @@ public class RobotContainer {
     var initalTime = System.nanoTime();
 
     // trajectory to follow. All units in meters.
-   var trajectory = TrajectoryGenerator.generateTrajectory(
+    var trajectory = TrajectoryGenerator.generateTrajectory(
         startPose,
         translationList,
         endPose,

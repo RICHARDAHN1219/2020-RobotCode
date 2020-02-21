@@ -26,12 +26,7 @@ public class indexerStageForShootingCommand extends CommandBase {
 
   @Override
   public void execute() {
-    if (m_indexer.ballExiting() != true) {
-      m_indexer.runIndexer();
-    }
-    else {
-      isFinished();
-    }
+    m_indexer.runIndexer();
   }
 
   @Override
@@ -41,6 +36,10 @@ public class indexerStageForShootingCommand extends CommandBase {
 
   @Override
   public boolean isFinished() {
+    if (m_indexer.ballExiting() == true) {
+      return true;
+    }
+    
     return false;
   }
 }

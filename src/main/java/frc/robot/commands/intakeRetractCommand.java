@@ -8,24 +8,24 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.elevatorSubsystem;
+import frc.robot.subsystems.intakeSubsystem;
 
-public class elevatorWinchCommand extends CommandBase {
-  private elevatorSubsystem m_elevator;
+public class intakeRetractCommand extends CommandBase {
 
-  public elevatorWinchCommand(elevatorSubsystem elevator) {
-    addRequirements(elevator);
-    m_elevator = elevator;
+  intakeSubsystem m_intake;
+
+  public intakeRetractCommand(intakeSubsystem intake) {
+    addRequirements(intake);
+    m_intake = intake;
   }
 
   @Override
   public void initialize() {
-    m_elevator.setNeutralMode();
+    m_intake.retractIntake();
   }
 
   @Override
   public void execute() {
-    //m_elevator.elevatorWinch.set(ControlMode.PercentOutput, 1);
   }
 
   @Override

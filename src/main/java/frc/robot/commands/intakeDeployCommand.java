@@ -8,23 +8,20 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.turretSubsystem;
+import frc.robot.subsystems.intakeSubsystem;
 
-public class turretHomingCommand extends CommandBase {
-  
-  private turretSubsystem m_turret;
+public class intakeDeployCommand extends CommandBase {
 
-  public turretHomingCommand(turretSubsystem turret) {
-    m_turret = turret;
-    addRequirements(turret);
-  }
+  intakeSubsystem m_intake;
 
-  public void home() {
-    m_turret.setAngleDegrees(0);
+  public intakeDeployCommand(intakeSubsystem intake) {
+    addRequirements(intake);
+    m_intake = intake;
   }
 
   @Override
   public void initialize() {
+    m_intake.deployIntake();
   }
 
   @Override
@@ -33,12 +30,11 @@ public class turretHomingCommand extends CommandBase {
 
   @Override
   public void end(boolean interrupted) {
-    m_turret.stop();
+    m_intake.retractIntake();
   }
 
   @Override
   public boolean isFinished() {
-    // Move to home and stay there until another command is initiated.
     return false;
   }
 }

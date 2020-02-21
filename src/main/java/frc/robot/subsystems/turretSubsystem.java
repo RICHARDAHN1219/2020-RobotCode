@@ -30,15 +30,14 @@ import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 public class turretSubsystem extends SubsystemBase {
 
   private TalonSRX turretDrive = new TalonSRX(Constants.turretConstants.turret);
-  private DigitalInput limit1 = new DigitalInput(7);
-  private DigitalInput limit2 = new DigitalInput(8);
+  private DigitalInput limit = new DigitalInput(7);
 
   public turretSubsystem() {
     turretDrive.configFactoryDefault();
-    turretDrive.configSelectedFeedbackSensor(FeedbackDevice.Analog, kIndex, kTimeout);
+    turretDrive.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, kIndex, kTimeout);
 
-    // fix rotational direction
-    turretDrive.setInverted(false);
+    // TODO: fix rotational direction and sensor phase
+    turretDrive.setInverted(true); // CCW is positive direction
     turretDrive.setSensorPhase(false);
 
     // set soft limits
@@ -55,17 +54,22 @@ public class turretSubsystem extends SubsystemBase {
 
     // TODO: tune PIDF parameters (these are only a guess)
     turretDrive.configAllowableClosedloopError(0, kIndex, kTimeout);
-    turretDrive.config_kF(kIndex, 0.01, kTimeout);
+    turretDrive.config_kF(kIndex, 0.38, kTimeout);
     turretDrive.config_kP(kIndex, 0.1, kTimeout);
     turretDrive.config_kI(kIndex, 0, kTimeout);
     turretDrive.config_kD(kIndex, 0, kTimeout);
 
     // set Motion Magic max Cruise Velocity and max acceleration
-		turretDrive.configMotionCruiseVelocity((int)(kMaxDegreesPerSecond / (kDegreesPerTick * 10)) , kTimeout);
-		turretDrive.configMotionAcceleration((int)(kMaxDegreesPerSecondSquared / (kDegreesPerTick * 10)), kTimeout);
-  
+    turretDrive.configMotionCruiseVelocity((int) (kMaxDegreesPerSecond / (kDegreesPerTick * 10)),
+        kTimeout);
+    turretDrive.configMotionAcceleration(
+        (int) (kMaxDegreesPerSecondSquared / (kDegreesPerTick * 10)), kTimeout);
+
   }
 
+  /**
+   * turretHome()  rotate turret to zero degrees
+   */
   public void turretHome() {
     turretDrive.set(ControlMode.Position, 0);
   }
@@ -73,7 +77,7 @@ public class turretSubsystem extends SubsystemBase {
   /**
    * setAngleDegrees - turn turret to a given angle relative to robot
    * 
-   * @param agnleDeg angle in degrees
+   * @param angle in degrees
    */
   public void setAngleDegrees(double angleDeg) {
     if (angleDeg < kSoftMinTurretAngle) {
@@ -89,14 +93,14 @@ public class turretSubsystem extends SubsystemBase {
   /**
    * setAngleRadians - turn turret to a given angle relative to robot
    * 
-   * @param agnleRad angle in radians
+   * @param  angle in RADIANS
    */
   public void setAngleRadians(double angleRad) {
     setAngleDegrees(angleRad * 180.0 / Math.PI);
   }
 
   /**
-   *  stop - stop the turret motor, disabling PID position control
+   * stop - stop the turret motor, disabling PID position control
    */
   public void stop() {
     setPercentOutput(0);
@@ -106,42 +110,51 @@ public class turretSubsystem extends SubsystemBase {
     turretDrive.set(ControlMode.PercentOutput, percent);
   }
 
+  /**
+   * getAngleDegrees()  return current turret angle in degrees
+   * 
+   * @return angle in degrees
+   */
   public double getAngleDegrees() {
-    return(turretDrive.getSelectedSensorPosition() * kDegreesPerTick);
+    return (turretDrive.getSelectedSensorPosition() * kDegreesPerTick);
   }
 
+  /**
+   * getAngleRadians()  return current turret angle in RADIANS
+   * 
+   * @return angle in radians
+   */
   public double getAngleRadians() {
     return(getAngleDegrees() * Math.PI / 180.0);
   }
 
   @Override
   public void periodic() {
-    boolean turretLimit1 = limit1.get();
-    boolean turretLimit2 = limit2.get();
+    boolean turretLimit = !limit.get();
+
     int pos = turretDrive.getSelectedSensorPosition();
 
-    SmartDashboard.putBoolean("TurretLimit 1", turretLimit1);
-    SmartDashboard.putBoolean("TurretLimit 2", turretLimit2);
+    SmartDashboard.putBoolean("TurretLimit", turretLimit);
     SmartDashboard.putNumber("Turret Pos", pos);
     SmartDashboard.putNumber("Turret Angle", pos * kDegreesPerTick);
 
-    if (turretLimit1 == true) {
-      turretDrive.set(ControlMode.PercentOutput, 0.0);
-      DriverStation.reportError("Min limit Reached on turret. motor stopped", false);
-      // check angle and reset position to kSoftMinTurretAngle if off by more than 1 deg
-      if (Math.abs(pos * kDegreesPerTick - kSoftMinTurretAngle) > 1.0) {
-        // TODO: magnetic limits switch may be outside software min/max set accordingly
-        turretDrive.setSelectedSensorPosition((int) (kSoftMinTurretAngle / kDegreesPerTick), kIndex, kTimeout);
+    if (turretLimit == true) {
+      stop();
+      if (pos < 0) {
+        DriverStation.reportError("Min limit Reached on turret. motor stopped", false);
+        // check angle and reset position to kSoftMinTurretAngle if off by more than 1 deg
+        if (Math.abs(pos * kDegreesPerTick - kSoftMinTurretAngle) > 1.0) {
+          // TODO: magnetic limits switch may be outside software min/max set accordingly
+          turretDrive.setSelectedSensorPosition((int) (kSoftMinTurretAngle / kDegreesPerTick), kIndex, kTimeout);
+        }
       }
-    }
-
-    if (turretLimit2 == true) {
-      turretDrive.set(ControlMode.PercentOutput, 0.0);
-      DriverStation.reportError("Max limit Reached on turret, motor stopped", false);
-      // check angle and reset position to kSoftMaxTurretAngle if off by more than 1 deg
-      if (Math.abs(pos * kDegreesPerTick - kSoftMaxTurretAngle) > 1.0) {
-        // TODO: magnetic limits switch may be outside software min/max set accordingly
-        turretDrive.setSelectedSensorPosition((int) (kSoftMaxTurretAngle / kDegreesPerTick), kIndex, kTimeout);
+      else {
+        DriverStation.reportError("Max limit Reached on turret, motor stopped", false);
+        // check angle and reset position to kSoftMaxTurretAngle if off by more than 1 deg
+        if (Math.abs(pos * kDegreesPerTick - kSoftMaxTurretAngle) > 1.0) {
+          // TODO: magnetic limits switch may be outside software min/max set accordingly
+          turretDrive.setSelectedSensorPosition((int) (kSoftMaxTurretAngle / kDegreesPerTick), kIndex, kTimeout);
+        }
       }
     }
   }

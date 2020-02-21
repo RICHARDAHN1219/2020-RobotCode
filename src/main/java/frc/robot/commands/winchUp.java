@@ -8,37 +8,38 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.turretSubsystem;
-
-public class turretHomingCommand extends CommandBase {
-  
-  private turretSubsystem m_turret;
-
-  public turretHomingCommand(turretSubsystem turret) {
-    m_turret = turret;
-    addRequirements(turret);
+import frc.robot.subsystems.elevatorSubsystem;
+public class winchUp extends CommandBase {
+  elevatorSubsystem m_elevator;
+  /**
+   * Creates a new ElevatorWinch.
+   */
+  public winchUp(elevatorSubsystem elevator) {
+    m_elevator = elevator;
+    addRequirements(m_elevator);
+    // Use addRequirements() here to declare subsystem dependencies.
   }
 
-  public void home() {
-    m_turret.setAngleDegrees(0);
-  }
-
+  // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    m_elevator.raiseRobot();
   }
 
+  // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
   }
 
+  // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_turret.stop();
+    m_elevator.stopWinch();
   }
 
+  // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    // Move to home and stay there until another command is initiated.
     return false;
   }
 }
