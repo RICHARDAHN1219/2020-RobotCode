@@ -9,8 +9,6 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-
-import com.fearxzombie.limelight;
 import com.revrobotics.CANEncoder;
 import com.revrobotics.CANPIDController;
 import com.revrobotics.CANSparkMax;
@@ -19,7 +17,6 @@ import com.revrobotics.EncoderType;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.team2930.lib.util.linearInterpolator;
 
-import frc.robot.RobotContainer;
 import frc.robot.Constants.shooterConstants;
 
 public class shooterSubsystem extends SubsystemBase {
@@ -28,17 +25,12 @@ public class shooterSubsystem extends SubsystemBase {
   private CANSparkMax neo_shooter2 = new CANSparkMax(shooterConstants.shooter2, MotorType.kBrushless);
   private CANPIDController m_pidController;
   private CANEncoder m_encoder;
-  private double kP, kI, kD, kIz, kFF, kMaxOutput, kMinOutput;
+  private double kMaxOutput, kMinOutput;
   private double m_desiredRPM = 0;
   private boolean m_atSpeed = false;
   private long m_initalTime = 0;
   private linearInterpolator m_lt;
-  private double dist = -1;
-  private boolean oneXZoom;
-  private boolean twoXZoom;
-  private boolean threeXZoom;
-  private boolean lock;
-  limelight m_limelight;
+
   private double data[][] = {
     // distance in Feed -> RPM
     { 4,  2650 }, 
@@ -55,7 +47,7 @@ public class shooterSubsystem extends SubsystemBase {
     neo_shooter1.restoreFactoryDefaults();
     neo_shooter2.restoreFactoryDefaults();
 
-    //Current Limits for use on competition bot
+    //TODO: turn current limits back on
     //neo_shooter1.setSmartCurrentLimit(35);
     //neo_shooter2.setSmartCurrentLimit(35);
     
@@ -67,7 +59,7 @@ public class shooterSubsystem extends SubsystemBase {
     m_pidController = neo_shooter1.getPIDController();
     m_encoder = neo_shooter1.getEncoder(EncoderType.kHallSensor, 4096);
     kMaxOutput = 1; 
-    kMinOutput = -1;
+    kMinOutput = -0.5; // don't need full power to slow flywheel
     m_pidController.setOutputRange(kMinOutput, kMaxOutput);
 
     setShooterPID(0.0003, 0.00000025, 0, 0.0002, 250);
@@ -81,54 +73,17 @@ public class shooterSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     SmartDashboard.putNumber("ActualShooterRPM", (int) m_encoder.getVelocity());
-    //m_desiredRPM = SmartDashboard.getNumber("DesiredShooterRPM", 0);
     double rpm = SmartDashboard.getNumber("ShooterRPM", -1);
     if (rpm != -1) {
-      if (m_desiredRPM != rpm ) {
+      if (rpm == 0) {
+        // Don't use PID to go to zero when changing RPM from Smartdashboard
+        stop();
+      }
+      else if (m_desiredRPM != rpm ) {
         setShooterRPM(rpm);
-        System.out.println("New shooter desired RPM: "  + m_desiredRPM);
-        // lets' confirm we're changing this
-        SmartDashboard.putNumber("UpdatedRPM", m_desiredRPM);
         m_initalTime = System.nanoTime();
         m_atSpeed = false;
       }
-      if (m_limelight.getTV() == 1) {
-        lock = true;
-      } else {
-        lock = false;
-      }
-      // This method will be called once per scheduler run
-          //Example output: currentDist = (2.5019-0.6096 / tan(10+20))
-      //currentDist = 3.27755 so 3x Zoom shall be used.
-      double h1 = 0.6096;
-      double h2 = 2.5019;  // TODO: This is wrong, update never got committed
-      double a1 = 32;
-      double a2 = m_limelight.getTY();
-      double oneXDist = 1.7272;
-      double twoXDist = 2.7178;
-      double threeXDist = 2.9718;
-      double currentDist = ((Math.abs(h2 - h1) / Math.tan((a1 + a2) * Math.PI / 180)) / 1.1154856);
-      // TODO: figure out whey we need a fudge factor?
-      SmartDashboard.putBoolean("1xZoom", oneXZoom);
-      SmartDashboard.putBoolean("2xZoom", twoXZoom);
-      SmartDashboard.putBoolean("3xZoom", threeXZoom);
-      SmartDashboard.putBoolean("LL_TARGETLOCK", lock);
-      dist = currentDist;
-    //  if (currentDist >= oneXDist || getTV() == 1){
-    //     set1xZoom();
-    //     System.out.println("Switching to 1x Zoom");
-    //   } else if (currentDist >= twoXDist || getTV() == 1){
-    //     set2xZoom();
-    //     System.out.println("Switching to 2x Zoom");
-    //   } else if (currentDist >= threeXDist || getTV() == 1) {
-    //     set3xZoom();
-    //     System.out.println("Switching to 3x Zoom");
-    //   } if (a2 == 0 || getTV() == 0){
-    //     dist = -1;
-    //     set1xZoom();
-    //     System.out.println("No target in range, switching to normal zoom.");
-    //   }
-      
     }
 
     m_initalTime = System.nanoTime();
@@ -145,16 +100,14 @@ public class shooterSubsystem extends SubsystemBase {
     SmartDashboard.putBoolean("isAtSpeed", m_atSpeed);
   }
 
+  /**
+   * setShooterRPM  - set the target speed of the flywheel. PID will try to hold this RPM.
+   * 
+   * @param desiredRPM
+   */
   public void setShooterRPM (double desiredRPM) {
     m_desiredRPM = desiredRPM;
     m_pidController.setReference(desiredRPM, ControlType.kVelocity);
-  }
-
-  public void testMode(){
-    //m_desiredRPM = SmartDashboard.getNumber("DesiredShooterRPM", 0);
-    //System.out.println("Shooter desired ROM: "  + m_desiredRPM);
-    //m_pidController.setReference(m_desiredRPM, ControlType.kVelocity);
-    //System.out.println("Activating Test Mode");
   }
 
   public void setShooterPID (double P, double I, double D, double F, double iZ) {
@@ -170,6 +123,11 @@ public class shooterSubsystem extends SubsystemBase {
     neo_shooter1.set(percent);
   }
 
+  /**
+   * isAtSpeed() - check if flywheel is at the desired RPM
+   * 
+   * @return true if at correct speed, else false
+   */
   public boolean isAtSpeed(){
     double error = m_desiredRPM - m_encoder.getVelocity();
     SmartDashboard.putNumber("RPM_Error", error);
@@ -190,7 +148,7 @@ public class shooterSubsystem extends SubsystemBase {
     return m_lt.getInterpolatedValue(distanceFeet);
   }
 
-    /**
+  /**
    * getRPMforDistanceFeet() - return RPM based on distance to target in METERS
    * 
    * @param distanceFeet distance in METERS to goal
