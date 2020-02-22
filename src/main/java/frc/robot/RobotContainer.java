@@ -13,9 +13,7 @@ import static frc.robot.Constants.AutoConstants.kRamseteB;
 import static frc.robot.Constants.AutoConstants.kRamseteZeta;
 import static frc.robot.Constants.driveConstants.kDriveKinematics;
 import java.util.List;
-
 import com.fearxzombie.limelight;
-
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
@@ -24,7 +22,6 @@ import edu.wpi.first.wpilibj.controller.RamseteController;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.geometry.Translation2d;
-import edu.wpi.first.wpilibj.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryConfig;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.trajectory.constraint.DifferentialDriveVoltageConstraint;
@@ -57,7 +54,10 @@ import frc.robot.subsystems.blinkinSubsystem;
 
 public class RobotContainer {
 
+  // public classes accessable by all subsystems and commands
   public static final Compressor airCompressor = new Compressor();
+  // TODO: convert Pose2d to Field2d to work with simulator. currently broken in wpilib
+  public static Pose2d robotPose = new Pose2d(0, 0, new Rotation2d(0));
 
   // Subsystems
   // NOTE: blinkin needs to be first and public static to be accessed by other subcsystems

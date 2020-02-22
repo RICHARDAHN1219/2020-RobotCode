@@ -35,6 +35,7 @@ import edu.wpi.first.wpilibj.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.driveConstants;
+import frc.robot.RobotContainer;
 
 public class driveSubsystem extends SubsystemBase {
 
@@ -136,6 +137,7 @@ public class driveSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("right_wheel_Distance", rightDist);
     
     Pose2d currentPose = m_odometry.getPoseMeters();
+    RobotContainer.robotPose = currentPose;
     SmartDashboard.putNumber("pose_x",currentPose.getTranslation().getX());
     SmartDashboard.putNumber("pose_y",currentPose.getTranslation().getY());
     SmartDashboard.putNumber("pose_theta", currentPose.getRotation().getDegrees());
