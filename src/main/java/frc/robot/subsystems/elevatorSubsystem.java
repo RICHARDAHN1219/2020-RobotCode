@@ -24,7 +24,7 @@ public class elevatorSubsystem extends SubsystemBase {
   private Solenoid brakeSolenoid = new Solenoid(6);
   private CANSparkMax elevatorWinch = new CANSparkMax(elevatorConstants.elevatorWinch, MotorType.kBrushless);
   private final CANEncoder elevatorEncoder = elevatorWinch.getEncoder(EncoderType.kHallSensor, 2048);
-  private boolean elevatorDeployed = false;
+  private boolean elevatorDeployed = true;
 
   /**
    * Creates a new Climber.

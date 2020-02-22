@@ -115,7 +115,8 @@ public class RobotContainer {
 
     
     // Driver Controls
-      // Y Button - toggle to deploy the elevator
+      // Y Button to deploy the elevator
+      // X Button to retract the elevator
       driverYButton.whenPressed(() -> m_elevator.deployElevator());
       driverXButton.whenPressed(() -> m_elevator.retractElevator());
       // Left Trigger - climber up (lower robot)
