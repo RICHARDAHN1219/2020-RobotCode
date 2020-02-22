@@ -146,8 +146,10 @@ public class RobotContainer {
     // op Select -> limelight targeting
     // op A  -> turret home
     // op B  -> manual control with operator controller
-    //opStartButton.whenPressed(new turretAutoTargeting(new Translation2d(2.0,0), m_turret, m_drive, m_limelight));
-    //opXButton.whenPressed(() -> m_shooter.setShooterRPM(2000));
+    // TODO: do something other than assume power port is directly in front of robot sitting on initiation line
+    Translation2d powerPortLocation = new Translation2d(inches2Meters(120), 0);
+    //opStartButton.whenPressed(new turretAutoTargeting(powerPortLocation, m_turret, m_drive, m_limelight));
+    //opXButton.whenPressed(() -> m_shooter.setShooterRPM(2700));  // 2700 RPM is ideal for 10' (initiation line)
     //opBackButton.whenPressed(new turretLimelightCommand(m_turret, m_shooter, m_limelight));
     //opAButton.whenPressed(new turretHomingCommand(m_turret));
     opBButton.whenPressed(new turretManualMode(m_turret));
@@ -210,4 +212,9 @@ public class RobotContainer {
     return ramseteCommand;
   }
   
+
+  
+  public double inches2Meters(double i) {
+    return i * 0.0254;
+  }
 }
