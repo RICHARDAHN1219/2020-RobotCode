@@ -62,6 +62,7 @@ public class PathUtils {
     /**
      * isReversed - return true if the path is driven in reverse. Looks for the sub-string REVERSE
      * in the filename.
+     * TODO: Implement isReversed into odometry.
      * 
      * @param filename
      * @return boolean
@@ -74,38 +75,61 @@ public class PathUtils {
     }
     
     /**
+     * Create a Trajectory from a start/end Pose2d and interior waypoints
      * 
-     * Create 
-     * 
-     * @param drive
+     * @param m_drive
      * @param startPose
      * @param translationList
      * @param endPose
+     * @param inReverse
      * @return
      */
-    public RamseteCommand createTrajectoryCommand(driveSubsystem m_drive,
-            Pose2d startPose, List<Translation2d> translationList, Pose2d endPose) {
+    public Trajectory createTrajectory(driveSubsystem m_drive, Pose2d startPose,
+            List<Translation2d> translationList, Pose2d endPose, boolean inReverse) {
+
         DifferentialDriveVoltageConstraint autoVoltageConstraint;
         TrajectoryConfig config;
-   
+
         // Create a voltage constraint to ensure we don't accelerate too fast
-        autoVoltageConstraint = new DifferentialDriveVoltageConstraint(m_drive.getFeedforward(), kDriveKinematics, 6);
-    
+        autoVoltageConstraint = new DifferentialDriveVoltageConstraint(m_drive.getFeedforward(),
+                kDriveKinematics, 6);
+
         // Create config for trajectory
         config = new TrajectoryConfig(kMaxSpeedMetersPerSecond, kMaxAccelerationMetersPerSecondSquared)
             // Add kinematics to ensure max speed is actually obeyed
             .setKinematics(kDriveKinematics)
             // Apply the voltage constraint
             .addConstraint(autoVoltageConstraint);
+
+        if (inReverse) {
+            // drive this trajectory in reverse
+            config.setReversed(true);
+        }
+        
+        var initalTime = System.nanoTime();
+
+        // trajectory to follow. All units in meters.
+        var trajectory = TrajectoryGenerator.generateTrajectory(startPose, translationList, endPose, config);
+
+        var dt = (System.nanoTime() - initalTime) / 1E6;
+        System.out.println("createTrajectory generation time: " + dt + "ms");
+
+        return trajectory;
+    }
+
+
+    /**
+     * 
+     * RamseteCommand() - Take a Trajectory and return a RamseteCommand.
+     * 
+     * @param drive
+     * @param trajectory
+     * @return RamseteCommand to follow the given trajectory
+     */
+    public RamseteCommand createTrajectoryCommand(driveSubsystem m_drive,
+            Trajectory trajectory) {
     
         var initalTime = System.nanoTime();
-    
-        // trajectory to follow. All units in meters.
-        var trajectory = TrajectoryGenerator.generateTrajectory(
-            startPose,
-            translationList,
-            endPose,
-            config);
     
         RamseteCommand ramseteCommand =
             new RamseteCommand(trajectory, 
@@ -122,7 +146,6 @@ public class PathUtils {
         var dt = (System.nanoTime() - initalTime) / 1E6;
         System.out.println("RamseteCommand generation time: " + dt + "ms");
     
-        // Run path following command, then stop at the end.
         return ramseteCommand;
       }
 

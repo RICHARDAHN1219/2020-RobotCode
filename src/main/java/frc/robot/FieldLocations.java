@@ -10,7 +10,7 @@ package frc.robot;
 import edu.wpi.first.wpilibj.geometry.Translation2d;
 
 /**
- * Field location constants.
+ * Field location constants. As of 2/22/20 unused and replaced by PathWeaver.
  */
 public class FieldLocations {
 
