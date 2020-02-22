@@ -28,25 +28,24 @@ public class elevatorWinchCommand extends CommandBase {
   }
 
   @Override
-  public void execute() {    
-      if (driveController.getTriggerAxis(Hand.kRight) - driveController.getTriggerAxis(Hand.kLeft) >= 0.1) {
+  public void execute() {   
+      if (driveController.getTriggerAxis(Hand.kLeft) >= 0.1) {
         m_elevator.brakeOff();
-        m_elevator.setWinchPercentOutput(driveController.getTriggerAxis(Hand.kRight) - driveController.getTriggerAxis(Hand.kLeft));
-      }
-
-      if (driveController.getTriggerAxis(Hand.kRight) - driveController.getTriggerAxis(Hand.kLeft) <= -0.1) {
+        m_elevator.setWinchPercentOutput(driveController.getTriggerAxis(Hand.kLeft));
+        System.out.println(driveController.getTriggerAxis(Hand.kLeft));    
+      } else if (driveController.getTriggerAxis(Hand.kRight) >= 0.1) {
         m_elevator.brakeOff();
-        m_elevator.setWinchPercentOutput(driveController.getTriggerAxis(Hand.kRight) - driveController.getTriggerAxis(Hand.kLeft));
+        m_elevator.setWinchPercentOutput(-driveController.getTriggerAxis(Hand.kRight));
+        System.out.println(driveController.getTriggerAxis(Hand.kRight));
+      }  else {
+        m_elevator.stop();
       }
-    
-    else {
-      m_elevator.brakeOn();
-      m_elevator.setWinchPercentOutput(0);
     }
-  }
+
 
   @Override
   public void end(boolean interrupted) {
+    m_elevator.stop();
   }
 
   @Override

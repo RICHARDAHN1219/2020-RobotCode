@@ -24,7 +24,7 @@ public class elevatorSubsystem extends SubsystemBase {
   private Solenoid brakeSolenoid = new Solenoid(6);
   private CANSparkMax elevatorWinch = new CANSparkMax(elevatorConstants.elevatorWinch, MotorType.kBrushless);
   private final CANEncoder elevatorEncoder = elevatorWinch.getEncoder(EncoderType.kHallSensor, 2048);
-  private boolean elevatorDeployed = true;
+  private boolean elevatorDeployed = false;
 
   /**
    * Creates a new Climber.
@@ -37,10 +37,12 @@ public class elevatorSubsystem extends SubsystemBase {
   }
 
   public void deployElevator() {
+    setElevatorDeployed(true);
     elevatorDeploySolenoid.set(Value.kForward);
   }
 
   public void retractElevator() {
+    setElevatorDeployed(false);
     elevatorDeploySolenoid.set(Value.kReverse);
   }
 
@@ -54,6 +56,11 @@ public class elevatorSubsystem extends SubsystemBase {
 
   public void setWinchPercentOutput(double Percent) {
     elevatorWinch.set(Percent);
+  }
+
+  public void stop() {
+    brakeOn();
+    setWinchPercentOutput(0.0);
   }
 
   public void setElevatorDeployed(boolean state) {

@@ -64,11 +64,11 @@ public class RobotContainer {
   private final driveSubsystem m_drive = new driveSubsystem();
   // public so that it can get the right instance.
   //public static final limelight m_limelight = new limelight("limelight-one");
-  //private final turretSubsystem m_turret = new turretSubsystem();
+  private final turretSubsystem m_turret = new turretSubsystem();
   //private final shooterSubsystem m_shooter = new shooterSubsystem();
-  private final indexerSubsystem m_indexer = new indexerSubsystem();
+  //private final indexerSubsystem m_indexer = new indexerSubsystem();
   private final elevatorSubsystem m_elevator = new elevatorSubsystem();
-  private final controlPanelSubsystem m_controlPanelMotors = new controlPanelSubsystem();
+  //private final controlPanelSubsystem m_controlPanelMotors = new controlPanelSubsystem();
   private final intakeSubsystem m_intake = new intakeSubsystem();
 
   public static XboxController m_driveController = new XboxController(driveConstants.driveController);
@@ -79,11 +79,10 @@ public class RobotContainer {
     //m_limelight.setLEDMode(limelight_mode.led.on);
     // default command is arcade drive command
     // TODO: un-NERF the drive command.
-    //m_drive.setDefaultCommand(
+    m_drive.setDefaultCommand(
         // A split-stick arcade command, with forward/backward controlled by the left
         // hand, and turning controlled by the right.
-        //new RunCommand(() -> m_drive.arcadeDrive(0.5 *  -m_driveController.getY(GenericHID.Hand.kLeft),
-            //0.6 * -m_driveController.getX(GenericHID.Hand.kRight)), m_drive));
+        new RunCommand(() -> m_drive.arcadeDrive(m_driveController.getY(GenericHID.Hand.kLeft), -m_driveController.getX(GenericHID.Hand.kRight)), m_drive));
 
     //m_turret.setDefaultCommand(new turretLimelightCommand(m_turret, m_shooter, m_limelight));
     m_elevator.setDefaultCommand(new elevatorWinchCommand(m_elevator));
@@ -117,8 +116,8 @@ public class RobotContainer {
     // Driver Controls
       // Y Button to deploy the elevator
       // X Button to retract the elevator
-      driverYButton.whenPressed(() -> m_elevator.deployElevator());
-      driverXButton.whenPressed(() -> m_elevator.retractElevator());
+      driverYButton.whenPressed(new elevatorDeployCommand(m_elevator));
+      driverXButton.whenPressed(() -> m_elevator.retractElevator(), m_elevator);
       // Left Trigger - climber up (lower robot)
       // Right Trigger - climber down (raise robot)
     /*
@@ -148,9 +147,10 @@ public class RobotContainer {
     // op A  -> turret home
     // op B  -> manual control with operator controller
     //opStartButton.whenPressed(new turretAutoTargeting(new Translation2d(2.0,0), m_turret, m_drive, m_limelight));
+    //opXButton.whenPressed(() -> m_shooter.setShooterRPM(2000));
     //opBackButton.whenPressed(new turretLimelightCommand(m_turret, m_shooter, m_limelight));
     //opAButton.whenPressed(new turretHomingCommand(m_turret));
-    //opBButton.whenPressed(new turretManualMode(m_turret));
+    opBButton.whenPressed(new turretManualMode(m_turret));
   }
   
   public Command getNoAutonomousCommand() {

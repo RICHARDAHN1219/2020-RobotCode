@@ -12,7 +12,7 @@ import edu.wpi.first.wpilibj.kinematics.DifferentialDriveKinematics;
 public final class Constants {
     public static final class driveConstants {
         public static final int falcon1_leftLead = 12;
-        public static final int falcon2_leftFollow = 12;
+        public static final int falcon2_leftFollow = 13;
         public static final int falcon3_rightLead = 14;
         public static final int falcon4_rightFollow = 15;
         public static final int driveTimeout = 30;
@@ -111,7 +111,7 @@ public final class Constants {
         public static final int indexKicker = 11;
     }
     public static final class controlPanelConstants {
-        public static final int motor = 13;
+        public static final int motor = 20;
         public static final int controlPanelSlotIdx = 0;
         public static final int PIDLoopIdx = 0;
         public static final int timeoutMs = 30;

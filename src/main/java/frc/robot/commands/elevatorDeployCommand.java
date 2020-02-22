@@ -21,6 +21,7 @@ public class elevatorDeployCommand extends CommandBase {
 
   @Override
   public void initialize() {
+   m_elevator.deployElevator();
   }
 
   @Override
@@ -29,7 +30,6 @@ public class elevatorDeployCommand extends CommandBase {
 
   @Override
   public void end(boolean interrupted) {
-      m_elevator.retractElevator();
   }
 
   @Override
