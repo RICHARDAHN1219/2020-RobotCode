@@ -9,8 +9,6 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-
-import com.fearxzombie.limelight;
 import com.revrobotics.CANEncoder;
 import com.revrobotics.CANPIDController;
 import com.revrobotics.CANSparkMax;
@@ -18,7 +16,6 @@ import com.revrobotics.ControlType;
 import com.revrobotics.EncoderType;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.team2930.lib.util.linearInterpolator;
-
 import frc.robot.Constants.shooterConstants;
 
 public class shooterSubsystem extends SubsystemBase {
@@ -27,17 +24,11 @@ public class shooterSubsystem extends SubsystemBase {
   private CANSparkMax neo_shooter2 = new CANSparkMax(shooterConstants.shooter2, MotorType.kBrushless);
   private CANPIDController m_pidController;
   private CANEncoder m_encoder;
-  private double kP, kI, kD, kIz, kFF, kMaxOutput, kMinOutput;
+  private double kMaxOutput, kMinOutput;
   private double m_desiredRPM = 0;
   private boolean m_atSpeed = false;
   private long m_initalTime = 0;
   private linearInterpolator m_lt;
-  private double dist = -1;
-  private boolean oneXZoom;
-  private boolean twoXZoom;
-  private boolean threeXZoom;
-  private boolean lock;
-  limelight m_limelight;
   private double data[][] = {
     // distance in Feed -> RPM
     { 4,  2650 }, 
@@ -47,8 +38,8 @@ public class shooterSubsystem extends SubsystemBase {
     { 8,  2600 },
     { 9,  2650 },
     { 10, 2700 },
-    
-    { 25, 4300},
+    // TODO: complete this table with values between 10 and 25 feet
+    { 25, 4300 },
   };
   public shooterSubsystem() {
     neo_shooter1.restoreFactoryDefaults();
@@ -83,50 +74,18 @@ public class shooterSubsystem extends SubsystemBase {
     //m_desiredRPM = SmartDashboard.getNumber("DesiredShooterRPM", 0);
     double rpm = SmartDashboard.getNumber("ShooterRPM", -1);
     if (rpm != -1) {
-      if (m_desiredRPM != rpm ) {
+      if (rpm == 0.0) {
+        // spin down, don't use PID (and power) to stop
+        stop();
+      }
+      else if (m_desiredRPM != rpm ) {
         setShooterRPM(rpm);
-        System.out.println("New shooter desired RPM: "  + m_desiredRPM);
-        // lets' confirm we're changing this
-        SmartDashboard.putNumber("UpdatedRPM", m_desiredRPM);
+        System.out.println("New shooter desired RPM: "  + rpm);
         m_initalTime = System.nanoTime();
         m_atSpeed = false;
       }
-      if (m_limelight.getTV() == 1) {
-        lock = true;
-      } else {
-        lock = false;
-      }
+
       // This method will be called once per scheduler run
-          //Example output: currentDist = (2.5019-0.6096 / tan(10+20))
-      //currentDist = 3.27755 so 3x Zoom shall be used.
-      double h1 = 0.6096;
-      double h2 = 2.5019;  // TODO: This is wrong, update never got committed
-      double a1 = 32;
-      double a2 = m_limelight.getTY();
-      double oneXDist = 1.7272;
-      double twoXDist = 2.7178;
-      double threeXDist = 2.9718;
-      double currentDist = ((Math.abs(h2 - h1) / Math.tan((a1 + a2) * Math.PI / 180)) / 1.1154856);
-      // TODO: figure out whey we need a fudge factor?
-      SmartDashboard.putBoolean("1xZoom", oneXZoom);
-      SmartDashboard.putBoolean("2xZoom", twoXZoom);
-      SmartDashboard.putBoolean("3xZoom", threeXZoom);
-      SmartDashboard.putBoolean("LL_TARGETLOCK", lock);
-      dist = currentDist;
-    //  if (currentDist >= oneXDist || getTV() == 1){
-    //     set1xZoom();
-    //     System.out.println("Switching to 1x Zoom");
-    //   } else if (currentDist >= twoXDist || getTV() == 1){
-    //     set2xZoom();
-    //     System.out.println("Switching to 2x Zoom");
-    //   } else if (currentDist >= threeXDist || getTV() == 1) {
-    //     set3xZoom();
-    //     System.out.println("Switching to 3x Zoom");
-    //   } if (a2 == 0 || getTV() == 0){
-    //     dist = -1;
-    //     set1xZoom();
-    //     System.out.println("No target in range, switching to normal zoom.");
-    //   }
       
     }
 
@@ -172,7 +131,7 @@ public class shooterSubsystem extends SubsystemBase {
   public boolean isAtSpeed(){
     double error = m_desiredRPM - m_encoder.getVelocity();
     SmartDashboard.putNumber("RPM_Error", error);
-    if (Math.abs(error) < 100){
+    if (Math.abs(error) < 50) {
       return true;
     } else {
       return false;
@@ -200,6 +159,7 @@ public class shooterSubsystem extends SubsystemBase {
   }
 
   public void stop() {
+    m_desiredRPM = 0;
     setPercentOutput(0.0);
   }
 }
