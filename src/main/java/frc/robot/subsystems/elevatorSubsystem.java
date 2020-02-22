@@ -44,11 +44,11 @@ public class elevatorSubsystem extends SubsystemBase {
     elevatorDeploySolenoid.set(Value.kReverse);
   }
 
-  public void brakeOn() {
+  public void brakeOff() {
     brakeSolenoid.set(true);
   }
 
-  public void brakeOff() {
+  public void brakeOn() {
     brakeSolenoid.set(false);
   }
 
