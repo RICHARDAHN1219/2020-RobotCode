@@ -29,6 +29,8 @@ import edu.wpi.first.wpilibj.trajectory.TrajectoryConfig;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.trajectory.constraint.DifferentialDriveVoltageConstraint;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.RamseteCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -165,12 +167,27 @@ public class RobotContainer {
     return new RunCommand(() -> m_drive.tankDriveVolts(0, 0));
   }
   
+  public Command getAutonomousShootCommand() {
+
+    // Spin up flywheel and drive off initiation line
+    Command ac = new ParallelRaceGroup(
+       getAutonomousCommand(), 
+       new InstantCommand(() -> m_shooter.setShooterRPM(m_shooter.getRPMforDistanceFeet(10)), m_shooter));
+
+    // shoot 3 power cells
+    ac.andThen(new shootBallsContinuouslyCommand(m_indexer, m_turret, m_shooter, m_limelight, m_drive);
+
+    // TODO: add drive toward nearest powercell and pick up
+
+    return ac;
+  }
+
   public Command getAutonomousCommand() {
 
-    // Drive forward 1 meter, 1 meter back, and stop
+    // Drive forward 1.5 meter, 1.5 meter back, and stop
     RamseteCommand ramseteCommand = createTrajectoryCommand(
       new Pose2d(0, 0, new Rotation2d(0)),
-      List.of(new Translation2d(1.0,0.0)),
+      List.of(new Translation2d(1.5,0.0)),
       new Pose2d(0.0, 0.0, new Rotation2d(0)));
 
     // TODO: add aim and shoot  
