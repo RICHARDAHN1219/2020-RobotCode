@@ -50,6 +50,7 @@ import frc.robot.subsystems.blinkinSubsystem;
 import frc.robot.commands.elevatorWinchCommand;
 import frc.robot.commands.indexerRestageCommand;
 import frc.robot.commands.indexerReverseEjectCommand;
+import frc.robot.commands.indexerSingleIntakeCommand;
 import frc.robot.commands.indexerStageForShootingCommand;
 import frc.robot.commands.intakeDeployCommand;
 import frc.robot.commands.shootBallsContinuouslyCommand;
@@ -63,16 +64,18 @@ public class RobotContainer {
   // All other subsystems should be private
   private final driveSubsystem m_drive = new driveSubsystem();
   // public so that it can get the right instance.
-  //public static final limelight m_limelight = new limelight("limelight-one");
+  public static final limelight m_limelight = new limelight("limelight-one");
   private final turretSubsystem m_turret = new turretSubsystem();
-  //private final shooterSubsystem m_shooter = new shooterSubsystem();
-  //private final indexerSubsystem m_indexer = new indexerSubsystem();
+  public static final shooterSubsystem m_shooter = new shooterSubsystem();
+  private final indexerSubsystem m_indexer = new indexerSubsystem();
   private final elevatorSubsystem m_elevator = new elevatorSubsystem();
   //private final controlPanelSubsystem m_controlPanelMotors = new controlPanelSubsystem();
   private final intakeSubsystem m_intake = new intakeSubsystem();
 
   public static XboxController m_driveController = new XboxController(driveConstants.driveController);
   public static XboxController m_operatorController = new XboxController(driveConstants.operatorController);
+
+  public static boolean limelightOnTarget = false;
 
   public RobotContainer() {
     configureButtonBindings();
@@ -86,6 +89,7 @@ public class RobotContainer {
 
     //m_turret.setDefaultCommand(new turretLimelightCommand(m_turret, m_shooter, m_limelight));
     m_elevator.setDefaultCommand(new elevatorWinchCommand(m_elevator));
+    m_indexer.setDefaultCommand(new indexerSingleIntakeCommand(m_indexer));
   }
 
   private void configureButtonBindings() {
@@ -114,13 +118,14 @@ public class RobotContainer {
 
     
     // Driver Controls
-      // Y Button to deploy the elevator
-      // X Button to retract the elevator
-      driverYButton.whenPressed(new elevatorDeployCommand(m_elevator));
-      driverXButton.whenPressed(() -> m_elevator.retractElevator(), m_elevator);
+    // Y Button to deploy the elevator
+    // X Button to retract the elevator
+    // driverYButton.whenPressed(new elevatorDeployCommand(m_elevator));
+    // driverXButton.whenPressed(() -> m_elevator.retractElevator(), m_elevator);
+
       // Left Trigger - climber up (lower robot)
       // Right Trigger - climber down (raise robot)
-    /*
+    
     // Operator Controls
       // Left Joystick - manual turret control
       // Left Trigger - manually move the indexer backwards
@@ -130,26 +135,27 @@ public class RobotContainer {
       // B Button - stage balls for shooting
       opBButton.whenPressed(new indexerStageForShootingCommand(m_indexer));
       // X Button - restage balls
-      opXButton.whenPressed(new indexerRestageCommand(m_indexer));
+      //opXButton.whenPressed(new indexerRestageCommand(m_indexer));
       // Y Button - hold to eject balls out the back of the indexer, restage balls when released
       opYButton.whileHeld(new indexerReverseEjectCommand(m_indexer));
-      opYButton.whenReleased(new indexerRestageCommand(m_indexer));
+      //opYButton.whenReleased(new indexerRestageCommand(m_indexer));
       // Right Bumper - hold to shoot balls
-      opRightBumper.whileHeld(new shootBallsContinuouslyCommand(m_indexer, m_turret, m_shooter, m_limelight));
+      opRightBumper.whileHeld(new shootBallsContinuouslyCommand(m_indexer, m_turret, m_shooter, m_limelight, m_drive));
       // D Pad Up - manually increase ball count
       opDPadUp.whenPressed(() -> m_indexer.setBallCount(m_indexer.getBallCount() + 1));
       // D Pad Down - manually decrease ball count
       opDPadDown.whenPressed(() -> m_indexer.setBallCount(m_indexer.getBallCount() - 1));
-      */
+
+      
       
     // op Start -> auto targeting
     // op Select -> limelight targeting
     // op A  -> turret home
     // op B  -> manual control with operator controller
     // TODO: do something other than assume power port is directly in front of robot sitting on initiation line
-    Translation2d powerPortLocation = new Translation2d(inches2Meters(120), 0);
+    //Translation2d powerPortLocation = new Translation2d(inches2Meters(120), 0);
     //opStartButton.whenPressed(new turretAutoTargeting(powerPortLocation, m_turret, m_drive, m_limelight));
-    //opXButton.whenPressed(() -> m_shooter.setShooterRPM(2700));  // 2700 RPM is ideal for 10' (initiation line)
+    opXButton.whenPressed(() -> m_shooter.setShooterRPM(2700));  // 2700 RPM is ideal for 10' (initiation line)
     //opBackButton.whenPressed(new turretLimelightCommand(m_turret, m_shooter, m_limelight));
     //opAButton.whenPressed(new turretHomingCommand(m_turret));
     opBButton.whenPressed(new turretManualMode(m_turret));

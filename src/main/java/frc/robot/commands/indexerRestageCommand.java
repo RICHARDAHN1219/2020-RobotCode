@@ -33,6 +33,10 @@ public class indexerRestageCommand extends CommandBase {
       m_indexer.reverseIndexer();
     }
 
+    if (m_indexer.ballReadyForIndexer() == true && m_indexer.ballStaged() == true) {
+      m_indexer.runIndexer();
+    }
+
     if (m_indexer.ballReadyForIndexer() == true && m_indexer.getRestageState() == 0) {
       m_indexer.stopIndexer();
       m_indexer.setRestageState(1);

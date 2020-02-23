@@ -60,10 +60,9 @@ public class shooterSubsystem extends SubsystemBase {
     kMinOutput = -1;
     m_pidController.setOutputRange(kMinOutput, kMaxOutput);
 
-    setShooterPID(0.0003, 0.00000025, 0, 0.0002, 250);
+    setShooterPID(0.0004, 0.00000025, 0, 0.0002, 250);
 
     SmartDashboard.putNumber("ShooterRPM", m_desiredRPM);
-    SmartDashboard.putNumber("UpdatedRPM", -1);
 
     m_lt = new linearInterpolator(data);
   }
@@ -71,7 +70,7 @@ public class shooterSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     SmartDashboard.putNumber("ActualShooterRPM", (int) m_encoder.getVelocity());
-    //m_desiredRPM = SmartDashboard.getNumber("DesiredShooterRPM", 0);
+
     double rpm = SmartDashboard.getNumber("ShooterRPM", -1);
     if (rpm != -1) {
       if (rpm == 0.0) {
@@ -84,9 +83,6 @@ public class shooterSubsystem extends SubsystemBase {
         m_initalTime = System.nanoTime();
         m_atSpeed = false;
       }
-
-      // This method will be called once per scheduler run
-      
     }
 
     m_initalTime = System.nanoTime();
@@ -106,13 +102,14 @@ public class shooterSubsystem extends SubsystemBase {
   public void setShooterRPM (double desiredRPM) {
     m_desiredRPM = desiredRPM;
     m_pidController.setReference(desiredRPM, ControlType.kVelocity);
+    SmartDashboard.putNumber("ShooterRPM", m_desiredRPM);
   }
 
   public void testMode(){
-    //m_desiredRPM = SmartDashboard.getNumber("DesiredShooterRPM", 0);
-    //System.out.println("Shooter desired ROM: "  + m_desiredRPM);
-    //m_pidController.setReference(m_desiredRPM, ControlType.kVelocity);
-    //System.out.println("Activating Test Mode");
+    m_desiredRPM = SmartDashboard.getNumber("DesiredShooterRPM", 0);
+    System.out.println("Shooter desired ROM: "  + m_desiredRPM);
+    m_pidController.setReference(m_desiredRPM, ControlType.kVelocity);
+    System.out.println("Activating Test Mode");
   }
 
   public void setShooterPID (double P, double I, double D, double F, double iZ) {

@@ -27,8 +27,8 @@ public final class Constants {
 
         // Comp bot track width (center of wheel to center of wheel) is 0.627m
         public static final double kTrackwidthMeters = 0.627;
-        public static final DifferentialDriveKinematics kDriveKinematics =
-                new DifferentialDriveKinematics(kTrackwidthMeters);
+        public static final DifferentialDriveKinematics kDriveKinematics = 
+            new DifferentialDriveKinematics(kTrackwidthMeters);
 
         // Determined using frc-characterization tool
         public static final double ksVolts = 0.05; // 0.0491;
@@ -65,7 +65,7 @@ public final class Constants {
     }
     public static final class turretConstants {
         //TODO get the real turret motor ID
-        public static final int turret = 99;
+        public static final int turret = 5;
         public static final int kSoftMaxTurretAngle = 90;
         public static final int kSoftMinTurretAngle = -90;
         public static final int kEncoderCPR = 4096; // CTRE Quadrature?
@@ -91,8 +91,8 @@ public final class Constants {
         public static final int kIndex = 0; // Talon PID index
     }
     public static final class shooterConstants {
-        public static final int shooter1 = 4;
-        public static final int shooter2 = 5;
+        public static final int shooter1 = 16;
+        public static final int shooter2 = 17;
         public static final int shooterTimeout = 30;
         public static final int shooterSlotIdx = 0;
         public static final int shooterHood = 1;
@@ -121,7 +121,7 @@ public final class Constants {
     }
     public static final class intakeConstants {
         public static final int intakeMotor = 9;
-        public static final int intakeSolenoid = 7;
+        public static final int intakeSolenoid = 5;
     }
     public static final class pwmConstants {
         public static final int blinkin = 0;
