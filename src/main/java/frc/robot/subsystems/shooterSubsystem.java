@@ -7,8 +7,11 @@
 
 package frc.robot.subsystems;
 
+import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
+import com.fearxzombie.limelight;
 import com.revrobotics.CANEncoder;
 import com.revrobotics.CANPIDController;
 import com.revrobotics.CANSparkMax;
@@ -16,12 +19,15 @@ import com.revrobotics.ControlType;
 import com.revrobotics.EncoderType;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.team2930.lib.util.linearInterpolator;
+
+import frc.robot.RobotContainer;
 import frc.robot.Constants.shooterConstants;
 
 public class shooterSubsystem extends SubsystemBase {
 
   private CANSparkMax neo_shooter1 = new CANSparkMax(shooterConstants.shooter1, MotorType.kBrushless);
   private CANSparkMax neo_shooter2 = new CANSparkMax(shooterConstants.shooter2, MotorType.kBrushless);
+  private Solenoid hood = new Solenoid(7);
   private CANPIDController m_pidController;
   private CANEncoder m_encoder;
   private double kMaxOutput, kMinOutput;
@@ -40,6 +46,13 @@ public class shooterSubsystem extends SubsystemBase {
     { 10, 2700 },
     // TODO: complete this table with values between 10 and 25 feet
     { 25, 4300 },
+  };
+  private double retestData[][] = {
+    {4, 2600},
+    {5, 2600},
+    {10, 3500},
+    {15, 3600},
+    {20, 3850},
   };
   public shooterSubsystem() {
     neo_shooter1.restoreFactoryDefaults();
@@ -64,11 +77,12 @@ public class shooterSubsystem extends SubsystemBase {
 
     SmartDashboard.putNumber("ShooterRPM", m_desiredRPM);
 
-    m_lt = new linearInterpolator(data);
+    m_lt = new linearInterpolator(retestData);
   }
 
   @Override
   public void periodic() {
+
     SmartDashboard.putNumber("ActualShooterRPM", (int) m_encoder.getVelocity());
 
     double rpm = SmartDashboard.getNumber("ShooterRPM", -1);
@@ -112,6 +126,12 @@ public class shooterSubsystem extends SubsystemBase {
     System.out.println("Activating Test Mode");
   }
 
+  public void deployHood() {
+    hood.set(true);
+  }
+  public void retractHood() {
+    hood.set(false);
+  }
   public void setShooterPID (double P, double I, double D, double F, double iZ) {
     m_pidController.setP(P);
     m_pidController.setI(I);

@@ -69,7 +69,7 @@ public class RobotContainer {
   public static final limelight m_limelight = new limelight("limelight-one");
   private final turretSubsystem m_turret = new turretSubsystem();
   public static final shooterSubsystem m_shooter = new shooterSubsystem();
-  private final indexerSubsystem m_indexer = new indexerSubsystem();
+  public static final indexerSubsystem m_indexer = new indexerSubsystem();
   private final elevatorSubsystem m_elevator = new elevatorSubsystem();
   //private final controlPanelSubsystem m_controlPanelMotors = new controlPanelSubsystem();
   private final intakeSubsystem m_intake = new intakeSubsystem();
@@ -124,7 +124,7 @@ public class RobotContainer {
     // X Button to retract the elevator
     // driverYButton.whenPressed(new elevatorDeployCommand(m_elevator));
     // driverXButton.whenPressed(() -> m_elevator.retractElevator(), m_elevator);
-
+driverLeftBumper.whileHeld(() -> m_shooter.deployHood()).whenReleased(() -> m_shooter.retractHood());
       // Left Trigger - climber up (lower robot)
       // Right Trigger - climber down (raise robot)
     
@@ -135,14 +135,15 @@ public class RobotContainer {
       // A Button - hold to deploy intake
       opAButton.whileHeld(new intakeDeployCommand(m_intake));
       // B Button - stage balls for shooting
-      opBButton.whenPressed(new indexerStageForShootingCommand(m_indexer));
+     // opBButton.whenPressed(new indexerStageForShootingCommand(m_indexer));
       // X Button - restage balls
       //opXButton.whenPressed(new indexerRestageCommand(m_indexer));
       // Y Button - hold to eject balls out the back of the indexer, restage balls when released
       opYButton.whileHeld(new indexerReverseEjectCommand(m_indexer));
       //opYButton.whenReleased(new indexerRestageCommand(m_indexer));
       // Right Bumper - hold to shoot balls
-      opRightBumper.whileHeld(new shootBallsContinuouslyCommand(m_indexer, m_turret, m_shooter, m_limelight, m_drive));
+      //opRightBumper.whileHeld(new shootBallsContinuouslyCommand(m_indexer, m_turret, m_shooter, m_limelight, m_drive));
+      opRightBumper.whileHeld(() -> m_indexer.ejectIndexer()).whenReleased(() -> m_indexer.stopIndexer());
       // D Pad Up - manually increase ball count
       opDPadUp.whenPressed(() -> m_indexer.setBallCount(m_indexer.getBallCount() + 1));
       // D Pad Down - manually decrease ball count

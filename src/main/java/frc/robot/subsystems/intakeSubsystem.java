@@ -25,10 +25,6 @@ public class intakeSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    double current = intake.getSupplyCurrent();
-    if (current >= 20) {
-      intake.set(ControlMode.PercentOutput, -0.5);
-    }
   }
   
   public void setIntakePercentOutput(double percent) {
