@@ -176,14 +176,54 @@ driverLeftBumper.whileHeld(() -> m_shooter.deployHood()).whenReleased(() -> m_sh
        new InstantCommand(() -> m_shooter.setShooterRPM(m_shooter.getRPMforDistanceFeet(10)), m_shooter));
 
     // shoot 3 power cells
-    ac.andThen(new shootBallsContinuouslyCommand(m_indexer, m_turret, m_shooter, m_limelight, m_drive);
+    ac.andThen(new shootBallsContinuouslyCommand(m_indexer, m_turret, m_shooter, m_limelight, m_drive));
+      
 
     // TODO: add drive toward nearest powercell and pick up
+    // ac.andThen(getPC67Command());
 
     return ac;
   }
 
+  public Command getPC67Command() {
+    Command ac = new ParallelRaceGroup(
+        driveToPC67Command(),
+        new intakeDeployCommand(m_intake)
+    );
+
+    ac.andThen(new indexerSingleIntakeCommand(m_indexer));
+    ac.andThen(new indexerSingleIntakeCommand(m_indexer));
+
+    return ac;
+  }
+
+  
+  public Command driveToPC67Command() {
+    // drive from initiation line to 2 power cells directly opposite power port
+
+    // Start point
+    // "x": 12.947305604132318,
+    // "y": -5.844693698219705
+    // Mid point
+    // "x": 11.547235837576943,
+    // "y": -6.075647202720972
+    // End point
+    // "x": 9.979110140166203,
+    // "y": -5.690501726065627
+
+    // TODO: Coordindates are robot centric, starting at (0,0)
+    // Drive forward forward get PC balls 6 and 7
+    RamseteCommand ramseteCommand = createTrajectoryCommand(
+      new Pose2d(0.0, 0.0, new Rotation2d(-2.64516)),
+      List.of(new Translation2d(1.40, -0.23095)),
+      new Pose2d(2.968195, -0.154191, new Rotation2d(1.962201454)));
+
+    return ramseteCommand.andThen(() -> m_drive.tankDriveVolts(0, 0));
+  }
+
   public Command getAutonomousCommand() {
+
+    // TODO: all auton driving is robot centric, starting at (0,0) needs to get changed to field centric
 
     // Drive forward 1.5 meter, 1.5 meter back, and stop
     RamseteCommand ramseteCommand = createTrajectoryCommand(
