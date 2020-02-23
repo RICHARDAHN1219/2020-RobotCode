@@ -71,6 +71,11 @@ public class shootBallsContinuouslyCommand extends CommandBase {
       RobotContainer.limelightOnTarget = true;
       m_indexer.ejectIndexer();
     }
+    if (distance <= 3.6){
+      m_shooter.deployHood();
+    } else {
+      m_shooter.retractHood();
+    }
   }
   
   @Override
@@ -78,6 +83,7 @@ public class shootBallsContinuouslyCommand extends CommandBase {
     m_indexer.stopIndexer();
     m_shooter.setShooterRPM(0);
     m_turret.stop();
+    m_shooter.retractHood();
     RobotContainer.limelightOnTarget = false;
   }
 
