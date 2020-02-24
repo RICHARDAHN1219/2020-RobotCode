@@ -10,14 +10,12 @@ package frc.robot.commands;
 import com.fearxzombie.limelight;
 
 import edu.wpi.first.wpilibj.GenericHID.Hand;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.driveSubsystem;
 import frc.robot.subsystems.indexerSubsystem;
 import frc.robot.subsystems.shooterSubsystem;
 import frc.robot.subsystems.turretSubsystem;
-import frc.robot.RobotContainer;
 
 public class shootBallsContinuouslyCommand extends CommandBase {
 
@@ -60,21 +58,14 @@ public class shootBallsContinuouslyCommand extends CommandBase {
       return;
     }
 
-    double distance = m_limelight.getDist(0.6096, 2.5019, 32);
-    m_shooter.setShooterRPM(m_shooter.getRPMforDistanceMeter(distance) + 200);
-    SmartDashboard.putNumber("distance", distance);
+    m_shooter.setShooterRPM(m_shooter.getRPMforTY(m_limelight.getTY()));
 
     limelightSteerCommand = tx * steer_k;
-    m_drive.arcadeDrive(0, -limelightSteerCommand * 0.5);
+    m_drive.arcadeDrive(0, -limelightSteerCommand * 0.65);
 
-    if (m_shooter.isAtSpeed() == true && Math.abs(m_limelight.getTX()) < 5) {
+    if (m_shooter.isAtSpeed() == true && Math.abs(m_limelight.getTX()) < 2.5) {
       RobotContainer.limelightOnTarget = true;
       m_indexer.ejectIndexer();
-    }
-    if (distance <= 3.6){
-      m_shooter.deployHood();
-    } else {
-      m_shooter.retractHood();
     }
   }
   
@@ -83,7 +74,6 @@ public class shootBallsContinuouslyCommand extends CommandBase {
     m_indexer.stopIndexer();
     m_shooter.setShooterRPM(0);
     m_turret.stop();
-    m_shooter.retractHood();
     RobotContainer.limelightOnTarget = false;
   }
 

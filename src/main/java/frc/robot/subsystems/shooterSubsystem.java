@@ -10,8 +10,6 @@ package frc.robot.subsystems;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-
-import com.fearxzombie.limelight;
 import com.revrobotics.CANEncoder;
 import com.revrobotics.CANPIDController;
 import com.revrobotics.CANSparkMax;
@@ -50,9 +48,24 @@ public class shooterSubsystem extends SubsystemBase {
   private double retestData[][] = {
     {4, 2600},
     {5, 2600},
-    {10, 3500},
-    {15, 3600},
-    {20, 3850},
+    {10, 3750},
+    {15, 3850},
+    {20, 4100},
+    {25, 5000}
+  };
+
+  private double hoodDown[][] = {
+    {22, 2600}, // 4.5 feet
+    {17, 2650}, // 7 feet
+    {12.8, 2750}, // 10 feet
+    {10.5, 2900} // 12 feet
+  };
+  private double hoodUp[][] = {
+    {2.5, 3900}, // 9 feet
+    {-4.2, 3550}, // 13 feet
+    {-10, 3600}, // 17 feet
+    {-13.5, 3800}, // 21 feet
+    {-16, 4100} // 25 feet
   };
   public shooterSubsystem() {
     neo_shooter1.restoreFactoryDefaults();
@@ -77,7 +90,7 @@ public class shooterSubsystem extends SubsystemBase {
 
     SmartDashboard.putNumber("ShooterRPM", m_desiredRPM);
 
-    m_lt = new linearInterpolator(retestData);
+    m_lt = new linearInterpolator(hoodDown);
   }
 
   @Override
@@ -127,10 +140,14 @@ public class shooterSubsystem extends SubsystemBase {
   }
 
   public void deployHood() {
+    RobotContainer.m_limelight.setPipeline(5);
     hood.set(true);
+    m_lt = new linearInterpolator(hoodUp);
   }
   public void retractHood() {
+    RobotContainer.m_limelight.setPipeline(4);
     hood.set(false);
+    m_lt = new linearInterpolator(hoodDown);
   }
   public void setShooterPID (double P, double I, double D, double F, double iZ) {
     m_pidController.setP(P);
@@ -153,6 +170,16 @@ public class shooterSubsystem extends SubsystemBase {
     } else {
       return false;
     }
+  }
+
+  /**
+   * getRPMforTY() - return RPM based on limelight TY value
+   * 
+   * @param TY limelight TY value
+   * @return RPM for flywheel
+   */
+  public double getRPMforTY(double TY) {
+    return m_lt.getInterpolatedValue(TY);
   }
 
   /**

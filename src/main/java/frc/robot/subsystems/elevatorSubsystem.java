@@ -20,15 +20,12 @@ import edu.wpi.first.wpilibj.Solenoid;
 
 public class elevatorSubsystem extends SubsystemBase {
 
-  private DoubleSolenoid elevatorDeploySolenoid = new DoubleSolenoid(0,2); // TODO: get correct ids
-  private Solenoid brakeSolenoid = new Solenoid(6);
+  private DoubleSolenoid elevatorDeploySolenoid = new DoubleSolenoid(elevatorConstants.deploySolenoid1, elevatorConstants.deploySolenoid2);
+  private Solenoid brakeSolenoid = new Solenoid(elevatorConstants.brakeSolenoid);
   private CANSparkMax elevatorWinch = new CANSparkMax(elevatorConstants.elevatorWinch, MotorType.kBrushless);
   private final CANEncoder elevatorEncoder = elevatorWinch.getEncoder(EncoderType.kHallSensor, 2048);
   private boolean elevatorDeployed = false;
 
-  /**
-   * Creates a new Climber.
-   */
   public elevatorSubsystem() {
     elevatorDeploySolenoid.set(Value.kReverse);
 

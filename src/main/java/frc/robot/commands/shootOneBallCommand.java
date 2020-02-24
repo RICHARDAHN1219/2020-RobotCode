@@ -46,7 +46,7 @@ public class shootOneBallCommand extends CommandBase {
 
   @Override
   public void execute() {
-    m_shooter.setShooterRPM(m_shooter.getRPMforDistanceMeter(m_limelight.getDist(0.6096, 2.5019, 32)));
+    m_shooter.setShooterRPM(m_shooter.getRPMforTY(m_limelight.getTY()));
     tv = m_limelight.getTV();
     tx = m_limelight.getTX();
 
@@ -59,7 +59,7 @@ public class shootOneBallCommand extends CommandBase {
     limelightSteerCommand = tx * steer_k;
     m_turret.setPercentOutput(limelightSteerCommand);
 
-    if (tv == 1 && m_shooter.isAtSpeed() == true && tx < 1) {
+    if (tv == 1 && m_shooter.isAtSpeed() == true && Math.abs(tx) < 2.5) {
       new indexerSingleFeedCommand(m_indexer);
       finished = true;
     }

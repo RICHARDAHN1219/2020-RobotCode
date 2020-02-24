@@ -34,11 +34,11 @@ public class turretSubsystem extends SubsystemBase {
 
     // TODO: fix rotational direction and sensor phase
     turretDrive.setInverted(true); // CCW is positive direction
-    turretDrive.setSensorPhase(false);
+    turretDrive.setSensorPhase(true);
 
     // set soft limits
-    turretDrive.configForwardSoftLimitThreshold((int) (kSoftMaxTurretAngle / kDegreesPerTick));
-    turretDrive.configReverseSoftLimitThreshold((int) (kSoftMinTurretAngle / kDegreesPerTick));
+    turretDrive.configForwardSoftLimitThreshold(-6152, kTimeout);
+    turretDrive.configReverseSoftLimitThreshold(4864, kTimeout);
     turretDrive.configForwardSoftLimitEnable(true);
     turretDrive.configReverseSoftLimitEnable(true);
 

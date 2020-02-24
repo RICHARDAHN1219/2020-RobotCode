@@ -33,11 +33,15 @@ public class elevatorWinchCommand extends CommandBase {
         m_elevator.brakeOff();
         m_elevator.setWinchPercentOutput(driveController.getTriggerAxis(Hand.kLeft));
         System.out.println(driveController.getTriggerAxis(Hand.kLeft));    
-      } else if (driveController.getTriggerAxis(Hand.kRight) >= 0.1) {
+      } 
+      
+      else if (driveController.getTriggerAxis(Hand.kRight) >= 0.1) {
         m_elevator.brakeOff();
         m_elevator.setWinchPercentOutput(-driveController.getTriggerAxis(Hand.kRight));
         System.out.println(driveController.getTriggerAxis(Hand.kRight));
-      }  else {
+      }  
+      
+      else {
         m_elevator.stop();
       }
     }
