@@ -228,8 +228,8 @@ driverLeftBumper.whileHeld(() -> m_shooter.deployHood()).whenReleased(() -> m_sh
     // Drive forward 1.5 meter, 1.5 meter back, and stop
     RamseteCommand ramseteCommand = createTrajectoryCommand(
       new Pose2d(0, 0, new Rotation2d(0)),
-      List.of(new Translation2d(1.5,0.0)),
-      new Pose2d(0.0, 0.0, new Rotation2d(0)));
+      List.of(new Translation2d(0.75,0.0)),
+      new Pose2d(1.5, 0.0, new Rotation2d(0)));
 
     // TODO: add aim and shoot  
     return ramseteCommand.andThen(() -> m_drive.tankDriveVolts(0, 0));
