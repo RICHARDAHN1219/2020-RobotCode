@@ -14,9 +14,6 @@ import static frc.robot.Constants.AutoConstants.kRamseteZeta;
 import static frc.robot.Constants.driveConstants.kDriveKinematics;
 import java.util.List;
 import com.fearxzombie.limelight;
-import com.fearxzombie.limelight_mode;
-import edu.wpi.first.wpilibj.Compressor;
-import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj.controller.RamseteController;
@@ -35,29 +32,14 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.Constants.driveConstants;
 import frc.robot.Constants.pwmConstants;
-import frc.robot.commands.turretLimelightCommand;
-import frc.robot.commands.turretAutoTargeting;
-import frc.robot.commands.turretHomingCommand;
-import frc.robot.commands.turretManualMode;
 import frc.robot.subsystems.driveSubsystem;
 import frc.robot.subsystems.elevatorSubsystem;
 import frc.robot.subsystems.indexerSubsystem;
 import frc.robot.subsystems.intakeSubsystem;
 import frc.robot.subsystems.turretSubsystem;
 import frc.robot.subsystems.shooterSubsystem;
-import frc.robot.subsystems.controlPanelSubsystem;
 import frc.robot.subsystems.blinkinSubsystem;
-import frc.robot.commands.elevatorWinchCommand;
-import frc.robot.commands.indexerRestageCommand;
-import frc.robot.commands.indexerReverseEjectCommand;
-import frc.robot.commands.indexerSingleIntakeCommand;
-import frc.robot.commands.indexerStageForShootingCommand;
-import frc.robot.commands.intakeDeployCommand;
-import frc.robot.commands.shootBallsContinuouslyCommand;
-import frc.robot.commands.driveCommand;
-import frc.robot.commands.driveInvertCommand;
-import frc.robot.commands.elevatorDeployCommand;
-import frc.robot.commands.shooterHoodCommand;
+import frc.robot.commands.*;
 
 public class RobotContainer {
 
@@ -85,7 +67,7 @@ public class RobotContainer {
     m_drive.setDefaultCommand(new driveCommand(m_drive));
     //m_turret.setDefaultCommand(new turretLimelightCommand(m_turret, m_shooter, m_limelight));
     m_elevator.setDefaultCommand(new elevatorWinchCommand(m_elevator));
-    m_indexer.setDefaultCommand(new indexerSingleIntakeCommand(m_indexer));
+    m_indexer.setDefaultCommand(new indexerDefaultCommand(m_indexer));
   }
 
   private void configureButtonBindings() {

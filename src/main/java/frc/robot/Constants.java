@@ -64,7 +64,6 @@ public final class Constants {
         public static final double kRamseteZeta = 0.7;
     }
     public static final class turretConstants {
-        //TODO get the real turret motor ID
         public static final int turret = 5;
         public static final int kSoftMaxTurretAngle = 90;
         public static final int kSoftMinTurretAngle = -90;
@@ -98,10 +97,10 @@ public final class Constants {
         public static final int shooterHood = 1;
     }
     public static final class elevatorConstants {
-        public static final int solenoid1 = 6;
-        public static final int solenoid2 = 7;
+        public static final int deploySolenoid1 = 0;
+        public static final int deploySolenoid2 = 2;
+        public static final int brakeSolenoid = 6;
         public static final int elevatorWinch = 12;
-        public static final int brakeSolenoid = 14;
         public static final int elevatorPivotTimeout = 30;
         public static final int elevatorSlotIdx = 1;
     }

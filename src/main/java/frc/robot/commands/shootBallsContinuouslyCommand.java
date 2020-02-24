@@ -10,14 +10,12 @@ package frc.robot.commands;
 import com.fearxzombie.limelight;
 
 import edu.wpi.first.wpilibj.GenericHID.Hand;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.driveSubsystem;
 import frc.robot.subsystems.indexerSubsystem;
 import frc.robot.subsystems.shooterSubsystem;
 import frc.robot.subsystems.turretSubsystem;
-import frc.robot.RobotContainer;
 
 public class shootBallsContinuouslyCommand extends CommandBase {
 
@@ -56,7 +54,7 @@ public class shootBallsContinuouslyCommand extends CommandBase {
     if (tv != 1) {
       RobotContainer.limelightOnTarget = false;
       limelightSteerCommand = 0;
-      //m_turret.setPercentOutput(RobotContainer.m_operatorController.getX(Hand.kLeft));
+      m_turret.setPercentOutput(RobotContainer.m_operatorController.getX(Hand.kLeft));
       return;
     }
 

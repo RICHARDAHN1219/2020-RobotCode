@@ -1,0 +1,76 @@
+/*----------------------------------------------------------------------------*/
+/* Copyright (c) 2019 FIRST. All Rights Reserved.                             */
+/* Open Source Software - may be modified and shared by FRC teams. The code   */
+/* must be accompanied by the FIRST BSD license file in the root directory of */
+/* the project.                                                               */
+/*----------------------------------------------------------------------------*/
+
+package frc.robot.commands;
+
+import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.GenericHID.Hand;
+import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.RobotContainer;
+import frc.robot.subsystems.indexerSubsystem;
+
+public class indexerDefaultCommand extends CommandBase {
+
+  private indexerSubsystem m_indexer;
+  private boolean clearedSensor2 = false;
+  private XboxController opController = RobotContainer.m_operatorController;
+
+  public indexerDefaultCommand(indexerSubsystem indexer) {
+    addRequirements(indexer);
+    m_indexer = indexer;
+  }
+
+  @Override
+  public void initialize() {
+    clearedSensor2 = false;
+    m_indexer.runOnlyIntake();
+  }
+
+  @Override
+  public void execute() {
+
+    // TODO: tune the speeds of these to not destory balls
+    if (opController.getTriggerAxis(Hand.kRight) >= 0.1) {
+      m_indexer.setIntakePercentOutput(opController.getTriggerAxis(Hand.kRight));
+      m_indexer.setBeltsPercentOutput(opController.getTriggerAxis(Hand.kRight));
+      m_indexer.setKickerPercentOutput(opController.getTriggerAxis(Hand.kRight));
+    }
+
+    // TODO: tune the speeds of these to not destory balls
+    else if (opController.getTriggerAxis(Hand.kLeft) >= 0.1) {
+      m_indexer.setIntakePercentOutput(-opController.getTriggerAxis(Hand.kLeft));
+      m_indexer.setBeltsPercentOutput(-opController.getTriggerAxis(Hand.kLeft));
+      m_indexer.setKickerPercentOutput(-opController.getTriggerAxis(Hand.kLeft));
+    }
+
+    else{
+    
+    if (m_indexer.ballStaged() == false) {
+      clearedSensor2 = true;
+    }
+
+    if (m_indexer.ballReadyForIndexer() == true) {
+      m_indexer.runIndexer();
+    }
+    }
+  }
+
+  @Override
+  public void end(boolean interrupted) {
+    m_indexer.stopIndexer();
+  }
+
+  @Override
+  public boolean isFinished() {
+
+    if (clearedSensor2 && m_indexer.ballStaged()) {
+      return true;
+    }
+    
+    return false;
+  }
+}

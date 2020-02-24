@@ -55,7 +55,6 @@ public class indexerRestageCommand extends CommandBase {
   @Override
   public void end(boolean interrupted) {
     m_indexer.setBallCount(restageEndBallCount);
-    m_indexer.setStateChangeCount(2 * restageEndBallCount);
   }
 
   @Override

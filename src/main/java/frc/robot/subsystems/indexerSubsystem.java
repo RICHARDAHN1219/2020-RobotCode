@@ -31,17 +31,12 @@ public class indexerSubsystem extends SubsystemBase {
   private DigitalInput Sensor2 = new DigitalInput(dio1_indexerSensor2);
   private DigitalInput Sensor3 = new DigitalInput(dio2_indexerSensor3);
   private boolean ballReady4IndexerLast = false;
-  private boolean ballStagedLast = false;
   private boolean ballExitingLast = false;
   private boolean ballReady4Indexer;
   private boolean ballStaged;
   private boolean ballExiting;
-  private boolean eject = false;
-  private int stateChangeCount = 0;
-  private int exitStateChangeCount = 0;
   private int ballCount = 0;
   private int restageState = 0;
-  private boolean periodic = true;
   private blinkinSubsystem m_blinkin = RobotContainer.m_blinkin;
   private boolean finishedSingleFeed;
 
@@ -106,142 +101,28 @@ public class indexerSubsystem extends SubsystemBase {
     // on PID index 1, and then swtich between the Talon PID index when setting RPM and Position
   }
 
-  private void stash_old_periodic() {
-    boolean ballExiting = false;
-    // temporarily put old periodic stuff here until it get's put into Commands
-    // prevent intake of new balls when we already have 5
-    // EDIT: We are aiming for 4 balls by week 1 until 5 is figured out
-    if (periodic == true) {
-      // move indexer when a new ball is ready to enter the system
-      if (ballReady4Indexer == true) {
-        setIntakePercentOutput(0.6);
-        setBeltsPercentOutput(1);
-        setKickerPercentOutput(0.3);
-        m_blinkin.solid_blue();
-      }
-
-      // stop indexer when balls are properly staged
-      else if (ballStaged == true) {
-        setBeltsPercentOutput(0);
-        m_blinkin.solid_red();
-      }
-
-      // finish staging balls when this error state occurs
-      if ((-1 + (ballCount * 2)) != stateChangeCount) {
-        setIntakePercentOutput(0.6);
-        setBeltsPercentOutput(1);
-        setKickerPercentOutput(0.3);
-        m_blinkin.solid_blue();
-      }
-
-      // finish staging balls when this error state occurs
-      if ((ballCount >= 1) && ballReady4Indexer == false && ballStaged == false) {
-        setIntakePercentOutput(0.6);
-        setBeltsPercentOutput(1);
-        setKickerPercentOutput(0.3);
-        m_blinkin.solid_blue();
-      }
-
-      // automatically stage the balls for shooting when we have 4
-      if (ballCount == 4 && ballExiting == false) {
-        setIntakePercentOutput(0.6);
-        setBeltsPercentOutput(1);
-        m_blinkin.solid_green_lime();
-      }
-
-      // stop indexer when all 4 balls are staged for shooting
-      else if (ballCount == 4 && ballExiting == true) {
-        setIntakePercentOutput(0);
-        setBeltsPercentOutput(0);
-        m_blinkin.solid_pink();
-      }
-
-      if (ballExiting == true) {
-        setIntakePercentOutput(0);
-        setBeltsPercentOutput(0);
-        setKickerPercentOutput(0);
-        m_blinkin.solid_red();
-      }
-
-      if (eject == true) {
-        // setBeltsPercentOutput(1);
-        // setKickerPercentOutput(1);
-        setIntakePercentOutput(0.6);
-        setBeltsRPM(6380);
-        setKickerRPM(6380);
-        m_blinkin.solid_green();
-      }
-
-    }
-  }
-
   @Override
   public void periodic() {
     boolean ballReady4Indexer = !Sensor1.get();
     boolean ballStaged = !Sensor2.get();
     boolean ballExiting = !Sensor3.get();
     SmartDashboard.putNumber("ball count", ballCount);
-    SmartDashboard.putNumber("state change count", stateChangeCount);
     SmartDashboard.putNumber("restage state", restageState);
     SmartDashboard.putNumber("Belt RPM", indexBelts.getSelectedSensorVelocity() * 600 / 2048);
     SmartDashboard.putNumber("Kicker RPM", indexKicker.getSelectedSensorVelocity() * 600 / 2048);
     
-    //TODO: No globals. Put this into a command
-    // if (Robot.manualMode == true) {
-    //   setIntakePercentOutput((RobotContainer.m_operatorController.getTriggerAxis(Hand.kRight)
-    //       - RobotContainer.m_operatorController.getTriggerAxis(Hand.kLeft)) * 0.6);
-    //   setBeltsPercentOutput(RobotContainer.m_operatorController.getTriggerAxis(Hand.kRight)
-    //       - RobotContainer.m_operatorController.getTriggerAxis(Hand.kLeft));
-    //   setKickerPercentOutput(RobotContainer.m_operatorController.getTriggerAxis(Hand.kRight)
-    //       - RobotContainer.m_operatorController.getTriggerAxis(Hand.kLeft));
-    
-    //TODO: if we ever put an encoder on intake motor
-    //SmartDashboard.putNumber("Intake RPM", indexIntake.getSelectedSensorVelocity() * 600 / 2048);
-
     // increase ball count as balls enter the indexer
     if (ballReady4Indexer != ballReady4IndexerLast && ballReady4Indexer == false) {
       ballCount += 1;
     }
     ballReady4IndexerLast = ballReady4Indexer;
 
-    // count number of state changes on ballStaged sensor to combat error states
-    if (ballStaged != ballStagedLast) {
-     stateChangeCount += 1;
-     ballStagedLast = ballStaged;
-    }
-    
     // decrease ballCount as balls leave the indexer
     if (ballExiting != ballExitingLast && ballExiting == false) {
       ballCount -= 1;
-      stateChangeCount = stateChangeCount - 2;
+      
     }
     ballExitingLast = ballExiting;
-
-    // count number of state changes as balls leave the system
-    if (ballExiting != ballExitingLast) {
-      exitStateChangeCount += 1;
-      ballExitingLast = ballExiting;
-    }
-
-    // don't let state changes go below zero
-    if (stateChangeCount < 0) {
-      stateChangeCount = 0;
-    }
-
-    // can't have negative balls in the robot
-    if (ballCount == 0) {
-      stateChangeCount = 0;
-    }
-
-    //TODO: test this autostaging code
-    /*
-    if (ballCount == 4 && ballExiting != true) {
-      runIndexer();
-    }
-    else if (ballCount == 4 && ballExiting == true) {
-      stopIndexer();
-    }
-    */
   }
 
   public void setBeltsPercentOutput(double percent) {
@@ -408,46 +289,12 @@ public class indexerSubsystem extends SubsystemBase {
   }
 
   /**
-   * getStateChangeCount() - return the number of state changes on the staging sensor
-   * 
-   * @return int state change count
-   */
-  public int getStateChangeCount() {
-    return stateChangeCount;
-  }
-
-  /**
-   * setBallCount() - set the number of balls in the indexer
-   */
-  public void setStateChangeCount(int StateChangeCount) {
-    stateChangeCount = StateChangeCount;
-  }
-
-  /**
-   * getExitStateChangeCount() - return the number of state changes on the exiting sensor
-   * 
-   * @return int exit state change count
-   */
-  public int getExitStateChangeCount() {
-    return exitStateChangeCount;
-  }
-
-  /**
    * getRestageState() - return the state number of the restage command
    * 
    * @return int restage state
    */
   public int getRestageState() {
     return restageState;
-  }
-
-  /**
-   * getBallStagedLast() - get the last state of the stagind sensor
-   * 
-   * @return boolean ball staged last
-   */
-  public boolean getBallStagedLast() {
-    return ballStagedLast;
   }
 
   /**
