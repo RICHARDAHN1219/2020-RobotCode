@@ -138,7 +138,7 @@ public class RobotContainer {
       // Right Bumper - hold to shoot balls
       opRightBumper.whileHeld(new shootBallsContinuouslyCommand(m_indexer, m_turret, m_shooter, m_limelight, m_drive));
       // Left Bumper - toggle hood position
-      opLeftBumper.toggleWhenPressed(new shooterHoodCommand(m_shooter));
+      opLeftBumper.whileHeld(new shooterHoodCommand(m_shooter));
       // D Pad Up - manually increase ball count
       opDPadUp.whenPressed(() -> m_indexer.setBallCount(m_indexer.getBallCount() + 1));
       // D Pad Down - manually decrease ball count
