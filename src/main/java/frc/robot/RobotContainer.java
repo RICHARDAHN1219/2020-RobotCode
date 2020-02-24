@@ -141,10 +141,21 @@ public class RobotContainer {
     //opBButton.whenPressed(new turretManualMode(m_turret));
   }
   
+  /**
+   * Do nothing during auton
+   * 
+   * @return Auton do nothing command
+   */
   public Command getNoAutonomousCommand() {
     return new RunCommand(() -> m_drive.tankDriveVolts(0, 0));
   }
   
+
+  /**
+   * Auton to drive off of initiation line and then shoot
+   * 
+   * @return auton command
+   */ 
   public Command getAutonomousShootCommand() {
 
     // Spin up flywheel and drive off initiation line
@@ -162,6 +173,11 @@ public class RobotContainer {
     return ac;
   }
 
+  /**
+   * drive from initiation line to two nearest power cells. Try to grab them.
+   * 
+   * @return auton command
+   */
   public Command getPC67Command() {
     Command ac = new ParallelRaceGroup(
         driveToPC67Command(),
@@ -178,13 +194,15 @@ public class RobotContainer {
   public Command driveToPC67Command() {
     // drive from initiation line to 2 power cells directly opposite power port
 
+    // These are field relative positions. Starting centered on initiation line, directly oposite
+    // the power port.
     // Start point
     // "x": 12.947305604132318,
     // "y": -5.844693698219705
     // Mid point
     // "x": 11.547235837576943,
     // "y": -6.075647202720972
-    // End point
+    // End point (the two power cells to the left, as we drive towards them)
     // "x": 9.979110140166203,
     // "y": -5.690501726065627
 
@@ -195,9 +213,14 @@ public class RobotContainer {
       List.of(new Translation2d(1.40, -0.23095)),
       new Pose2d(2.968195, -0.154191, new Rotation2d(1.962201454)));
 
+    // andThen stop
     return ramseteCommand.andThen(() -> m_drive.tankDriveVolts(0, 0));
   }
 
+  /**
+   * Auton command to drive off of initiation line
+   * @return
+   */
   public Command getAutonomousCommand() {
 
     // TODO: all auton driving is robot centric, starting at (0,0) needs to get changed to field centric
@@ -208,10 +231,26 @@ public class RobotContainer {
       List.of(new Translation2d(0.75,0.0)),
       new Pose2d(1.5, 0.0, new Rotation2d(0)));
 
-    // TODO: add aim and shoot  
+    // TODO: try to drive back to initiation line before shooting?
+    // ramseteCommand.andThen(
+    //     createTrajectoryCommand(
+    //       new Pose2d(1.0, 0, new Rotation2d(0)),
+    //       List.of(new Translation2d(0.5,0.0)),
+    //       new Pose2d(0.0, 0.0, new Rotation2d(0)))
+    //   );
+
     return ramseteCommand.andThen(() -> m_drive.tankDriveVolts(0, 0));
   }
 
+  /**
+   * createTrajectoryCommand - given a start pose, some intermediate points, and a finish pose, create
+   *     a Ramsete Command to execute the path follow.
+   * 
+   * @param startPose
+   * @param translationList
+   * @param endPose
+   * @return Ramsete Path Follow Command
+   */
   public RamseteCommand createTrajectoryCommand(Pose2d startPose, List<Translation2d> translationList, Pose2d endPose) {
     DifferentialDriveVoltageConstraint autoVoltageConstraint;
     TrajectoryConfig config;
@@ -255,7 +294,7 @@ public class RobotContainer {
   }
   
 
-  
+  // TODO: this should be in Math Utils or a new Units.java under Utils
   public double inches2Meters(double i) {
     return i * 0.0254;
   }
