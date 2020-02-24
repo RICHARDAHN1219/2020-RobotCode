@@ -19,9 +19,6 @@ public class Robot extends TimedRobot {
   public char stage2ColorChar = 'U';
 
   private RobotContainer m_robotContainer;
-  // TODO: current limits belong in Constants.java
-  public static SupplyCurrentLimitConfiguration m_currentlimitMain = new SupplyCurrentLimitConfiguration(true, 35, 1, 1);
-  public static SupplyCurrentLimitConfiguration m_currentlimitSecondary = new SupplyCurrentLimitConfiguration(true, 25, 1, 1);
   public PowerDistributionPanel m_pdp = new PowerDistributionPanel();
   public Compressor Compressor;
 

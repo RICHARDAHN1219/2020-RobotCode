@@ -13,11 +13,11 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Robot;
 import frc.robot.Constants.indexConstants;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.RobotContainer;
+import frc.robot.Constants.currentLimits;
 import static frc.robot.Constants.digitalIOConstants.dio0_indexerSensor1;
 import static frc.robot.Constants.digitalIOConstants.dio1_indexerSensor2;
 import static frc.robot.Constants.digitalIOConstants.dio2_indexerSensor3;
@@ -54,9 +54,9 @@ public class indexerSubsystem extends SubsystemBase {
     indexIntake.enableVoltageCompensation(true);
 
     // current limits
-    indexBelts.configSupplyCurrentLimit(Robot.m_currentlimitSecondary);
-    indexKicker.configSupplyCurrentLimit(Robot.m_currentlimitSecondary);
-    indexIntake.configSupplyCurrentLimit(Robot.m_currentlimitSecondary);
+    indexBelts.configSupplyCurrentLimit(currentLimits.m_currentlimitSecondary);
+    indexKicker.configSupplyCurrentLimit(currentLimits.m_currentlimitSecondary);
+    indexIntake.configSupplyCurrentLimit(currentLimits.m_currentlimitSecondary);
 
     // Brake mode
     indexBelts.setNeutralMode(NeutralMode.Brake);
