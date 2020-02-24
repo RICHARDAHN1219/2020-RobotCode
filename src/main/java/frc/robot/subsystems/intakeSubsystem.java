@@ -33,7 +33,7 @@ public class intakeSubsystem extends SubsystemBase {
 
   public void deployIntake() {
     intakeSolenoid.set(true);
-    setIntakePercentOutput(-1);
+    setIntakePercentOutput(-0.9);
   }
 
   public void retractIntake() {

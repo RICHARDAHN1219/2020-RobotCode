@@ -13,10 +13,8 @@ import static frc.robot.Constants.AutoConstants.kRamseteB;
 import static frc.robot.Constants.AutoConstants.kRamseteZeta;
 import static frc.robot.Constants.driveConstants.kDriveKinematics;
 import java.util.List;
-
 import com.fearxzombie.limelight;
 import com.fearxzombie.limelight_mode;
-
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
@@ -54,7 +52,10 @@ import frc.robot.commands.indexerSingleIntakeCommand;
 import frc.robot.commands.indexerStageForShootingCommand;
 import frc.robot.commands.intakeDeployCommand;
 import frc.robot.commands.shootBallsContinuouslyCommand;
+import frc.robot.commands.driveCommand;
+import frc.robot.commands.driveInvertCommand;
 import frc.robot.commands.elevatorDeployCommand;
+import frc.robot.commands.shooterHoodCommand;
 
 public class RobotContainer {
 
@@ -79,14 +80,7 @@ public class RobotContainer {
 
   public RobotContainer() {
     configureButtonBindings();
-    //m_limelight.setLEDMode(limelight_mode.led.on);
-    // default command is arcade drive command
-    // TODO: un-NERF the drive command.
-    m_drive.setDefaultCommand(
-        // A split-stick arcade command, with forward/backward controlled by the left
-        // hand, and turning controlled by the right.
-        new RunCommand(() -> m_drive.arcadeDrive(m_driveController.getY(GenericHID.Hand.kLeft), -m_driveController.getX(GenericHID.Hand.kRight)), m_drive));
-
+    m_drive.setDefaultCommand(new driveCommand(m_drive));
     //m_turret.setDefaultCommand(new turretLimelightCommand(m_turret, m_shooter, m_limelight));
     m_elevator.setDefaultCommand(new elevatorWinchCommand(m_elevator));
     m_indexer.setDefaultCommand(new indexerSingleIntakeCommand(m_indexer));
@@ -118,13 +112,14 @@ public class RobotContainer {
 
     
     // Driver Controls
-    // Y Button to deploy the elevator
-    // X Button to retract the elevator
-    // driverYButton.whenPressed(new elevatorDeployCommand(m_elevator));
-    // driverXButton.whenPressed(() -> m_elevator.retractElevator(), m_elevator);
-driverLeftBumper.whileHeld(() -> m_shooter.deployHood()).whenReleased(() -> m_shooter.retractHood());
-      // Left Trigger - climber up (lower robot)
-      // Right Trigger - climber down (raise robot)
+      // Y Button to deploy the elevator
+      driverYButton.whenPressed(() -> m_elevator.deployElevator());
+      // X Button to retract the elevator
+      driverXButton.whenPressed(() -> m_elevator.retractElevator());
+      // Left Trigger - climber down (raise robot)
+      // Right Trigger - climber up (lower robot)
+      // Right Bumper - invert drive controls
+      driverRightBumper.whenPressed(new driveInvertCommand(m_drive));
     
     // Operator Controls
       // Left Joystick - manual turret control
@@ -133,15 +128,15 @@ driverLeftBumper.whileHeld(() -> m_shooter.deployHood()).whenReleased(() -> m_sh
       // A Button - hold to deploy intake
       opAButton.whileHeld(new intakeDeployCommand(m_intake));
       // B Button - stage balls for shooting
-     // opBButton.whenPressed(new indexerStageForShootingCommand(m_indexer));
+      opBButton.whenPressed(new indexerStageForShootingCommand(m_indexer));
       // X Button - restage balls
-      //opXButton.whenPressed(new indexerRestageCommand(m_indexer));
-      // Y Button - hold to eject balls out the back of the indexer, restage balls when released
+      opXButton.whenPressed(new indexerRestageCommand(m_indexer));
+      // Y Button - hold to eject balls out the back of the indexer
       opYButton.whileHeld(new indexerReverseEjectCommand(m_indexer));
-      //opYButton.whenReleased(new indexerRestageCommand(m_indexer));
       // Right Bumper - hold to shoot balls
-      //opRightBumper.whileHeld(new shootBallsContinuouslyCommand(m_indexer, m_turret, m_shooter, m_limelight, m_drive));
-      opRightBumper.whileHeld(() -> m_indexer.ejectIndexer()).whenReleased(() -> m_indexer.stopIndexer());
+      opRightBumper.whileHeld(new shootBallsContinuouslyCommand(m_indexer, m_turret, m_shooter, m_limelight, m_drive));
+      // Left Bumper - toggle hood position
+      opLeftBumper.toggleWhenPressed(new shooterHoodCommand(m_shooter));
       // D Pad Up - manually increase ball count
       opDPadUp.whenPressed(() -> m_indexer.setBallCount(m_indexer.getBallCount() + 1));
       // D Pad Down - manually decrease ball count
@@ -156,10 +151,10 @@ driverLeftBumper.whileHeld(() -> m_shooter.deployHood()).whenReleased(() -> m_sh
     // TODO: do something other than assume power port is directly in front of robot sitting on initiation line
     //Translation2d powerPortLocation = new Translation2d(inches2Meters(120), 0);
     //opStartButton.whenPressed(new turretAutoTargeting(powerPortLocation, m_turret, m_drive, m_limelight));
-    opXButton.whenPressed(() -> m_shooter.setShooterRPM(2700));  // 2700 RPM is ideal for 10' (initiation line)
+    //opXButton.whenPressed(() -> m_shooter.setShooterRPM(2700));  // 2700 RPM is ideal for 10' (initiation line)
     //opBackButton.whenPressed(new turretLimelightCommand(m_turret, m_shooter, m_limelight));
     //opAButton.whenPressed(new turretHomingCommand(m_turret));
-    opBButton.whenPressed(new turretManualMode(m_turret));
+    //opBButton.whenPressed(new turretManualMode(m_turret));
   }
   
   public Command getNoAutonomousCommand() {

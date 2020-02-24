@@ -43,6 +43,8 @@ public class driveSubsystem extends SubsystemBase {
   private WPI_TalonFX falcon3_rightLead   = new WPI_TalonFX(driveConstants.falcon3_rightLead);
   private WPI_TalonFX falcon4_rightFollow = new WPI_TalonFX(driveConstants.falcon4_rightFollow);
 
+  private boolean driveInvert = false;
+
   // OLD Gyro, NAVX:
   //    private final AHRS m_gyro = new AHRS(SPI.Port.kMXP);
 
@@ -406,6 +408,14 @@ public class driveSubsystem extends SubsystemBase {
   public void disableCurrentLimit() {
     // not completely disabled, 4x80 amps is 240Amps, wich is almost 100% of the battery output
     setCurrentLimit(new SupplyCurrentLimitConfiguration(true, 80, 60, 1));
+  }
+
+  public boolean getDriveInvert() {
+    return driveInvert;
+  }
+
+  public void setDriveInvert(boolean invert) {
+    driveInvert = invert;
   }
 
 }
