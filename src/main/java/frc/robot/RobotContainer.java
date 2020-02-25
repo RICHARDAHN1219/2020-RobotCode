@@ -24,10 +24,12 @@ import edu.wpi.first.wpilibj.trajectory.TrajectoryConfig;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.trajectory.constraint.DifferentialDriveVoltageConstraint;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandGroupBase;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.RamseteCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.Constants.driveConstants;
@@ -156,10 +158,10 @@ public class RobotContainer {
    * 
    * @return auton command
    */ 
-  public Command getAutonomousShootCommand() {
+  public CommandGroupBase getAutonomousShootCommand() {
 
     // Spin up flywheel and drive off initiation line
-    Command ac = new ParallelRaceGroup(
+    SequentialCommandGroup ac = new SequentialCommandGroup(
        getAutonomousCommand(), 
        new InstantCommand(() -> m_shooter.setShooterRPM(m_shooter.getRPMforDistanceFeet(10)), m_shooter));
 
@@ -224,7 +226,6 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
 
     // TODO: all auton driving is robot centric, starting at (0,0) needs to get changed to field centric
-
     // Drive forward 1.5 meter, 1.5 meter back, and stop
     RamseteCommand ramseteCommand = createTrajectoryCommand(
       new Pose2d(0, 0, new Rotation2d(0)),
@@ -263,7 +264,8 @@ public class RobotContainer {
         // Add kinematics to ensure max speed is actually obeyed
         .setKinematics(kDriveKinematics)
         // Apply the voltage constraint
-        .addConstraint(autoVoltageConstraint);
+        .addConstraint(autoVoltageConstraint)
+        .setReversed(true);
 
     var initalTime = System.nanoTime();
 
