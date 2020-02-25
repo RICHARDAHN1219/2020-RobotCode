@@ -28,6 +28,7 @@ public class Robot extends TimedRobot {
     SmartDashboard.putNumber("distance", 0);
     SmartDashboard.putData("Hood Deploy", new hoodDeployCommand());
     SmartDashboard.putData("Hood Retract", new hoodRetractCommand());
+    RobotContainer.m_limelight.setLEDMode(1);
   }
 
   @Override
@@ -40,12 +41,11 @@ public class Robot extends TimedRobot {
 
   @Override
   public void disabledInit() {
+    RobotContainer.m_limelight.setLEDMode(1);
   }
 
   @Override
   public void disabledPeriodic() {
-    // intakeSubsystem.intakeSolenoid.set(false);
-    // intakeSubsystem.intakeSolenoid2.set(true);
   }
 
   /**

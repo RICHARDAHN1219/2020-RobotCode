@@ -8,42 +8,39 @@
 package frc.robot.commands;
 
 import com.fearxzombie.limelight;
-
 import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
-import frc.robot.subsystems.driveSubsystem;
 import frc.robot.subsystems.indexerSubsystem;
 import frc.robot.subsystems.shooterSubsystem;
 import frc.robot.subsystems.turretSubsystem;
 
-public class shootBallsContinuouslyCommand extends CommandBase {
+public class hoodUpAutoShootCommand extends CommandBase {
 
   indexerSubsystem m_indexer;
   turretSubsystem m_turret;
   shooterSubsystem m_shooter;
   limelight m_limelight;
-  driveSubsystem m_drive;
 
-  private double steer_k = 0.1;
+  private double steer_k = 0.075;
   private double tv;
   private double tx;
   private double limelightSteerCommand = 0;
 
-  public shootBallsContinuouslyCommand(indexerSubsystem indexer, turretSubsystem turret, shooterSubsystem shooter, limelight ll_util, driveSubsystem drive) {
+  public hoodUpAutoShootCommand(indexerSubsystem indexer, turretSubsystem turret, shooterSubsystem shooter, limelight ll_util) {
     addRequirements(indexer);
     addRequirements(turret);
     addRequirements(shooter);
-    addRequirements(drive);
     m_indexer = indexer;
     m_turret = turret;
     m_shooter = shooter;
     m_limelight = ll_util;
-    m_drive = drive;
   }
 
   @Override
   public void initialize() {
+    m_limelight.setLEDMode(0);
+    m_shooter.deployHood();
   }
 
   @Override
@@ -57,13 +54,13 @@ public class shootBallsContinuouslyCommand extends CommandBase {
       m_turret.setPercentOutput(RobotContainer.m_operatorController.getX(Hand.kLeft));
       return;
     }
-
+    
     m_shooter.setShooterRPM(m_shooter.getRPMforTY(m_limelight.getTY()));
 
     limelightSteerCommand = tx * steer_k;
-    m_drive.arcadeDrive(0, -limelightSteerCommand * 0.65);
+    m_turret.setPercentOutput(limelightSteerCommand);
 
-    if (m_shooter.isAtSpeed() == true && Math.abs(m_limelight.getTX()) < 2.5) {
+    if (m_shooter.isAtSpeed() == true && Math.abs(m_limelight.getTX()) < 0.5) {
       RobotContainer.limelightOnTarget = true;
       m_indexer.ejectIndexer();
     }
@@ -75,6 +72,8 @@ public class shootBallsContinuouslyCommand extends CommandBase {
     m_shooter.setShooterRPM(0);
     m_turret.stop();
     RobotContainer.limelightOnTarget = false;
+    m_shooter.retractHood();
+    m_limelight.setLEDMode(1);
   }
 
   @Override

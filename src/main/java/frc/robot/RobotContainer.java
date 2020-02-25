@@ -119,16 +119,14 @@ public class RobotContainer {
       opXButton.whenPressed(new indexerRestageCommand(m_indexer));
       // Y Button - hold to eject balls out the back of the indexer
       opYButton.whileHeld(new indexerReverseEjectCommand(m_indexer));
-      // Right Bumper - hold to shoot balls
-      opRightBumper.whileHeld(new shootBallsContinuouslyCommand(m_indexer, m_turret, m_shooter, m_limelight, m_drive));
-      // Left Bumper - toggle hood position
-      opLeftBumper.whileHeld(new shooterHoodCommand(m_shooter));
+      // Right Bumper - shoot with hood up
+      opRightBumper.whileHeld(new hoodUpAutoShootCommand(m_indexer, m_turret, m_shooter, m_limelight));
+      // Left Bumper - shoot with hood down
+      opLeftBumper.whileHeld(new hoodDownAutoShootCommand(m_indexer, m_turret, m_shooter, m_limelight));
       // D Pad Up - manually increase ball count
       opDPadUp.whenPressed(() -> m_indexer.setBallCount(m_indexer.getBallCount() + 1));
       // D Pad Down - manually decrease ball count
       opDPadDown.whenPressed(() -> m_indexer.setBallCount(m_indexer.getBallCount() - 1));
-
-      
       
     // op Start -> auto targeting
     // op Select -> limelight targeting
@@ -166,7 +164,7 @@ public class RobotContainer {
        new InstantCommand(() -> m_shooter.setShooterRPM(m_shooter.getRPMforDistanceFeet(10)), m_shooter));
 
     // shoot 3 power cells
-    ac.andThen(new shootBallsContinuouslyCommand(m_indexer, m_turret, m_shooter, m_limelight, m_drive));
+    ac.andThen(new hoodUpAutoShootCommand(m_indexer, m_turret, m_shooter, m_limelight));
       
 
     // TODO: add drive toward nearest powercell and pick up
