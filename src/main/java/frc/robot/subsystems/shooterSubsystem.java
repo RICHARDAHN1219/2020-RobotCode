@@ -33,40 +33,21 @@ public class shooterSubsystem extends SubsystemBase {
   private boolean m_atSpeed = false;
   private long m_initalTime = 0;
   private linearInterpolator m_lt;
-  private double data[][] = {
-    // distance in Feed -> RPM
-    { 4,  2650 }, 
-    { 5,  2550 },
-    { 6,  2550 },
-    { 7,  2550 },
-    { 8,  2600 },
-    { 9,  2650 },
-    { 10, 2700 },
-    // TODO: complete this table with values between 10 and 25 feet
-    { 25, 4300 },
-  };
-  private double retestData[][] = {
-    {4, 2600},
-    {5, 2600},
-    {10, 3750},
-    {15, 3850},
-    {20, 4100},
-    {25, 5000}
-  };
-
+  
   private double hoodDown[][] = {
-    {22, 2600}, // 4.5 feet
-    {17, 2650}, // 7 feet
-    {12.8, 2750}, // 10 feet
-    {10.5, 2900} // 12 feet
+    {15.4, 2600}, // 4.5 feet
+    {3, 2650}, // 7 feet
+    {-7.2, 2750}, // 10 feet
+    {-12.2, 2900} // 12 feet
   };
   private double hoodUp[][] = {
-    {2.5, 3900}, // 9 feet
-    {-4.2, 3550}, // 13 feet
-    {-10, 3600}, // 17 feet
-    {-13.5, 3800}, // 21 feet
-    {-16, 4100} // 25 feet
+    {8, 3900}, // 9 feet
+    {-0.1, 3550}, // 13 feet
+    {-5, 3600}, // 17 feet
+    {-8.5, 3800}, // 21 feet
+    {-11, 4100} // 25 feet
   };
+  
   public shooterSubsystem() {
     neo_shooter1.restoreFactoryDefaults();
     neo_shooter2.restoreFactoryDefaults();
