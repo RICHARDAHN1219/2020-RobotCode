@@ -200,6 +200,8 @@ public class RobotContainer {
    * @param translationList
    * @param endPose
    * @param isReversed
+   * @param maxSpeedMetersPerSecond
+   * @param maxAccelerationMetersPerSecondSquared
    * @return Ramsete Path Follow Command, intake side of robot is isReversed = true and negative values
    */
   public RamseteCommand createTrajectoryCommand(Pose2d startPose, List<Translation2d> translationList, Pose2d endPose, boolean isReversed, double maxSpeedMetersPerSecond, double maxAccelerationMetersPerSecondSquared) {
