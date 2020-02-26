@@ -12,10 +12,13 @@ import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
+
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.indexConstants;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.Robot;
 import frc.robot.RobotContainer;
 import frc.robot.Constants.currentLimits;
 import static frc.robot.Constants.digitalIOConstants.dio0_indexerSensor1;
@@ -24,9 +27,11 @@ import static frc.robot.Constants.digitalIOConstants.dio2_indexerSensor3;
 
 public class indexerSubsystem extends SubsystemBase {
 
-  private WPI_TalonSRX indexIntake = new WPI_TalonSRX(indexConstants.indexIntake);
+  private WPI_TalonSRX indexIntakeP = new WPI_TalonSRX(indexConstants.indexIntake);
+  private WPI_VictorSPX indexIntakeC = new WPI_VictorSPX(indexConstants.indexIntake);
   private WPI_TalonFX indexBelts = new WPI_TalonFX(indexConstants.indexBelts);
-  private WPI_TalonFX indexKicker = new WPI_TalonFX(indexConstants.indexKicker);
+  private WPI_TalonFX indexKickerP = new WPI_TalonFX(indexConstants.indexKicker);
+  private WPI_VictorSPX indexKickerC = new WPI_VictorSPX(indexConstants.indexKicker);
   private DigitalInput Sensor1 = new DigitalInput(dio0_indexerSensor1);
   private DigitalInput Sensor2 = new DigitalInput(dio1_indexerSensor2);
   private DigitalInput Sensor3 = new DigitalInput(dio2_indexerSensor3);
@@ -42,38 +47,52 @@ public class indexerSubsystem extends SubsystemBase {
 
   public indexerSubsystem() {
     indexBelts.configFactoryDefault();
-    indexKicker.configFactoryDefault();
-    indexIntake.configFactoryDefault();
+    indexKickerP.configFactoryDefault();
+    indexKickerC.configFactoryDefault();
+    indexIntakeP.configFactoryDefault();
+    indexIntakeC.configFactoryDefault();
 
     // Voltage limits, percent output is scaled to this new max
     indexBelts.configVoltageCompSaturation(11);
     indexBelts.enableVoltageCompensation(true);
-    indexKicker.configVoltageCompSaturation(11);
-    indexKicker.enableVoltageCompensation(true);
-    indexIntake.configVoltageCompSaturation(11);
-    indexIntake.enableVoltageCompensation(true);
+    indexKickerP.configVoltageCompSaturation(11);
+    indexKickerP.enableVoltageCompensation(true);
+    indexKickerC.configVoltageCompSaturation(11);
+    indexKickerC.enableVoltageCompensation(true);
+    indexIntakeP.configVoltageCompSaturation(11);
+    indexIntakeP.enableVoltageCompensation(true);
+    indexIntakeC.configVoltageCompSaturation(11);
+    indexIntakeC.enableVoltageCompensation(true);
 
     // current limits
     indexBelts.configSupplyCurrentLimit(currentLimits.m_currentlimitSecondary);
-    indexKicker.configSupplyCurrentLimit(currentLimits.m_currentlimitSecondary);
-    indexIntake.configSupplyCurrentLimit(currentLimits.m_currentlimitSecondary);
+    indexKickerP.configSupplyCurrentLimit(currentLimits.m_currentlimitSecondary);
+    indexIntakeP.configSupplyCurrentLimit(currentLimits.m_currentlimitSecondary);
 
     // Brake mode
     indexBelts.setNeutralMode(NeutralMode.Brake);
-    indexKicker.setNeutralMode(NeutralMode.Brake);
-    indexIntake.setNeutralMode(NeutralMode.Brake);
+    indexKickerP.setNeutralMode(NeutralMode.Brake);
+    indexKickerC.setNeutralMode(NeutralMode.Brake);
+    indexIntakeP.setNeutralMode(NeutralMode.Brake);
+    indexIntakeC.setNeutralMode(NeutralMode.Brake);
 
     // Invert
     indexBelts.setInverted(false);
-    indexKicker.setInverted(false);
-    indexIntake.setInverted(false);
+    indexKickerP.setInverted(false);
+    indexKickerC.setInverted(false);
+    indexIntakeP.setInverted(true);
+    indexIntakeC.setInverted(true);
 
     indexBelts.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor, 0, 10);
-    indexKicker.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor, 0, 10);
-    indexIntake.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 10);
+    indexKickerP.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor, 0, 10);
+    indexKickerC.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor, 0, 10);
+    indexIntakeP.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 10);
+    indexIntakeC.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 10);
 
     // TalonFX don't have sensor phase only TalonSRX
-    indexIntake.setSensorPhase(false);
+    indexIntakeP.setSensorPhase(false);
+    indexIntakeC.setSensorPhase(false);
+    indexKickerC.setSensorPhase(false);
     
     //Set Ramp-Up
     //indexKicker.configClosedloopRamp(0.1);
@@ -87,15 +106,25 @@ public class indexerSubsystem extends SubsystemBase {
     indexBelts.config_kD(0, 1.5, 10);
     indexBelts.config_kF(0, 0.048, 10);
 
-    indexKicker.config_kP(0, 0.15, 10);
-    indexKicker.config_kI(0, 0.0, 10);
-    indexKicker.config_kD(0, 1.5, 10);
-    indexKicker.config_kF(0, 0.053, 10);
+    indexKickerP.config_kP(0, 0.15, 10);
+    indexKickerP.config_kI(0, 0.0, 10);
+    indexKickerP.config_kD(0, 1.5, 10);
+    indexKickerP.config_kF(0, 0.053, 10);
 
-    indexIntake.config_kP(0, 0.1, 10);
-    indexIntake.config_kI(0, 0.0, 10);
-    indexIntake.config_kD(0, 0.0, 10);
-    indexIntake.config_kF(0, 0.0, 10);
+    indexKickerC.config_kP(0, 0.15, 10);
+    indexKickerC.config_kI(0, 0.0, 10);
+    indexKickerC.config_kD(0, 1.5, 10);
+    indexKickerC.config_kF(0, 0.053, 10);
+
+    indexIntakeP.config_kP(0, 0.1, 10);
+    indexIntakeP.config_kI(0, 0.0, 10);
+    indexIntakeP.config_kD(0, 0.0, 10);
+    indexIntakeP.config_kF(0, 0.0, 10);
+
+    indexIntakeC.config_kP(0, 0.1, 10);
+    indexIntakeC.config_kI(0, 0.0, 10);
+    indexIntakeC.config_kD(0, 0.0, 10);
+    indexIntakeC.config_kF(0, 0.0, 10);
 
     // Note: if we add position control, then we need to add a second set of PID parameters
     // on PID index 1, and then swtich between the Talon PID index when setting RPM and Position
@@ -109,7 +138,12 @@ public class indexerSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("ball count", ballCount);
     SmartDashboard.putNumber("restage state", restageState);
     SmartDashboard.putNumber("Belt RPM", indexBelts.getSelectedSensorVelocity() * 600 / 2048);
-    SmartDashboard.putNumber("Kicker RPM", indexKicker.getSelectedSensorVelocity() * 600 / 2048);
+    if (Robot.isCompBot == true) {
+      SmartDashboard.putNumber("Kicker RPM", indexKickerC.getSelectedSensorVelocity() * 600 / 2048);
+    }
+    else {
+      SmartDashboard.putNumber("Kicker RPM", indexKickerP.getSelectedSensorVelocity() * 600 / 2048);
+    }
     
     // increase ball count as balls enter the indexer
     if (ballReady4Indexer != ballReady4IndexerLast && ballReady4Indexer == false) {
@@ -130,11 +164,21 @@ public class indexerSubsystem extends SubsystemBase {
   }
 
   public void setKickerPercentOutput(double percent) {
-    indexKicker.set(ControlMode.PercentOutput, percent);
+    if (Robot.isCompBot == true) {
+      indexKickerC.set(ControlMode.PercentOutput, percent);
+    }
+    else {
+      indexKickerP.set(ControlMode.PercentOutput, percent);
+    }
   }
 
   public void setIntakePercentOutput(double percent) {
-    indexIntake.set(ControlMode.PercentOutput, percent);
+    if (Robot.isCompBot == true) {
+      indexIntakeC.set(ControlMode.PercentOutput, percent);
+    }
+    else {
+      indexIntakeP.set(ControlMode.PercentOutput, percent);
+    }
   }
 
   public void setBeltsRPM(double rpm) {
@@ -142,11 +186,21 @@ public class indexerSubsystem extends SubsystemBase {
   }
 
   public void setKickerRPM(double rpm) {
-    indexKicker.set(ControlMode.Velocity, rpm * 2048 / 600);
+    if (Robot.isCompBot == true) {
+      indexKickerC.set(ControlMode.Velocity, rpm * 2048 / 600);
+    }
+    else {
+      indexKickerP.set(ControlMode.Velocity, rpm * 2048 / 600);
+    }
   }
 
   public void setIntakeRPM(double rpm) {
-    indexIntake.set(ControlMode.Velocity, rpm * 2048 / 600);
+    if (Robot.isCompBot == true) {
+      indexIntakeC.set(ControlMode.Velocity, rpm * 2048 / 600);
+    }
+    else {
+      indexIntakeP.set(ControlMode.Velocity, rpm * 2048 / 600);
+    }
   }
 
   /** 
@@ -190,56 +244,77 @@ public class indexerSubsystem extends SubsystemBase {
    * runIndexer() - run all indexer motors at ball staging speeds
    */
   public void runIndexer() {
-    setBeltsRPM(6380);
-    setKickerRPM(1914);
-    setIntakePercentOutput(-.7);
-    m_blinkin.solid_green();
-  }
-
-  /**
-   * runKicker() - eject ball from indexer
-   */
-  public void runKicker() {
-    setBeltsRPM(6380);
-    setKickerRPM(6380);
-    setIntakePercentOutput(-.7);
-    m_blinkin.solid_pink();
+    if (Robot.isCompBot == true) {
+      setIntakePercentOutput(0.7);
+      setBeltsRPM(6380);
+      setKickerPercentOutput(0.3);
+      m_blinkin.solid_green();
+    }
+    else {
+      setIntakePercentOutput(0.7);
+      setBeltsRPM(6380);
+      setKickerRPM(1914);
+      m_blinkin.solid_green();
+    }
   }
 
   /**
    * runBelts() - run only the belts
    */
   public void runOnlyBelts() {
-    setBeltsRPM(6380);
-    setKickerRPM(0);
-    setIntakePercentOutput(0);
-    m_blinkin.solid_blue();
+    if (Robot.isCompBot == true) {
+      setIntakePercentOutput(0);
+      setBeltsRPM(6380);
+      setKickerPercentOutput(0);
+      m_blinkin.solid_blue();
+    }
+    else {
+      setIntakePercentOutput(0);
+      setBeltsRPM(6380);
+      setKickerRPM(0);
+      m_blinkin.solid_blue();
+    }
   }
 
   /**
    * reverseIndexer() - run all indexer motors backwards at staging speeds
    */
   public void reverseIndexer() {
-    setBeltsRPM(-6380);
-    setKickerRPM(-1914);
-    setIntakePercentOutput(.7);
-    m_blinkin.strobe_red();
+    if (Robot.isCompBot == true) {
+      setIntakePercentOutput(-0.7);
+      setBeltsRPM(-6380);
+      setKickerPercentOutput(-0.3);
+      m_blinkin.strobe_red();
+    }
+    else {
+      setIntakePercentOutput(-0.7);
+      setBeltsRPM(-6380);
+      setKickerRPM(-1914);
+      m_blinkin.strobe_red();
+    }
   }
 
   /**
    * ejectIndexer() - run all indexer motors at eject/shooting speeds
    */
   public void ejectIndexer() {
-    setBeltsRPM(6380);
-    setKickerRPM(6380);
-    setIntakePercentOutput(-.7);
+    if (Robot.isCompBot == true) {
+      setIntakePercentOutput(0.7);
+      setBeltsRPM(6380);
+      setKickerPercentOutput(1);
+    }
+    else {
+      setIntakePercentOutput(0.7);
+      setBeltsRPM(6380);
+      setKickerRPM(6380);
+    }
   }
 
   /**
    * runIntake() - run intake motor
    */
   public void runIntake() {
-    setIntakePercentOutput(-.7);
+    setIntakePercentOutput(0.7);
   }
 
   /**
@@ -253,9 +328,16 @@ public class indexerSubsystem extends SubsystemBase {
    * runOnlyIntake() - run intake motor and stop the belts and kicker
    */
   public void runOnlyIntake() {
-    setIntakePercentOutput(-.7);
-    setBeltsRPM(0);
-    setKickerRPM(0);
+    if (Robot.isCompBot == true) {
+      setIntakePercentOutput(0.7);
+      setBeltsRPM(0);
+      setKickerPercentOutput(0);
+    }
+    else {
+      setIntakePercentOutput(0.7);
+      setBeltsRPM(0);
+      setKickerRPM(0);
+    }
   } 
 
   /**
@@ -269,7 +351,12 @@ public class indexerSubsystem extends SubsystemBase {
    * stopKicker() - stop the kicker motor
    */
   public void stopKicker() {
-    setKickerRPM(0);
+    if (Robot.isCompBot == true) {
+      setKickerPercentOutput(0);
+    }
+    else {
+      setKickerRPM(0);
+    }
   }
 
   /**

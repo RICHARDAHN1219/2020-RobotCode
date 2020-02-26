@@ -18,6 +18,7 @@ public class Robot extends TimedRobot {
   private RobotContainer m_robotContainer;
   public PowerDistributionPanel m_pdp = new PowerDistributionPanel();
   public Compressor Compressor;
+  public static boolean isCompBot = false;
 
   @Override
   public void robotInit() {
