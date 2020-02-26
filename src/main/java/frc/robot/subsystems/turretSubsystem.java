@@ -37,6 +37,7 @@ public class turretSubsystem extends SubsystemBase {
     turretDrive.setSensorPhase(true);
 
     // set soft limits
+    // TODO: Turns out these values are almost exactly (90 / kDegreesPerTick)
     turretDrive.configForwardSoftLimitThreshold(13418, kTimeout);
     turretDrive.configReverseSoftLimitThreshold(-13149, kTimeout);
     turretDrive.configForwardSoftLimitEnable(true);
