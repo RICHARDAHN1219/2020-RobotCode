@@ -15,23 +15,31 @@ import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Robot;
 import frc.robot.RobotContainer;
 import frc.robot.Constants.elevatorConstants;
 import edu.wpi.first.wpilibj.Solenoid;
+
+import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
 public class elevatorSubsystem extends SubsystemBase {
 
   private DoubleSolenoid elevatorDeploySolenoid = new DoubleSolenoid(elevatorConstants.deploySolenoid1, elevatorConstants.deploySolenoid2);
   private Solenoid brakeSolenoid = new Solenoid(elevatorConstants.brakeSolenoid);
-  private CANSparkMax elevatorWinch = new CANSparkMax(elevatorConstants.elevatorWinch, MotorType.kBrushless);
-  private final CANEncoder elevatorEncoder = elevatorWinch.getEncoder(EncoderType.kHallSensor, 2048);
+  private CANSparkMax elevatorWinchP = new CANSparkMax(elevatorConstants.elevatorWinch, MotorType.kBrushless);
+  private WPI_VictorSPX elevatorWinchC = new WPI_VictorSPX(elevatorConstants.elevatorWinch);
+  private final CANEncoder elevatorEncoder = elevatorWinchP.getEncoder(EncoderType.kHallSensor, 2048);
   private boolean elevatorDeployed = false;
 
   public elevatorSubsystem() {
     elevatorDeploySolenoid.set(Value.kReverse);
 
-    elevatorWinch.restoreFactoryDefaults();
-    elevatorWinch.setIdleMode(CANSparkMax.IdleMode.kBrake);
+    elevatorWinchP.restoreFactoryDefaults();
+    elevatorWinchP.setIdleMode(CANSparkMax.IdleMode.kBrake);
+    elevatorWinchC.configFactoryDefault();
+    elevatorWinchC.setNeutralMode(NeutralMode.Brake);
   }
 
   public void deployElevator() {
@@ -57,7 +65,12 @@ public class elevatorSubsystem extends SubsystemBase {
   }
 
   public void setWinchPercentOutput(double Percent) {
-    elevatorWinch.set(Percent);
+    if (Robot.isCompBot == true) {
+      elevatorWinchC.set(ControlMode.PercentOutput, Percent);
+    }
+    else {
+      elevatorWinchP.set(Percent);
+    }
   }
 
   public void stop() {
