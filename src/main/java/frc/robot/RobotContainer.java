@@ -24,12 +24,9 @@ import edu.wpi.first.wpilibj.trajectory.TrajectoryConfig;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.trajectory.constraint.DifferentialDriveVoltageConstraint;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.CommandGroupBase;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.RamseteCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.Constants.driveConstants;
@@ -58,16 +55,13 @@ public class RobotContainer {
   private final elevatorSubsystem m_elevator = new elevatorSubsystem();
   //private final controlPanelSubsystem m_controlPanelMotors = new controlPanelSubsystem();
   private final intakeSubsystem m_intake = new intakeSubsystem();
-
   public static XboxController m_driveController = new XboxController(driveConstants.driveController);
   public static XboxController m_operatorController = new XboxController(driveConstants.operatorController);
-
   public static boolean limelightOnTarget = false;
 
   public RobotContainer() {
     configureButtonBindings();
     m_drive.setDefaultCommand(new driveCommand(m_drive));
-    //m_turret.setDefaultCommand(new turretLimelightCommand(m_turret, m_shooter, m_limelight));
     m_elevator.setDefaultCommand(new elevatorWinchCommand(m_elevator));
     m_indexer.setDefaultCommand(new indexerDefaultCommand(m_indexer));
   }
@@ -146,99 +140,33 @@ public class RobotContainer {
    * 
    * @return Auton do nothing command
    */
-  public Command getNoAutonomousCommand() {
+  public Command noAutonomous() {
     return new RunCommand(() -> m_drive.tankDriveVolts(0, 0));
   }
-  
 
-  /**
-   * Auton to drive off of initiation line and then shoot
-   * 
-   * @return auton command
-   */ 
-  public CommandGroupBase getAutonomousShootCommand() {
-
-    // Spin up flywheel and drive off initiation line
-    SequentialCommandGroup ac = new SequentialCommandGroup(
-       getAutonomousCommand(), 
-       new InstantCommand(() -> m_shooter.setShooterRPM(m_shooter.getRPMforDistanceFeet(10)), m_shooter));
-
-    // shoot 3 power cells
-    ac.andThen(new hoodUpAutoShootCommand(m_indexer, m_turret, m_shooter, m_limelight));
-      
-
-    // TODO: add drive toward nearest powercell and pick up
-    // ac.andThen(getPC67Command());
-
-    return ac;
+  public Command straightOnGoalBackUpShoot3() {
+    RamseteCommand moveBack = createTrajectoryCommand(new Pose2d(0, 0, new Rotation2d(0)), List.of(new Translation2d(-0.5, 0)), new Pose2d(-1, 0, new Rotation2d(0)), true);
+    
+    return 
+    moveBack.alongWith(new hoodUpAutoShootCommand(m_indexer, m_turret, m_shooter, m_limelight));
   }
 
-  /**
-   * drive from initiation line to two nearest power cells. Try to grab them.
-   * 
-   * @return auton command
-   */
-  public Command getPC67Command() {
-    Command ac = new ParallelRaceGroup(
-        driveToPC67Command(),
-        new intakeDeployCommand(m_intake)
-    );
-
-    ac.andThen(new indexerSingleIntakeCommand(m_indexer));
-    ac.andThen(new indexerSingleIntakeCommand(m_indexer));
-
-    return ac;
+  public Command rightSideSingleTrenchPickupShoot4() {
+    RamseteCommand moveBack1 = createTrajectoryCommand(new Pose2d(0, 0, new Rotation2d(0)), List.of(new Translation2d(-1.5, 0)), new Pose2d(-2.54, 0, new Rotation2d(0)), true);
+    RamseteCommand moveForward2 = createTrajectoryCommand(new Pose2d(0, 0, new Rotation2d(0)), List.of(new Translation2d(0.75, 0)), new Pose2d(1.5, 0, new Rotation2d(-20)), false);
+    
+    return 
+    moveBack1.deadlineWith(new intakeDeployCommand(m_intake)).
+    andThen(moveForward2.alongWith(new WaitCommand(2)).
+    andThen(new hoodUpAutoShootCommand(m_indexer, m_turret, m_shooter, m_limelight)));
   }
 
-  
-  public Command driveToPC67Command() {
-    // drive from initiation line to 2 power cells directly opposite power port
-
-    // These are field relative positions. Starting centered on initiation line, directly oposite
-    // the power port.
-    // Start point
-    // "x": 12.947305604132318,
-    // "y": -5.844693698219705
-    // Mid point
-    // "x": 11.547235837576943,
-    // "y": -6.075647202720972
-    // End point (the two power cells to the left, as we drive towards them)
-    // "x": 9.979110140166203,
-    // "y": -5.690501726065627
-
-    // TODO: Coordindates are robot centric, starting at (0,0)
-    // Drive forward forward get PC balls 6 and 7
-    RamseteCommand ramseteCommand = createTrajectoryCommand(
-      new Pose2d(0.0, 0.0, new Rotation2d(-2.64516)),
-      List.of(new Translation2d(1.40, -0.23095)),
-      new Pose2d(2.968195, -0.154191, new Rotation2d(1.962201454)));
-
-    // andThen stop
-    return ramseteCommand.andThen(() -> m_drive.tankDriveVolts(0, 0));
-  }
-
-  /**
-   * Auton command to drive off of initiation line
-   * @return
-   */
-  public Command getAutonomousCommand() {
-
-    // TODO: all auton driving is robot centric, starting at (0,0) needs to get changed to field centric
-    // Drive forward 1.5 meter, 1.5 meter back, and stop
-    RamseteCommand ramseteCommand = createTrajectoryCommand(
-      new Pose2d(0, 0, new Rotation2d(0)),
-      List.of(new Translation2d(0.75,0.0)),
-      new Pose2d(1.5, 0.0, new Rotation2d(0)));
-
-    // TODO: try to drive back to initiation line before shooting?
-    // ramseteCommand.andThen(
-    //     createTrajectoryCommand(
-    //       new Pose2d(1.0, 0, new Rotation2d(0)),
-    //       List.of(new Translation2d(0.5,0.0)),
-    //       new Pose2d(0.0, 0.0, new Rotation2d(0)))
-    //   );
-
-    return ramseteCommand.andThen(() -> m_drive.tankDriveVolts(0, 0));
+  public Command middleBackUpShoot3() {
+    RamseteCommand moveBack = createTrajectoryCommand(new Pose2d(0, 0, new Rotation2d(0)), List.of(new Translation2d(-0.1, 0)), new Pose2d(-1, -0.2, new Rotation2d(20)), true);
+    
+    return 
+    moveBack.
+    andThen(new hoodUpAutoShootCommand(m_indexer, m_turret, m_shooter, m_limelight));
   }
 
   /**
@@ -248,9 +176,10 @@ public class RobotContainer {
    * @param startPose
    * @param translationList
    * @param endPose
-   * @return Ramsete Path Follow Command
+   * @param isReversed
+   * @return Ramsete Path Follow Command, intake side of robot is isReversed = true and negative values
    */
-  public RamseteCommand createTrajectoryCommand(Pose2d startPose, List<Translation2d> translationList, Pose2d endPose) {
+  public RamseteCommand createTrajectoryCommand(Pose2d startPose, List<Translation2d> translationList, Pose2d endPose, boolean isReversed) {
     DifferentialDriveVoltageConstraint autoVoltageConstraint;
     TrajectoryConfig config;
   
@@ -263,7 +192,7 @@ public class RobotContainer {
         .setKinematics(kDriveKinematics)
         // Apply the voltage constraint
         .addConstraint(autoVoltageConstraint)
-        .setReversed(true);
+        .setReversed(isReversed);
 
     var initalTime = System.nanoTime();
 

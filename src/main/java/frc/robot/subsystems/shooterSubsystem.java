@@ -47,7 +47,7 @@ public class shooterSubsystem extends SubsystemBase {
     {-8.5, 3800}, // 21 feet
     {-11, 4100} // 25 feet
   };
-  
+
   public shooterSubsystem() {
     neo_shooter1.restoreFactoryDefaults();
     neo_shooter2.restoreFactoryDefaults();
@@ -66,8 +66,6 @@ public class shooterSubsystem extends SubsystemBase {
     kMaxOutput = 1; 
     kMinOutput = -1;
     m_pidController.setOutputRange(kMinOutput, kMaxOutput);
-
-    setShooterPID(0.0004, 0.00000025, 0, 0.0002, 250);
 
     SmartDashboard.putNumber("ShooterRPM", m_desiredRPM);
 
@@ -121,11 +119,13 @@ public class shooterSubsystem extends SubsystemBase {
   }
 
   public void deployHood() {
+    setShooterPID(0.0005, 0.00000025, 0, 0.00022, 250);
     RobotContainer.m_limelight.setPipeline(5);
     hood.set(true);
     m_lt = new linearInterpolator(hoodUp);
   }
   public void retractHood() {
+    setShooterPID(0.0004, 0.00000025, 0, 0.0002, 250);
     RobotContainer.m_limelight.setPipeline(4);
     hood.set(false);
     m_lt = new linearInterpolator(hoodDown);
