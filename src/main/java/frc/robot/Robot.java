@@ -52,8 +52,12 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
+
+    // TODO: move this to RobotInit() that get's run when the robot is powered on instead of here when
+    // Autonomous starts. Auton command geneneration can take almost a second. Don't waste it during a 
+    // match.
     m_autonomousCommand = m_robotContainer.rightSideSingleTrenchPickupShoot4();
-    
+
     if (m_autonomousCommand != null) {
       System.out.println("Scheduling Autonomous Command");
       m_autonomousCommand.schedule();
@@ -70,6 +74,8 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       System.out.println("Cancelling Autonomous Command");
       m_autonomousCommand.cancel();
+      // TODO: each of those commands is going to re-create a new command, the ones with trajectories will take a non-trivial amount of time
+      // maybe create the them in RobotContainer and save them to a variable?
       CommandGroupBase.clearGroupedCommand(m_robotContainer.straightOnGoalBackUpShoot3());
       CommandGroupBase.clearGroupedCommand(m_robotContainer.rightSideSingleTrenchPickupShoot4());
       CommandGroupBase.clearGroupedCommand(m_robotContainer.middleBackUpShoot3());
