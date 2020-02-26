@@ -18,6 +18,7 @@ import com.revrobotics.EncoderType;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.team2930.lib.util.linearInterpolator;
 
+import frc.robot.Robot;
 import frc.robot.RobotContainer;
 import frc.robot.Constants.shooterConstants;
 
@@ -34,13 +35,27 @@ public class shooterSubsystem extends SubsystemBase {
   private long m_initalTime = 0;
   private linearInterpolator m_lt;
   
-  private double hoodDown[][] = {
+  private double hoodDownP[][] = {
     {15.4, 2600}, // 4.5 feet
     {3, 2650}, // 7 feet
     {-7.2, 2750}, // 10 feet
     {-12.2, 2900} // 12 feet
   };
-  private double hoodUp[][] = {
+  private double hoodUpP[][] = {
+    {8, 3900}, // 9 feet
+    {-0.1, 3550}, // 13 feet
+    {-5, 3600}, // 17 feet
+    {-8.5, 3800}, // 21 feet
+    {-11, 4100} // 25 feet
+  };
+
+  private double hoodDownC[][] = {
+    {15.4, 2600}, // 4.5 feet
+    {3, 2650}, // 7 feet
+    {-7.2, 2750}, // 10 feet
+    {-12.2, 2900} // 12 feet
+  };
+  private double hoodUpC[][] = {
     {8, 3900}, // 9 feet
     {-0.1, 3550}, // 13 feet
     {-5, 3600}, // 17 feet
@@ -68,8 +83,6 @@ public class shooterSubsystem extends SubsystemBase {
     m_pidController.setOutputRange(kMinOutput, kMaxOutput);
 
     SmartDashboard.putNumber("ShooterRPM", m_desiredRPM);
-
-    m_lt = new linearInterpolator(hoodDown);
   }
 
   @Override
@@ -118,18 +131,34 @@ public class shooterSubsystem extends SubsystemBase {
     System.out.println("Activating Test Mode");
   }
 
+  // TODO: put pipeline setting in if statement if we make different comp bot pipelines
   public void deployHood() {
     RobotContainer.m_limelight.setPipeline(5);
-    setShooterPID(0.0005, 0.00000025, 0, 0.00022, 250);
+    if (Robot.isCompBot == true) {
+      setShooterPID(0.0005, 0.00000025, 0, 0.00022, 250);
+      m_lt = new linearInterpolator(hoodUpC);
+    }
+    else {
+      setShooterPID(0.0005, 0.00000025, 0, 0.00022, 250);
+      m_lt = new linearInterpolator(hoodUpP);
+    }
     hood.set(true);
-    m_lt = new linearInterpolator(hoodUp);
   }
+
+  // TODO: put pipeline setting in if statement if we make different comp bot pipelines
   public void retractHood() {
     RobotContainer.m_limelight.setPipeline(4);
-    setShooterPID(0.0004, 0.00000025, 0, 0.0002, 250);
+    if (Robot.isCompBot == true) {
+      setShooterPID(0.0004, 0.00000025, 0, 0.0002, 250);
+      m_lt = new linearInterpolator(hoodDownC);
+    }
+    else {
+      setShooterPID(0.0004, 0.00000025, 0, 0.0002, 250);
+      m_lt = new linearInterpolator(hoodDownP);
+    }
     hood.set(false);
-    m_lt = new linearInterpolator(hoodDown);
   }
+
   public void setShooterPID (double P, double I, double D, double F, double iZ) {
     m_pidController.setP(P);
     m_pidController.setI(I);
