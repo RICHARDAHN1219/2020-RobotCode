@@ -7,8 +7,6 @@
 
 package frc.robot;
 
-import static frc.robot.Constants.AutoConstants.kMaxAccelerationMetersPerSecondSquared;
-import static frc.robot.Constants.AutoConstants.kMaxSpeedMetersPerSecond;
 import static frc.robot.Constants.AutoConstants.kRamseteB;
 import static frc.robot.Constants.AutoConstants.kRamseteZeta;
 import static frc.robot.Constants.driveConstants.kDriveKinematics;
@@ -89,7 +87,6 @@ public class RobotContainer {
     final JoystickButton opRightBumper = new JoystickButton(m_operatorController, Button.kBumperRight.value);
     final POVButton opDPadUp = new POVButton(m_operatorController, 0);
     final POVButton opDPadDown = new POVButton(m_operatorController, 180);
-
     
     // Driver Controls
       // Y Button to deploy the elevator
@@ -121,18 +118,6 @@ public class RobotContainer {
       opDPadUp.whenPressed(() -> m_indexer.setBallCount(m_indexer.getBallCount() + 1));
       // D Pad Down - manually decrease ball count
       opDPadDown.whenPressed(() -> m_indexer.setBallCount(m_indexer.getBallCount() - 1));
-      
-    // op Start -> auto targeting
-    // op Select -> limelight targeting
-    // op A  -> turret home
-    // op B  -> manual control with operator controller
-    // TODO: do something other than assume power port is directly in front of robot sitting on initiation line
-    //Translation2d powerPortLocation = new Translation2d(inches2Meters(120), 0);
-    //opStartButton.whenPressed(new turretAutoTargeting(powerPortLocation, m_turret, m_drive, m_limelight));
-    //opXButton.whenPressed(() -> m_shooter.setShooterRPM(2700));  // 2700 RPM is ideal for 10' (initiation line)
-    //opBackButton.whenPressed(new turretLimelightCommand(m_turret, m_shooter, m_limelight));
-    //opAButton.whenPressed(new turretHomingCommand(m_turret));
-    //opBButton.whenPressed(new turretManualMode(m_turret));
   }
   
   /**
@@ -145,24 +130,36 @@ public class RobotContainer {
   }
 
   public Command straightOnGoalBackUpShoot3() {
-    RamseteCommand moveBack = createTrajectoryCommand(new Pose2d(0, 0, new Rotation2d(0)), List.of(new Translation2d(-0.5, 0)), new Pose2d(-1, 0, new Rotation2d(0)), true);
+    RamseteCommand moveBack = createTrajectoryCommand(new Pose2d(0, 0, new Rotation2d(0)), List.of(new Translation2d(-0.5, 0)), new Pose2d(-1, 0, new Rotation2d(0)), true, 3.5, 1.5);
     
     return 
     moveBack.alongWith(new hoodUpAutoShootCommand(m_indexer, m_turret, m_shooter, m_limelight));
   }
 
   public Command rightSideSingleTrenchPickupShoot4() {
-    RamseteCommand moveBack1 = createTrajectoryCommand(new Pose2d(0, 0, new Rotation2d(0)), List.of(new Translation2d(-1.5, 0)), new Pose2d(-2.54, 0, new Rotation2d(0)), true);
-    RamseteCommand moveForward2 = createTrajectoryCommand(new Pose2d(0, 0, new Rotation2d(0)), List.of(new Translation2d(0.75, 0)), new Pose2d(1.5, 0, new Rotation2d(-20)), false);
+    RamseteCommand moveBack1 = createTrajectoryCommand(new Pose2d(0, 0, new Rotation2d(0)), List.of(new Translation2d(-1.15, 0)), new Pose2d(-2.54, 0, new Rotation2d(0)), true, 3.5, 1.5);
+    RamseteCommand moveForward2 = createTrajectoryCommand(new Pose2d(-2.54, 0, new Rotation2d(0)), List.of(new Translation2d(-1.15, 0)), new Pose2d(0, 0, new Rotation2d(0)), false, 3.5, 1.5);
     
     return 
-    moveBack1.deadlineWith(new intakeDeployCommand(m_intake)).
+    moveBack1.deadlineWith(new intakeDeployCommand(m_intake), new indexerDefaultCommand(m_indexer).perpetually()).
     andThen(moveForward2.alongWith(new WaitCommand(2)).
     andThen(new hoodUpAutoShootCommand(m_indexer, m_turret, m_shooter, m_limelight)));
   }
 
+  public Command rightSideDoubleTrenchPickupShoot5() {
+    RamseteCommand moveBack1 = createTrajectoryCommand(new Pose2d(0, 0, new Rotation2d(0)), List.of(new Translation2d(-1.15, 0)), new Pose2d(-2.54, 0, new Rotation2d(0)), true, 3.0, 1.5);
+    RamseteCommand moveBack2 = createTrajectoryCommand(new Pose2d(-2.54, 0, new Rotation2d(0)), List.of(new Translation2d(-2.6, 0)), new Pose2d(-2.85, 0, new Rotation2d(0)), true, 3.0, 1.5);
+    RamseteCommand moveForward3 = createTrajectoryCommand(new Pose2d(-2.85, 0, new Rotation2d(0)), List.of(new Translation2d(-2, 0)), new Pose2d(-1.5, 0, new Rotation2d(0)), false, 3.0, 1.5);
+    
+    return 
+    moveBack1.deadlineWith(new intakeDeployCommand(m_intake), new indexerDefaultCommand(m_indexer).perpetually()).
+    andThen(new WaitCommand(2).alongWith(moveBack2, new intakeDeployCommand(m_intake), new indexerDefaultCommand(m_indexer).perpetually())).
+    andThen(moveForward3).
+    andThen(new hoodUpAutoShootCommand(m_indexer, m_turret, m_shooter, m_limelight));
+  }
+
   public Command middleBackUpShoot3() {
-    RamseteCommand moveBack = createTrajectoryCommand(new Pose2d(0, 0, new Rotation2d(0)), List.of(new Translation2d(-0.1, 0)), new Pose2d(-1, -0.2, new Rotation2d(20)), true);
+    RamseteCommand moveBack = createTrajectoryCommand(new Pose2d(0, 0, new Rotation2d(0)), List.of(new Translation2d(-0.1, 0)), new Pose2d(-1, -0.2, new Rotation2d(20)), true, 3.5, 1.5);
     
     return 
     moveBack.
@@ -179,7 +176,7 @@ public class RobotContainer {
    * @param isReversed
    * @return Ramsete Path Follow Command, intake side of robot is isReversed = true and negative values
    */
-  public RamseteCommand createTrajectoryCommand(Pose2d startPose, List<Translation2d> translationList, Pose2d endPose, boolean isReversed) {
+  public RamseteCommand createTrajectoryCommand(Pose2d startPose, List<Translation2d> translationList, Pose2d endPose, boolean isReversed, double maxSpeedMetersPerSecond, double maxAccelerationMetersPerSecondSquared) {
     DifferentialDriveVoltageConstraint autoVoltageConstraint;
     TrajectoryConfig config;
   
@@ -187,7 +184,7 @@ public class RobotContainer {
     autoVoltageConstraint = new DifferentialDriveVoltageConstraint(m_drive.getFeedforward(), kDriveKinematics, 6);
 
     // Create config for trajectory
-    config = new TrajectoryConfig(kMaxSpeedMetersPerSecond, kMaxAccelerationMetersPerSecondSquared)
+    config = new TrajectoryConfig(maxSpeedMetersPerSecond, maxAccelerationMetersPerSecondSquared)
         // Add kinematics to ensure max speed is actually obeyed
         .setKinematics(kDriveKinematics)
         // Apply the voltage constraint

@@ -9,8 +9,6 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DriverStation;
 import frc.robot.RobotContainer;
-import frc.robot.commands.hoodDeployCommand;
-import frc.robot.commands.hoodRetractCommand;
 
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
@@ -25,8 +23,6 @@ public class Robot extends TimedRobot {
   public void robotInit() {
     m_robotContainer = new RobotContainer();
     SmartDashboard.putNumber("distance", 0);
-    SmartDashboard.putData("Hood Deploy", new hoodDeployCommand());
-    SmartDashboard.putData("Hood Retract", new hoodRetractCommand());
     RobotContainer.m_limelight.setLEDMode(1);
   }
 
@@ -47,13 +43,11 @@ public class Robot extends TimedRobot {
   public void disabledPeriodic() {
   }
 
-  /**
-   * This autonomous runs the autonomous command selected by your {@link RobotContainer} class.
-   */
   @Override
   public void autonomousInit() {
-    m_autonomousCommand = m_robotContainer.rightSideSingleTrenchPickupShoot4();
-    
+    //TODO: figure out shuffleboard dropdown choosers for auton
+    m_autonomousCommand = m_robotContainer.rightSideDoubleTrenchPickupShoot5();
+
     if (m_autonomousCommand != null) {
       System.out.println("Scheduling Autonomous Command");
       m_autonomousCommand.schedule();

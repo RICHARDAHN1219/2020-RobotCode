@@ -119,14 +119,14 @@ public class shooterSubsystem extends SubsystemBase {
   }
 
   public void deployHood() {
-    setShooterPID(0.0005, 0.00000025, 0, 0.00022, 250);
     RobotContainer.m_limelight.setPipeline(5);
+    setShooterPID(0.0005, 0.00000025, 0, 0.00022, 250);
     hood.set(true);
     m_lt = new linearInterpolator(hoodUp);
   }
   public void retractHood() {
-    setShooterPID(0.0004, 0.00000025, 0, 0.0002, 250);
     RobotContainer.m_limelight.setPipeline(4);
+    setShooterPID(0.0004, 0.00000025, 0, 0.0002, 250);
     hood.set(false);
     m_lt = new linearInterpolator(hoodDown);
   }

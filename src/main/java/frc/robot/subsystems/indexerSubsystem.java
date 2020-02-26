@@ -192,7 +192,7 @@ public class indexerSubsystem extends SubsystemBase {
   public void runIndexer() {
     setBeltsRPM(6380);
     setKickerRPM(1914);
-    setIntakePercentOutput(-1);
+    setIntakePercentOutput(-.7);
     m_blinkin.solid_green();
   }
 
@@ -202,7 +202,7 @@ public class indexerSubsystem extends SubsystemBase {
   public void runKicker() {
     setBeltsRPM(6380);
     setKickerRPM(6380);
-    setIntakePercentOutput(-1);
+    setIntakePercentOutput(-.7);
     m_blinkin.solid_pink();
   }
 
@@ -222,7 +222,7 @@ public class indexerSubsystem extends SubsystemBase {
   public void reverseIndexer() {
     setBeltsRPM(-6380);
     setKickerRPM(-1914);
-    setIntakePercentOutput(1);
+    setIntakePercentOutput(.7);
     m_blinkin.strobe_red();
   }
 
@@ -232,14 +232,14 @@ public class indexerSubsystem extends SubsystemBase {
   public void ejectIndexer() {
     setBeltsRPM(6380);
     setKickerRPM(6380);
-    setIntakePercentOutput(-1);
+    setIntakePercentOutput(-.7);
   }
 
   /**
    * runIntake() - run intake motor
    */
   public void runIntake() {
-    setIntakePercentOutput(-1);
+    setIntakePercentOutput(-.7);
   }
 
   /**
@@ -253,7 +253,7 @@ public class indexerSubsystem extends SubsystemBase {
    * runOnlyIntake() - run intake motor and stop the belts and kicker
    */
   public void runOnlyIntake() {
-    setIntakePercentOutput(-1);
+    setIntakePercentOutput(-.7);
     setBeltsRPM(0);
     setKickerRPM(0);
   } 
