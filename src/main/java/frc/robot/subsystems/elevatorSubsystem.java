@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.RobotContainer;
 import frc.robot.Constants.elevatorConstants;
 import edu.wpi.first.wpilibj.Solenoid;
 
@@ -36,11 +37,15 @@ public class elevatorSubsystem extends SubsystemBase {
   public void deployElevator() {
     setElevatorDeployed(true);
     elevatorDeploySolenoid.set(Value.kForward);
+    RobotContainer.m_limelight.setCAMMode(1);
+    RobotContainer.m_limelight.setLEDMode(1);
   }
 
   public void retractElevator() {
     setElevatorDeployed(false);
     elevatorDeploySolenoid.set(Value.kReverse);
+    RobotContainer.m_limelight.setCAMMode(0);
+    RobotContainer.m_limelight.setLEDMode(0);
   }
 
   public void brakeOff() {

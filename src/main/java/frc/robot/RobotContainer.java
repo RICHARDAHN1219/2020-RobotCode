@@ -22,6 +22,7 @@ import edu.wpi.first.wpilibj.trajectory.TrajectoryConfig;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.trajectory.constraint.DifferentialDriveVoltageConstraint;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RamseteCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
@@ -62,6 +63,7 @@ public class RobotContainer {
     m_drive.setDefaultCommand(new driveCommand(m_drive));
     m_elevator.setDefaultCommand(new elevatorWinchCommand(m_elevator));
     m_indexer.setDefaultCommand(new indexerDefaultCommand(m_indexer));
+    m_turret.setDefaultCommand(new turretManualControlCommand(m_turret));
   }
 
   private void configureButtonBindings() {
@@ -129,40 +131,64 @@ public class RobotContainer {
     return new RunCommand(() -> m_drive.tankDriveVolts(0, 0));
   }
 
-  public Command straightOnGoalBackUpShoot3() {
-    RamseteCommand moveBack = createTrajectoryCommand(new Pose2d(0, 0, new Rotation2d(0)), List.of(new Translation2d(-0.5, 0)), new Pose2d(-1, 0, new Rotation2d(0)), true, 3.5, 1.5);
+  public Command straightOn3Ball() {
+    RamseteCommand moveBack1 = createTrajectoryCommand(new Pose2d(0, 0, new Rotation2d(0)), List.of(new Translation2d(-0.5, 0)), new Pose2d(-1, 0, new Rotation2d(0)), true, 3.5, 1.5);
     
     return 
-    moveBack.alongWith(new hoodUpAutoShootCommand(m_indexer, m_turret, m_shooter, m_limelight));
+    moveBack1.alongWith(new InstantCommand(() -> m_shooter.setShooterRPM(3550), m_shooter)).
+    andThen(new hoodUpAutoShootCommand(m_indexer, m_turret, m_shooter, m_limelight));
   }
 
-  public Command rightSideSingleTrenchPickupShoot4() {
+  public Command rightSide3Ball() {
+    RamseteCommand moveBack1 = createTrajectoryCommand(new Pose2d(0, 0, new Rotation2d(0)), List.of(new Translation2d(-0.1, 0)), new Pose2d(-1, 0, new Rotation2d(0)), true, 3.5, 1.5);
+
+    // TODO: add turret angle after testing it
+    return 
+    moveBack1.alongWith(new InstantCommand(() -> m_shooter.setShooterRPM(3550), m_shooter)).
+    andThen(new hoodUpAutoShootCommand(m_indexer, m_turret, m_shooter, m_limelight));
+  }
+
+  public Command rightSide4Ball() {
     RamseteCommand moveBack1 = createTrajectoryCommand(new Pose2d(0, 0, new Rotation2d(0)), List.of(new Translation2d(-1.15, 0)), new Pose2d(-2.54, 0, new Rotation2d(0)), true, 3.5, 1.5);
     RamseteCommand moveForward2 = createTrajectoryCommand(new Pose2d(-2.54, 0, new Rotation2d(0)), List.of(new Translation2d(-1.15, 0)), new Pose2d(0, 0, new Rotation2d(0)), false, 3.5, 1.5);
     
+    // TODO: add turret angle after testing it
     return 
     moveBack1.deadlineWith(new intakeDeployCommand(m_intake), new indexerDefaultCommand(m_indexer).perpetually()).
-    andThen(moveForward2.alongWith(new WaitCommand(2)).
+    andThen(moveForward2.alongWith(new InstantCommand(() -> m_shooter.setShooterRPM(3550), m_shooter)).
     andThen(new hoodUpAutoShootCommand(m_indexer, m_turret, m_shooter, m_limelight)));
   }
 
-  public Command rightSideDoubleTrenchPickupShoot5() {
+  public Command rightSide5Ball() {
     RamseteCommand moveBack1 = createTrajectoryCommand(new Pose2d(0, 0, new Rotation2d(0)), List.of(new Translation2d(-1.15, 0)), new Pose2d(-2.54, 0, new Rotation2d(0)), true, 3.0, 1.5);
     RamseteCommand moveBack2 = createTrajectoryCommand(new Pose2d(-2.54, 0, new Rotation2d(0)), List.of(new Translation2d(-2.6, 0)), new Pose2d(-2.85, 0, new Rotation2d(0)), true, 3.0, 1.5);
     RamseteCommand moveForward3 = createTrajectoryCommand(new Pose2d(-2.85, 0, new Rotation2d(0)), List.of(new Translation2d(-2, 0)), new Pose2d(-1.5, 0, new Rotation2d(0)), false, 3.0, 1.5);
     
+    // TODO: add turret angle after testing it
     return 
     moveBack1.deadlineWith(new intakeDeployCommand(m_intake), new indexerDefaultCommand(m_indexer).perpetually()).
-    andThen(new WaitCommand(2).alongWith(moveBack2, new intakeDeployCommand(m_intake), new indexerDefaultCommand(m_indexer).perpetually())).
-    andThen(moveForward3).
+    andThen(new WaitCommand(3).alongWith(moveBack2, new intakeDeployCommand(m_intake), new indexerDefaultCommand(m_indexer).perpetually())).
+    andThen(moveForward3.alongWith(new InstantCommand(() -> m_shooter.setShooterRPM(3550), m_shooter))).
     andThen(new hoodUpAutoShootCommand(m_indexer, m_turret, m_shooter, m_limelight));
   }
 
-  public Command middleBackUpShoot3() {
-    RamseteCommand moveBack = createTrajectoryCommand(new Pose2d(0, 0, new Rotation2d(0)), List.of(new Translation2d(-0.1, 0)), new Pose2d(-1, -0.2, new Rotation2d(20)), true, 3.5, 1.5);
+  public Command middle3Ball() {
+    RamseteCommand moveBack1 = createTrajectoryCommand(new Pose2d(0, 0, new Rotation2d(0)), List.of(new Translation2d(-0.1, 0)), new Pose2d(-1, 0, new Rotation2d(0)), true, 3.5, 1.5);
     
+    // TODO: add turret angle after testing it
     return 
-    moveBack.
+    moveBack1.alongWith(new InstantCommand(() -> m_shooter.setShooterRPM(3550), m_shooter)).
+    andThen(new hoodUpAutoShootCommand(m_indexer, m_turret, m_shooter, m_limelight));
+  }
+
+  public Command middle4Ball() {
+    RamseteCommand moveBack1 = createTrajectoryCommand(new Pose2d(0, 0, new Rotation2d(0)), List.of(new Translation2d(-0.75, -0.25)), new Pose2d(-2.54, -0.5, new Rotation2d(0)), true, 3.5, 1.5);
+    RamseteCommand moveForward2 = createTrajectoryCommand(new Pose2d(-2.54, -0.5, new Rotation2d(0)), List.of(new Translation2d(-0.75, -0.25)), new Pose2d(0, 0, new Rotation2d(0)), true, 3.5, 1.5);
+    
+    // TODO: add turret angle after testing it
+    return
+    moveBack1.deadlineWith(new intakeDeployCommand(m_intake), new indexerDefaultCommand(m_indexer).perpetually()).
+    andThen(moveForward2.alongWith(new InstantCommand(() -> m_shooter.setShooterRPM(3550), m_shooter))).
     andThen(new hoodUpAutoShootCommand(m_indexer, m_turret, m_shooter, m_limelight));
   }
 

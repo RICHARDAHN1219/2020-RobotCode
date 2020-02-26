@@ -49,7 +49,7 @@ public class Robot extends TimedRobot {
     // TODO: move this to RobotInit() that get's run when the robot is powered on instead of here when
     // Autonomous starts. Auton command geneneration can take almost a second. Don't waste it during a 
     // match.
-    m_autonomousCommand = m_robotContainer.rightSideDoubleTrenchPickupShoot5();
+    m_autonomousCommand = m_robotContainer.rightSide5Ball();
 
     if (m_autonomousCommand != null) {
       System.out.println("Scheduling Autonomous Command");
@@ -69,9 +69,12 @@ public class Robot extends TimedRobot {
       m_autonomousCommand.cancel();
       // TODO: each of those commands is going to re-create a new command, the ones with trajectories will take a non-trivial amount of time
       // maybe create the them in RobotContainer and save them to a variable?
-      CommandGroupBase.clearGroupedCommand(m_robotContainer.straightOnGoalBackUpShoot3());
-      CommandGroupBase.clearGroupedCommand(m_robotContainer.rightSideSingleTrenchPickupShoot4());
-      CommandGroupBase.clearGroupedCommand(m_robotContainer.middleBackUpShoot3());
+      CommandGroupBase.clearGroupedCommand(m_robotContainer.straightOn3Ball());
+      CommandGroupBase.clearGroupedCommand(m_robotContainer.rightSide3Ball());
+      CommandGroupBase.clearGroupedCommand(m_robotContainer.rightSide4Ball());
+      CommandGroupBase.clearGroupedCommand(m_robotContainer.rightSide5Ball());
+      CommandGroupBase.clearGroupedCommand(m_robotContainer.middle3Ball());
+      CommandGroupBase.clearGroupedCommand(m_robotContainer.middle4Ball());
     }
   }
 
