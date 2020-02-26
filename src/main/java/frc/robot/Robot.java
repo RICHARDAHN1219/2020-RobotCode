@@ -1,10 +1,10 @@
 package frc.robot;
 
-import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandGroupBase;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -17,7 +17,6 @@ public class Robot extends TimedRobot {
   public static boolean manualMode = false;
   public static boolean turretHome = false;
   public char stage2ColorChar = 'U';
-
   private RobotContainer m_robotContainer;
   public PowerDistributionPanel m_pdp = new PowerDistributionPanel();
   public Compressor Compressor;
@@ -53,9 +52,8 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
-    m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+    m_autonomousCommand = m_robotContainer.rightSideSingleTrenchPickupShoot4();
     
-    // schedule the autonomous command (example)
     if (m_autonomousCommand != null) {
       System.out.println("Scheduling Autonomous Command");
       m_autonomousCommand.schedule();
@@ -72,6 +70,9 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       System.out.println("Cancelling Autonomous Command");
       m_autonomousCommand.cancel();
+      CommandGroupBase.clearGroupedCommand(m_robotContainer.straightOnGoalBackUpShoot3());
+      CommandGroupBase.clearGroupedCommand(m_robotContainer.rightSideSingleTrenchPickupShoot4());
+      CommandGroupBase.clearGroupedCommand(m_robotContainer.middleBackUpShoot3());
     }
   }
 

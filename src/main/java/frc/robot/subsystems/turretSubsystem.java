@@ -37,8 +37,8 @@ public class turretSubsystem extends SubsystemBase {
     turretDrive.setSensorPhase(true);
 
     // set soft limits
-    turretDrive.configForwardSoftLimitThreshold(4864, kTimeout);
-    turretDrive.configReverseSoftLimitThreshold(-6152, kTimeout);
+    turretDrive.configForwardSoftLimitThreshold(13418, kTimeout);
+    turretDrive.configReverseSoftLimitThreshold(-13149, kTimeout);
     turretDrive.configForwardSoftLimitEnable(true);
     turretDrive.configReverseSoftLimitEnable(true);
 

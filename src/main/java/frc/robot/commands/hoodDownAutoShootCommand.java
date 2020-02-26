@@ -41,7 +41,6 @@ public class hoodDownAutoShootCommand extends CommandBase {
   public void initialize() {
     m_limelight.setLEDMode(0);
     m_shooter.retractHood();
-    
   }
 
   @Override
