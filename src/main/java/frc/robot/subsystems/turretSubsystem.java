@@ -33,17 +33,15 @@ public class turretSubsystem extends SubsystemBase {
     turretDrive.configFactoryDefault();
     turretDrive.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, kIndex, kTimeout);
 
-    // TODO: fix rotational direction and sensor phase
     if (Robot.isCompBot == true) {
       turretDrive.setInverted(false);
       turretDrive.setSensorPhase(false);
     }
     else {
-      turretDrive.setInverted(true); // CCW is positive direction
+      turretDrive.setInverted(true);
       turretDrive.setSensorPhase(true);
     }
-    // set soft limits
-    // TODO: Turns out these values are almost exactly (90 / kDegreesPerTick)
+
     if (Robot.isCompBot == true) {
       turretDrive.configForwardSoftLimitThreshold(13418, kTimeout);
       turretDrive.configReverseSoftLimitThreshold(-13149, kTimeout);
@@ -52,11 +50,10 @@ public class turretSubsystem extends SubsystemBase {
     turretDrive.configForwardSoftLimitThreshold(13808, kTimeout);
     turretDrive.configReverseSoftLimitThreshold(-13423, kTimeout);
     }
-    
+
     turretDrive.configForwardSoftLimitEnable(true);
     turretDrive.configReverseSoftLimitEnable(true);
 
-    // TODO: tune max current
     turretDrive.configContinuousCurrentLimit(25);
 
     // zero the position. start position becomes center

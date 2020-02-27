@@ -220,14 +220,14 @@ public class RobotContainer {
     andThen(new hoodUpAutoShootCommand(m_indexer, m_turret, m_shooter, m_limelight));
   }
 
-  public Command middle4Ball() {
+  public Command middle4BallTest() {
     RamseteCommand moveBack1 = createTrajectoryCommand(new Pose2d(0, 0, new Rotation2d(0)), List.of(new Translation2d(-0.75, -0.25)), new Pose2d(-2.54, -0.5, new Rotation2d(0)), true, 3.5, 1.5);
     RamseteCommand moveForward2 = createTrajectoryCommand(new Pose2d(-2.54, -0.5, new Rotation2d(0)), List.of(new Translation2d(-0.75, -0.25)), new Pose2d(0, 0, new Rotation2d(0)), true, 3.5, 1.5);
     
-    // TODO: add turret angle after testing it
     return
-    moveBack1.deadlineWith(new intakeDeployCommand(m_intake), new indexerDefaultCommand(m_indexer).perpetually()).
-    andThen(moveForward2.alongWith(new InstantCommand(() -> m_shooter.setShooterRPM(3550), m_shooter))).
+    new InstantCommand(() -> m_shooter.setShooterPID(0.0005, 0.00000025, 0, 0.00022, 250), m_shooter).
+    andThen(moveBack1.deadlineWith(new intakeDeployCommand(m_intake), new indexerDefaultCommand(m_indexer).perpetually())).
+    andThen(moveForward2.alongWith(new InstantCommand(() -> m_shooter.setShooterRPM(3550), m_shooter), new InstantCommand(() -> m_turret.setAngleDegrees(3)))).
     andThen(new hoodUpAutoShootCommand(m_indexer, m_turret, m_shooter, m_limelight));
   }
 
