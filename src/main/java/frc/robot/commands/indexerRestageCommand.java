@@ -23,7 +23,7 @@ public class indexerRestageCommand extends CommandBase {
   @Override
   public void initialize() {
     m_indexer.setRestageState(0);
-    final int restageEndBallCount = m_indexer.getBallCount();
+    restageEndBallCount = m_indexer.getBallCount();
   }
 
   @Override
@@ -46,6 +46,7 @@ public class indexerRestageCommand extends CommandBase {
       m_indexer.runIndexer();
     }
 
+    // TODO: This looks like a bug. !ballStaged() == true  is the same as ballStaged() == false
     if (!m_indexer.ballStaged() == true && m_indexer.getRestageState() == 1) {
       m_indexer.stopIndexer();
       m_indexer.setRestageState(2);
