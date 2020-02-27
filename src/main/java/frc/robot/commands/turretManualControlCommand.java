@@ -29,7 +29,13 @@ public class turretManualControlCommand extends CommandBase {
 
   @Override
   public void execute() {
-    m_turret.setPercentOutput(opController.getX(Hand.kLeft) * 0.5);
+    if (Math.abs(opController.getX(Hand.kLeft)) >= 0.05) {
+      m_turret.setPercentOutput(opController.getX(Hand.kLeft) * 0.5);
+    }
+
+    if (opController.getStartButton() == true) {
+      m_turret.turretHome();
+    }
   }
 
   @Override

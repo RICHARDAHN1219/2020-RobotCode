@@ -244,13 +244,13 @@ public class indexerSubsystem extends SubsystemBase {
    */
   public void runIndexer() {
     if (Robot.isCompBot == true) {
-      setIntakePercentOutput(0.7);
+      setIntakePercentOutput(1);
       setBeltsRPM(6380);
       setKickerPercentOutput(0.3);
       m_blinkin.solid_green();
     }
     else {
-      setIntakePercentOutput(0.7);
+      setIntakePercentOutput(1);
       setBeltsRPM(6380);
       setKickerRPM(1914);
       m_blinkin.solid_green();
@@ -280,13 +280,13 @@ public class indexerSubsystem extends SubsystemBase {
    */
   public void reverseIndexer() {
     if (Robot.isCompBot == true) {
-      setIntakePercentOutput(-0.7);
+      setIntakePercentOutput(-1);
       setBeltsRPM(-6380);
       setKickerPercentOutput(-0.3);
       m_blinkin.strobe_red();
     }
     else {
-      setIntakePercentOutput(-0.7);
+      setIntakePercentOutput(-1);
       setBeltsRPM(-6380);
       setKickerRPM(-1914);
       m_blinkin.strobe_red();
@@ -298,12 +298,12 @@ public class indexerSubsystem extends SubsystemBase {
    */
   public void ejectIndexer() {
     if (Robot.isCompBot == true) {
-      setIntakePercentOutput(0.7);
+      setIntakePercentOutput(1);
       setBeltsRPM(6380);
       setKickerPercentOutput(1);
     }
     else {
-      setIntakePercentOutput(0.7);
+      setIntakePercentOutput(1);
       setBeltsRPM(6380);
       setKickerRPM(6380);
     }
@@ -313,7 +313,7 @@ public class indexerSubsystem extends SubsystemBase {
    * runIntake() - run intake motor
    */
   public void runIntake() {
-    setIntakePercentOutput(0.7);
+    setIntakePercentOutput(1);
   }
 
   /**
@@ -328,12 +328,12 @@ public class indexerSubsystem extends SubsystemBase {
    */
   public void runOnlyIntake() {
     if (Robot.isCompBot == true) {
-      setIntakePercentOutput(0.7);
+      setIntakePercentOutput(1);
       setBeltsRPM(0);
       setKickerPercentOutput(0);
     }
     else {
-      setIntakePercentOutput(0.7);
+      setIntakePercentOutput(1);
       setBeltsRPM(0);
       setKickerRPM(0);
     }

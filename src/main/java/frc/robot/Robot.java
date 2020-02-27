@@ -2,10 +2,11 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.CommandGroupBase;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DriverStation;
 import frc.robot.RobotContainer;
@@ -19,12 +20,20 @@ public class Robot extends TimedRobot {
   public PowerDistributionPanel m_pdp = new PowerDistributionPanel();
   public Compressor Compressor;
   public static boolean isCompBot = false;
+  SendableChooser <String> chooser = new SendableChooser<>();
 
   @Override
   public void robotInit() {
     m_robotContainer = new RobotContainer();
     SmartDashboard.putNumber("distance", 0);
     RobotContainer.m_limelight.setLEDMode(1);
+    CameraServer.getInstance().startAutomaticCapture();
+    chooser.addOption("Right 3 Ball", "r3");
+    chooser.addOption("Right 4 ball", "r4");
+    chooser.addOption("Right 5 ball", "r5");
+    chooser.addOption("Right 6 ball", "r6");
+    chooser.setDefaultOption("Center 3 ball", "m3");
+    SmartDashboard.putData("Auto mode", chooser);
   }
 
   @Override
@@ -46,11 +55,27 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousInit() {
-    // TODO: figure out shuffleboard dropdown choosers for auton
     // TODO: move this to RobotInit() that get's run when the robot is powered on instead of here when
     // Autonomous starts. Auton command geneneration can take almost a second. Don't waste it during a 
     // match.
-    m_autonomousCommand = m_robotContainer.rightSide5Ball();
+    if (chooser.getSelected() == "r3"){
+      m_autonomousCommand = m_robotContainer.rightSide3Ball();
+    }
+    if (chooser.getSelected() == "r4"){
+      m_autonomousCommand = m_robotContainer.rightSide4Ball();
+    }
+    if (chooser.getSelected() == "r5"){
+      m_autonomousCommand = m_robotContainer.rightSide5Ball();
+    }
+    if (chooser.getSelected() == "m3"){
+      m_autonomousCommand = m_robotContainer.middle3Ball();
+    }
+    if (chooser.getSelected() == "st"){
+      m_autonomousCommand = m_robotContainer.straightOn3Ball();
+    }
+    if (chooser.getSelected() == "r6"){
+      m_autonomousCommand = m_robotContainer.rightSide6Ball();
+    }
 
     if (m_autonomousCommand != null) {
       System.out.println("Scheduling Autonomous Command");
@@ -70,12 +95,6 @@ public class Robot extends TimedRobot {
       m_autonomousCommand.cancel();
       // TODO: each of those commands is going to re-create a new command, the ones with trajectories will take a non-trivial amount of time
       // maybe create the them in RobotContainer and save them to a variable?
-      CommandGroupBase.clearGroupedCommand(m_robotContainer.straightOn3Ball());
-      CommandGroupBase.clearGroupedCommand(m_robotContainer.rightSide3Ball());
-      CommandGroupBase.clearGroupedCommand(m_robotContainer.rightSide4Ball());
-      CommandGroupBase.clearGroupedCommand(m_robotContainer.rightSide5Ball());
-      CommandGroupBase.clearGroupedCommand(m_robotContainer.middle3Ball());
-      CommandGroupBase.clearGroupedCommand(m_robotContainer.middle4Ball());
     }
   }
 
