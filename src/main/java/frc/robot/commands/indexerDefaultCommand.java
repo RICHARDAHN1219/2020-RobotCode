@@ -47,23 +47,22 @@ public class indexerDefaultCommand extends CommandBase {
       m_indexer.setKickerPercentOutput(-opController.getTriggerAxis(Hand.kLeft));
     }
 
-    else{
-    
-    if (m_indexer.ballStaged() == false) {
-      clearedSensor2 = true;
-    }
+    else {
 
-    if (m_indexer.ballReadyForIndexer() == true) {
-      m_indexer.runIndexer();
-    }
+      if (m_indexer.ballStaged() == false) {
+        clearedSensor2 = true;
+      }
 
-    if (m_indexer.ballExiting() == true) {
-      m_indexer.stopIndexer();
-    }
-
-    if (m_indexer.ballReadyForIndexer() == true && m_indexer.ballExiting() == true) {
-      m_indexer.stopIndexer();
-    }
+      if (m_indexer.ballExiting() == true) {
+        // Always stop indexer if a ball is at the exit point.
+        // Don't eject a ball unless we're shooting.
+        m_indexer.stopIndexer();
+      }
+      else if (m_indexer.ballReadyForIndexer() == true) {
+        // here we know ballExiting() == false
+        // OK to pull in more balls and continue to fill indexer
+        m_indexer.runIndexer();
+      }
     }
   }
 
