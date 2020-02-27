@@ -13,12 +13,12 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.turretSubsystem;
 
-public class turretManualControlCommand extends CommandBase {
+public class turretDefaultCommand extends CommandBase {
   
   turretSubsystem m_turret;
   XboxController opController = RobotContainer.m_operatorController;
 
-  public turretManualControlCommand(turretSubsystem turret) {
+  public turretDefaultCommand(turretSubsystem turret) {
     addRequirements(turret);
     m_turret = turret;
   }
