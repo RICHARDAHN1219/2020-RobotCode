@@ -25,7 +25,7 @@ public class shooterSubsystem extends SubsystemBase {
 
   private CANSparkMax neo_shooter1 = new CANSparkMax(shooterConstants.shooter1, MotorType.kBrushless);
   private CANSparkMax neo_shooter2 = new CANSparkMax(shooterConstants.shooter2, MotorType.kBrushless);
-  private Solenoid hood = new Solenoid(7);
+  private Solenoid hood = new Solenoid(shooterConstants.shooterHood);
   private CANPIDController m_pidController;
   private CANEncoder m_encoder;
   private double kMaxOutput, kMinOutput;

@@ -20,9 +20,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
 import frc.robot.RobotContainer;
 import frc.robot.Constants.currentLimits;
-import static frc.robot.Constants.digitalIOConstants.dio0_indexerSensor1;
-import static frc.robot.Constants.digitalIOConstants.dio1_indexerSensor2;
-import static frc.robot.Constants.digitalIOConstants.dio2_indexerSensor3;
+import frc.robot.Constants.digitalIOConstants;
 
 public class indexerSubsystem extends SubsystemBase {
 
@@ -31,9 +29,9 @@ public class indexerSubsystem extends SubsystemBase {
   private WPI_TalonFX indexBelts = new WPI_TalonFX(indexConstants.indexBelts);
   private WPI_TalonFX indexKickerP = new WPI_TalonFX(indexConstants.indexKicker);
   private WPI_VictorSPX indexKickerC = new WPI_VictorSPX(indexConstants.indexKicker);
-  private DigitalInput Sensor1 = new DigitalInput(dio0_indexerSensor1);
-  private DigitalInput Sensor2 = new DigitalInput(dio1_indexerSensor2);
-  private DigitalInput Sensor3 = new DigitalInput(dio2_indexerSensor3);
+  private DigitalInput Sensor1 = new DigitalInput(digitalIOConstants.dio0_indexerSensor1);
+  private DigitalInput Sensor2 = new DigitalInput(digitalIOConstants.dio1_indexerSensor2);
+  private DigitalInput Sensor3 = new DigitalInput(digitalIOConstants.dio2_indexerSensor3);
   private boolean ballReady4IndexerLast = false;
   private boolean ballExitingLast = false;
   private boolean ballReady4Indexer;

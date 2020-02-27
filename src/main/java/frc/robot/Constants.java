@@ -97,7 +97,7 @@ public final class Constants {
         public static final int shooter2 = 17;
         public static final int shooterTimeout = 30;
         public static final int shooterSlotIdx = 0;
-        public static final int shooterHood = 1;
+        public static final int shooterHood = 7;
     }
     public static final class elevatorConstants {
         public static final int deploySolenoid1 = 0;

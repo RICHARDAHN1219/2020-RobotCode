@@ -14,7 +14,6 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
 import frc.robot.Robot;
 import static frc.robot.Constants.turretConstants.kSoftMaxTurretAngle;
 import static frc.robot.Constants.turretConstants.kSoftMinTurretAngle;
@@ -23,11 +22,13 @@ import static frc.robot.Constants.turretConstants.kTimeout;
 import static frc.robot.Constants.turretConstants.kIndex;
 import static frc.robot.Constants.turretConstants.kMaxDegreesPerSecond;
 import static frc.robot.Constants.turretConstants.kMaxDegreesPerSecondSquared;
+import static frc.robot.Constants.turretConstants.turret;
+import static frc.robot.Constants.digitalIOConstants.dio7_turretLimit;
 
 public class turretSubsystem extends SubsystemBase {
 
-  private TalonSRX turretDrive = new TalonSRX(Constants.turretConstants.turret);
-  private DigitalInput limit = new DigitalInput(7);
+  private TalonSRX turretDrive = new TalonSRX(turret);
+  private DigitalInput limit = new DigitalInput(dio7_turretLimit);
 
   public turretSubsystem() {
     turretDrive.configFactoryDefault();

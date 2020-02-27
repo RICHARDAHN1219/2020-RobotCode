@@ -19,7 +19,6 @@ import frc.robot.Robot;
 import frc.robot.RobotContainer;
 import frc.robot.Constants.elevatorConstants;
 import edu.wpi.first.wpilibj.Solenoid;
-
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;

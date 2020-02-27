@@ -12,7 +12,7 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.intakeConstants;
 import edu.wpi.first.wpilibj.Solenoid;
-import frc.robot.Constants.currentLimits;;
+import frc.robot.Constants.currentLimits;
 
 public class intakeSubsystem extends SubsystemBase {
 
