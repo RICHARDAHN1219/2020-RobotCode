@@ -17,7 +17,6 @@ import com.revrobotics.ControlType;
 import com.revrobotics.EncoderType;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.team2930.lib.util.linearInterpolator;
-
 import frc.robot.Robot;
 import frc.robot.RobotContainer;
 import frc.robot.Constants.shooterConstants;
@@ -74,6 +73,10 @@ public class shooterSubsystem extends SubsystemBase {
     // Set coast mode
     neo_shooter1.setIdleMode(CANSparkMax.IdleMode.kCoast);
     neo_shooter2.setIdleMode(CANSparkMax.IdleMode.kCoast);
+    
+    if (Robot.isCompBot == true) {
+      neo_shooter1.setInverted(true);
+    }
 
     neo_shooter2.follow(neo_shooter1, true);
     m_pidController = neo_shooter1.getPIDController();

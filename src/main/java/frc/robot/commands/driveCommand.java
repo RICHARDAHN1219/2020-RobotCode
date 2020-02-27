@@ -30,11 +30,21 @@ public class driveCommand extends CommandBase {
   @Override
   public void execute() {
     if (m_drive.getDriveInvert() == false) {
-      m_drive.arcadeDrive(driveController.getY(Hand.kLeft), -driveController.getX(Hand.kRight));
+      if (driveController.getBumper(Hand.kLeft) == true) {
+        m_drive.arcadeDrive(driveController.getY(Hand.kLeft) * 0.5, -driveController.getX(Hand.kRight) * 0.5);  
+      }
+      else {
+        m_drive.arcadeDrive(driveController.getY(Hand.kLeft), -driveController.getX(Hand.kRight));
+      }
     }
 
     if (m_drive.getDriveInvert() == true) {
-      m_drive.arcadeDrive(-driveController.getY(Hand.kLeft), -driveController.getX(Hand.kRight));
+      if (driveController.getBumper(Hand.kLeft) == true) {
+        m_drive.arcadeDrive(-driveController.getY(Hand.kLeft) * 0.5, -driveController.getX(Hand.kRight) * 0.5);
+      }
+      else {
+        m_drive.arcadeDrive(-driveController.getY(Hand.kLeft), -driveController.getX(Hand.kRight));
+      }
     }
   }
 

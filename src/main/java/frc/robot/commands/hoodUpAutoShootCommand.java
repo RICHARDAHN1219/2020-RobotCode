@@ -56,7 +56,6 @@ public class hoodUpAutoShootCommand extends CommandBase {
     }
     
     m_shooter.setShooterRPM(m_shooter.getRPMforTY(m_limelight.getTY()));
-
     limelightSteerCommand = tx * steer_k;
     m_turret.setPercentOutput(limelightSteerCommand);
 

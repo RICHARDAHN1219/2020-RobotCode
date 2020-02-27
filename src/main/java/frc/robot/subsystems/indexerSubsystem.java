@@ -153,7 +153,6 @@ public class indexerSubsystem extends SubsystemBase {
     // decrease ballCount as balls leave the indexer
     if (ballExiting != ballExitingLast && ballExiting == false) {
       ballCount -= 1;
-      
     }
     ballExitingLast = ballExiting;
   }

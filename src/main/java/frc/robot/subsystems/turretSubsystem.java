@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.Robot;
 import static frc.robot.Constants.turretConstants.kSoftMaxTurretAngle;
 import static frc.robot.Constants.turretConstants.kSoftMinTurretAngle;
 import static frc.robot.Constants.turretConstants.kDegreesPerTick;
@@ -33,13 +34,25 @@ public class turretSubsystem extends SubsystemBase {
     turretDrive.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, kIndex, kTimeout);
 
     // TODO: fix rotational direction and sensor phase
-    turretDrive.setInverted(true); // CCW is positive direction
-    turretDrive.setSensorPhase(true);
-
+    if (Robot.isCompBot == true) {
+      turretDrive.setInverted(false);
+      turretDrive.setSensorPhase(false);
+    }
+    else {
+      turretDrive.setInverted(true); // CCW is positive direction
+      turretDrive.setSensorPhase(true);
+    }
     // set soft limits
     // TODO: Turns out these values are almost exactly (90 / kDegreesPerTick)
-    turretDrive.configForwardSoftLimitThreshold(13418, kTimeout);
-    turretDrive.configReverseSoftLimitThreshold(-13149, kTimeout);
+    if (Robot.isCompBot == true) {
+      turretDrive.configForwardSoftLimitThreshold(13418, kTimeout);
+      turretDrive.configReverseSoftLimitThreshold(-13149, kTimeout);
+    }
+    else {
+    turretDrive.configForwardSoftLimitThreshold(13808, kTimeout);
+    turretDrive.configReverseSoftLimitThreshold(-13423, kTimeout);
+    }
+    
     turretDrive.configForwardSoftLimitEnable(true);
     turretDrive.configReverseSoftLimitEnable(true);
 
