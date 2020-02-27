@@ -26,6 +26,7 @@ public class indexerStageForShootingCommand extends CommandBase {
 
   @Override
   public void execute() {
+    // TODO: unecessary, this is started in intitialize()
     m_indexer.runIndexer();
   }
 

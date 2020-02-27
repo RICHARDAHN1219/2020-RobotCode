@@ -60,6 +60,9 @@ public class shootOneBallCommand extends CommandBase {
     m_turret.setPercentOutput(limelightSteerCommand);
 
     if (tv == 1 && m_shooter.isAtSpeed() == true && Math.abs(tx) < 2.5) {
+      // TODO: this is not the correct way to start a new command, need make a command group
+      // It's the right idea, and needs a command group to schedule one thing after another
+      // I see this command isn't used. Perhapse it's best to delete this file to avoid confusion?
       new indexerSingleFeedCommand(m_indexer);
       finished = true;
     }
