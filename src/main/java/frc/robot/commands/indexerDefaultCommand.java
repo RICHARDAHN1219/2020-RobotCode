@@ -60,6 +60,10 @@ public class indexerDefaultCommand extends CommandBase {
     if (m_indexer.ballExiting() == true) {
       m_indexer.stopIndexer();
     }
+
+    if (m_indexer.ballReadyForIndexer() == true && m_indexer.ballExiting() == true) {
+      m_indexer.stopIndexer();
+    }
     }
   }
 
