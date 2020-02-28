@@ -33,6 +33,10 @@ public class shooterSubsystem extends SubsystemBase {
   private boolean m_atSpeed = false;
   private long m_initalTime = 0;
   private linearInterpolator m_lt;
+  private linearInterpolator m_lt_hoodDownP;
+  private linearInterpolator m_lt_hoodUpP;
+  private linearInterpolator m_lt_hoodDownC;
+  private linearInterpolator m_lt_hoodUpC;
   
   private double hoodDownP[][] = {
     {15.4, 2600}, // 4.5 feet
@@ -85,7 +89,17 @@ public class shooterSubsystem extends SubsystemBase {
     kMinOutput = -1;
     m_pidController.setOutputRange(kMinOutput, kMaxOutput);
 
+    // Build the linear Interpolators just once each.
+    m_lt_hoodUpC = new linearInterpolator(hoodUpC);
+    m_lt_hoodDownC = new linearInterpolator(hoodDownC);
+    m_lt_hoodUpP = new linearInterpolator(hoodUpP);
+    m_lt_hoodDownP = new linearInterpolator(hoodDownP);
+
+    // pick a default, so that it is never undefined
+    m_lt = m_lt_hoodDownC;
+
     SmartDashboard.putNumber("ShooterRPM", m_desiredRPM);
+    SmartDashboard.putNumber("RPM_Error", 0);
   }
 
   @Override
@@ -139,11 +153,11 @@ public class shooterSubsystem extends SubsystemBase {
     RobotContainer.m_limelight.setPipeline(5);
     if (Robot.isCompBot == true) {
       setShooterPID(0.0005, 0.00000025, 0, 0.00022, 250);
-      m_lt = new linearInterpolator(hoodUpC);
+      m_lt = m_lt_hoodUpC;
     }
     else {
       setShooterPID(0.0005, 0.00000025, 0, 0.00022, 250);
-      m_lt = new linearInterpolator(hoodUpP);
+      m_lt = m_lt_hoodUpP;
     }
     hood.set(true);
   }
@@ -153,11 +167,11 @@ public class shooterSubsystem extends SubsystemBase {
     RobotContainer.m_limelight.setPipeline(4);
     if (Robot.isCompBot == true) {
       setShooterPID(0.0004, 0.00000025, 0, 0.0002, 250);
-      m_lt = new linearInterpolator(hoodDownC);
+      m_lt = m_lt_hoodDownC;
     }
     else {
       setShooterPID(0.0004, 0.00000025, 0, 0.0002, 250);
-      m_lt = new linearInterpolator(hoodDownP);
+      m_lt = m_lt_hoodDownP;
     }
     hood.set(false);
   }
