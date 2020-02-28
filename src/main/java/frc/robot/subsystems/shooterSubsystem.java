@@ -53,17 +53,17 @@ public class shooterSubsystem extends SubsystemBase {
   };
 
   private double hoodDownC[][] = {
-    {15.4, 2600}, // 4.5 feet
-    {3, 2650}, // 7 feet
-    {-7.2, 2750}, // 10 feet
-    {-12.2, 2900} // 12 feet
+    {21.7, 2800}, // 4.5 feet
+    {8.9, 2900}, // 7 feet
+    {-0.9, 3000}, // 10 feet
+    {-4.6, 3100} // 12 feet
   };
   private double hoodUpC[][] = {
-    {8, 3900}, // 9 feet
-    {-0.1, 3550}, // 13 feet
-    {-5, 3600}, // 17 feet
-    {-8.5, 3800}, // 21 feet
-    {-11, 4100} // 25 feet
+    {11, 3800}, // 9 feet
+    {6.3, 3550}, // 13 feet
+    {1.2, 3600}, // 17 feet
+    {-2, 3800}, // 21 feet
+    {-4.7, 4250} // 25 feet
   };
 
   public shooterSubsystem() {
@@ -166,7 +166,7 @@ public class shooterSubsystem extends SubsystemBase {
   public void retractHood() {
     RobotContainer.m_limelight.setPipeline(4);
     if (Robot.isCompBot == true) {
-      setShooterPID(0.0004, 0.00000025, 0, 0.0002, 250);
+      setShooterPID(0.0005, 0.000000, 0, 0.00018, 250);
       m_lt = m_lt_hoodDownC;
     }
     else {

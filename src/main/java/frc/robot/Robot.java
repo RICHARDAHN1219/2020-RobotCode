@@ -33,6 +33,7 @@ public class Robot extends TimedRobot {
     chooser.addOption("Right 5 ball", "r5");
     chooser.addOption("Right 6 ball", "r6");
     chooser.addOption("Right 6 ball test", "r6t");
+    chooser.addOption("straight on 3", "s3");
     chooser.setDefaultOption("Center 3 ball", "m3");
     SmartDashboard.putData("Auto mode", chooser);
   }
@@ -71,7 +72,7 @@ public class Robot extends TimedRobot {
     if (chooser.getSelected() == "m3"){
       m_autonomousCommand = m_robotContainer.middle3Ball();
     }
-    if (chooser.getSelected() == "st"){
+    if (chooser.getSelected() == "s3"){
       m_autonomousCommand = m_robotContainer.straightOn3Ball();
     }
     if (chooser.getSelected() == "r6"){

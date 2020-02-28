@@ -51,7 +51,7 @@ public class hoodUpAutoShootCommand extends CommandBase {
     if (tv != 1) {
       RobotContainer.limelightOnTarget = false;
       limelightSteerCommand = 0;
-      m_turret.setPercentOutput(RobotContainer.m_operatorController.getX(Hand.kLeft));
+      m_turret.setPercentOutput(RobotContainer.m_operatorController.getX(Hand.kLeft) * 0.5);
       return;
     }
     
@@ -59,9 +59,18 @@ public class hoodUpAutoShootCommand extends CommandBase {
     limelightSteerCommand = tx * steer_k;
     m_turret.setPercentOutput(limelightSteerCommand);
 
-    if (m_shooter.isAtSpeed() == true && Math.abs(m_limelight.getTX()) < 0.5) {
+    if (Math.abs(m_limelight.getTX()) < 0.5) {
       RobotContainer.limelightOnTarget = true;
+    }
+    else {
+      RobotContainer.limelightOnTarget = false;
+    }
+
+    if (m_shooter.isAtSpeed() == true && RobotContainer.limelightOnTarget == true) {
       m_indexer.ejectIndexer();
+    }
+    else {
+      m_indexer.stopIndexer();
     }
   }
   
