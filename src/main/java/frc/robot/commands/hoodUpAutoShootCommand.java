@@ -67,10 +67,7 @@ public class hoodUpAutoShootCommand extends CommandBase {
     }
 
     if (m_shooter.isAtSpeed() == true && RobotContainer.limelightOnTarget == true) {
-      m_indexer.ejectIndexer();
-    }
-    else {
-      m_indexer.stopIndexer();
+      m_indexer.ejectOneBall();
     }
   }
   

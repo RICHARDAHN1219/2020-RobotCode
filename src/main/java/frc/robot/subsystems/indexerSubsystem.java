@@ -33,9 +33,10 @@ public class indexerSubsystem extends SubsystemBase {
   private DigitalInput Sensor3 = new DigitalInput(digitalIOConstants.dio2_indexerSensor3);
   private boolean ballReady4IndexerLast = false;
   private boolean ballExitingLast = false;
-  private boolean ballReady4Indexer;
-  private boolean ballStaged;
-  private boolean ballExiting;
+  private boolean ejectMode = false;
+  private boolean ejectBallStep1 = false;
+  private boolean ejectBallStep2 = false;
+  private boolean ejectBallStep3 = false;
   private int ballCount = 0;
   private int restageState = 0;
   private blinkinSubsystem m_blinkin = RobotContainer.m_blinkin;
@@ -116,19 +117,47 @@ public class indexerSubsystem extends SubsystemBase {
     indexIntake.config_kF(0, 0.0, 10);
 
     // Note: if we add position control, then we need to add a second set of PID parameters
-    // on PID index 1, and then swtich between the Talon PID index when setting RPM and Position
+    // on PID index 1, and then swtich between the Talon PID index when setting a and Position
   }
 
   @Override
   public void periodic() {
     boolean ballReady4Indexer = !Sensor1.get();
-    boolean ballStaged = !Sensor2.get();
     boolean ballExiting = !Sensor3.get();
     SmartDashboard.putNumber("ball count", ballCount);
     SmartDashboard.putNumber("restage state", restageState);
     SmartDashboard.putNumber("Belt RPM", indexBelts.getSelectedSensorVelocity() * 600 / 2048);
     SmartDashboard.putNumber("Kicker RPM", indexKicker.getSelectedSensorVelocity() * 600 / 2048);
-    
+
+    // eject Mode runs the indexer 7 kicker until one ball has been ejected
+    if (ejectMode) {
+      if (ejectBallStep3) {
+        // step 3, run indexer until next ball is waiting
+        SmartDashboard.putNumber("Eject State", 3);
+        if (ballExiting) {
+          ejectMode = false;
+          stopIndexer();
+        }
+      }
+      else if (ejectBallStep2) {
+        // step 2, run indexer until ball leaves
+        SmartDashboard.putNumber("Eject State", 2);
+        if (!ballExiting) {
+          ejectBallStep3 = true;
+        }
+      }
+      else if (ejectBallStep1) {
+        // Step 1, run indexer until ball is ready to shoot
+        SmartDashboard.putNumber("Eject State", 1);
+        if (ballExiting) {
+            ejectBallStep2 = true;
+        }
+      }
+    }
+    else {
+      SmartDashboard.putNumber("Eject State", 0);
+    }
+
     // increase ball count as balls enter the indexer
     if (ballReady4Indexer != ballReady4IndexerLast && ballReady4Indexer == false) {
       ballCount += 1;
@@ -166,10 +195,33 @@ public class indexerSubsystem extends SubsystemBase {
     indexIntake.set(ControlMode.Velocity, rpm * 2048 / 600);
   }
 
+  public void ejectOneBall() {
+
+    if (ejectMode) {
+      // we're alread in ejectMode
+      return;
+    }
+
+    /**
+     * steps:
+     * 1. run indexer until ball exiting (get ready to shoot)
+     * 2. run indexer until ball not exiting (shooting!)
+     * 3. stop indexer when ball ready to exit (ready for next shot)
+     */
+    ejectMode = true;
+    ejectBallStep1 = true;
+    ejectBallStep2 = ballExiting();
+    ejectBallStep3 = false;
+
+    // start the indexer
+    ejectIndexer();
+  }
+
   /** 
    * Stop all motors
    */
   public void stopIndexer() {
+    ejectMode = false;
     setBeltsPercentOutput(0.0);
     setKickerPercentOutput(0.0);
     setIntakePercentOutput(0.0);
