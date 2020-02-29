@@ -52,7 +52,6 @@ public class elevatorSubsystem extends SubsystemBase {
     setElevatorDeployed(false);
     elevatorDeploySolenoid.set(Value.kReverse);
     RobotContainer.m_limelight.setCAMMode(0);
-    RobotContainer.m_limelight.setLEDMode(0);
   }
 
   public void brakeOff() {

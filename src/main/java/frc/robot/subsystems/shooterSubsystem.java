@@ -61,9 +61,9 @@ public class shooterSubsystem extends SubsystemBase {
   private double hoodUpC[][] = {
     {11, 3800}, // 9 feet
     {6.3, 3550}, // 13 feet
-    {1.2, 3600}, // 17 feet
+    {1.2, 3650}, // 17 feet
     {-2, 3800}, // 21 feet
-    {-4.7, 4250} // 25 feet
+    {-4.7, 4350} // 25 feet
   };
 
   public shooterSubsystem() {
@@ -152,7 +152,7 @@ public class shooterSubsystem extends SubsystemBase {
   public void deployHood() {
     RobotContainer.m_limelight.setPipeline(5);
     if (Robot.isCompBot == true) {
-      setShooterPID(0.0005, 0.00000025, 0, 0.00022, 250);
+      setShooterPID(0.0004, 0.00000015, 0, 0.0002, 600);
       m_lt = m_lt_hoodUpC;
     }
     else {
@@ -192,6 +192,7 @@ public class shooterSubsystem extends SubsystemBase {
   public boolean isAtSpeed(){
     double error = m_desiredRPM - m_encoder.getVelocity();
     SmartDashboard.putNumber("RPM_Error", error);
+    
     if (Math.abs(error) < 50) {
       return true;
     } else {

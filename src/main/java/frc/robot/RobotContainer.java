@@ -63,7 +63,7 @@ public class RobotContainer {
     configureButtonBindings();
     m_drive.setDefaultCommand(new driveCommand(m_drive));
     m_elevator.setDefaultCommand(new elevatorWinchCommand(m_elevator));
-    m_indexer.setDefaultCommand(new indexerDefaultCommand(m_indexer));
+    m_indexer.setDefaultCommand(new indexerDefaultCommand(m_indexer, m_intake));
     m_turret.setDefaultCommand(new turretDefaultCommand(m_turret));
   }
 
@@ -115,7 +115,7 @@ public class RobotContainer {
       // D Pad Down - manually decrease ball count
       // Start Button - zero the turret
       // Back Button - spool up the shooter
-      opAButton.whileHeld(new intakeDeployCommand(m_intake));
+      //opAButton.whileHeld(new intakeDeployCommand(m_intake));
       opBButton.whenPressed(new indexerStageForShootingCommand(m_indexer));
       opXButton.whenPressed(new indexerRestageCommand(m_indexer));
       opYButton.whileHeld(new indexerReverseEjectCommand(m_indexer));
@@ -159,7 +159,7 @@ public class RobotContainer {
     
     return 
     new InstantCommand(() -> m_shooter.setShooterPID(0.0005, 0.00000025, 0, 0.00022, 250), m_shooter).
-    andThen(moveBack1.deadlineWith(new intakeDeployCommand(m_intake), new indexerDefaultCommand(m_indexer).perpetually())).
+    andThen(moveBack1.deadlineWith(new intakeDeployCommand(m_intake), new indexerSingleIntakeCommand(m_indexer).perpetually(), new InstantCommand(() -> m_indexer.runIntake()))).
     andThen(moveForward2.alongWith(new InstantCommand(() -> m_shooter.setShooterRPM(3550), m_shooter), new InstantCommand(() -> m_turret.setAngleDegrees(-3), m_turret)).
     andThen(new hoodUpAutoShootCommand(m_indexer, m_turret, m_shooter, m_limelight)));
   }
@@ -171,9 +171,9 @@ public class RobotContainer {
     
     return 
     new InstantCommand(() -> m_shooter.setShooterPID(0.0005, 0.00000025, 0, 0.00022, 250), m_shooter).
-    andThen(moveBack1.deadlineWith(new intakeDeployCommand(m_intake), new indexerDefaultCommand(m_indexer).perpetually())).
-    andThen(moveBack2.deadlineWith(new intakeDeployCommand(m_intake), new indexerDefaultCommand(m_indexer).perpetually())).
-    andThen(new WaitCommand(2).deadlineWith(new intakeDeployCommand(m_intake), new indexerDefaultCommand(m_indexer).perpetually())).
+    andThen(moveBack1.deadlineWith(new intakeDeployCommand(m_intake), new indexerSingleIntakeCommand(m_indexer).perpetually())).
+    andThen(moveBack2.deadlineWith(new intakeDeployCommand(m_intake), new indexerSingleIntakeCommand(m_indexer).perpetually())).
+    andThen(new WaitCommand(2).deadlineWith(new intakeDeployCommand(m_intake), new indexerSingleIntakeCommand(m_indexer).perpetually())).
     andThen(moveForward3.alongWith(new InstantCommand(() -> m_shooter.setShooterRPM(3550), m_shooter), new InstantCommand(() -> m_turret.setAngleDegrees(-3), m_turret), new indexerStageForShootingCommand(m_indexer))).
     andThen(new hoodUpAutoShootCommand(m_indexer, m_turret, m_shooter, m_limelight));
   }
@@ -188,11 +188,11 @@ public class RobotContainer {
     new InstantCommand(() -> m_shooter.setShooterPID(0.0005, 0.00000025, 0, 0.00022, 250), m_shooter).alongWith(new InstantCommand(() -> m_indexer.setBallCount(3))).
     andThen(new InstantCommand(() -> m_turret.setAngleDegrees(-3), m_turret)).
     andThen(new WaitUntilCommand(() -> m_indexer.getBallCount() == 0).deadlineWith(new hoodUpAutoShootCommand(m_indexer, m_turret, m_shooter, m_limelight))).
-    andThen(moveBack1.deadlineWith(new intakeDeployCommand(m_intake), new indexerDefaultCommand(m_indexer).perpetually())).
-    andThen(moveBack2.deadlineWith(new intakeDeployCommand(m_intake), new indexerDefaultCommand(m_indexer).perpetually())).
-    andThen(new WaitCommand(0.5).deadlineWith(new intakeDeployCommand(m_intake), new indexerDefaultCommand(m_indexer).perpetually())).
-    andThen(moveBack3.deadlineWith(new intakeDeployCommand(m_intake), new indexerDefaultCommand(m_indexer).perpetually()).
-    andThen(new WaitCommand(0.75).deadlineWith(new intakeDeployCommand(m_intake), new indexerDefaultCommand(m_indexer).perpetually())).
+    andThen(moveBack1.deadlineWith(new intakeDeployCommand(m_intake), new indexerSingleIntakeCommand(m_indexer).perpetually())).
+    andThen(moveBack2.deadlineWith(new intakeDeployCommand(m_intake), new indexerSingleIntakeCommand(m_indexer).perpetually())).
+    andThen(new WaitCommand(0.5).deadlineWith(new intakeDeployCommand(m_intake), new indexerSingleIntakeCommand(m_indexer).perpetually())).
+    andThen(moveBack3.deadlineWith(new intakeDeployCommand(m_intake), new indexerSingleIntakeCommand(m_indexer).perpetually()).
+    andThen(new WaitCommand(0.75).deadlineWith(new intakeDeployCommand(m_intake), new indexerSingleIntakeCommand(m_indexer).perpetually())).
     andThen(moveForward4.deadlineWith(new InstantCommand(() -> m_shooter.setShooterRPM(3550), m_shooter), new InstantCommand(() -> m_turret.setAngleDegrees(-3), m_turret), new indexerStageForShootingCommand(m_indexer)))).
     andThen(new hoodUpAutoShootCommand(m_indexer, m_turret, m_shooter, m_limelight));
   }
@@ -207,9 +207,9 @@ public class RobotContainer {
     new InstantCommand(() -> m_shooter.setShooterPID(0.0005, 0.00000025, 0, 0.00022, 250), m_shooter).alongWith(new InstantCommand(() -> m_indexer.setBallCount(3))).
     andThen(new InstantCommand(() -> m_turret.setAngleDegrees(-3), m_turret)).
     andThen(new WaitUntilCommand(() -> m_indexer.getBallCount() == 0).deadlineWith(new hoodUpAutoShootCommand(m_indexer, m_turret, m_shooter, m_limelight))).
-    andThen(moveBack1.deadlineWith(new intakeDeployCommand(m_intake), new indexerDefaultCommand(m_indexer).perpetually())).
-    andThen(moveBack2.deadlineWith(new intakeDeployCommand(m_intake), new indexerDefaultCommand(m_indexer).perpetually())).
-    andThen(new WaitCommand(0.5).deadlineWith(new intakeDeployCommand(m_intake), new indexerDefaultCommand(m_indexer).perpetually())).
+    andThen(moveBack1.deadlineWith(new intakeDeployCommand(m_intake), new indexerSingleIntakeCommand(m_indexer).perpetually())).
+    andThen(moveBack2.deadlineWith(new intakeDeployCommand(m_intake), new indexerSingleIntakeCommand(m_indexer).perpetually())).
+    andThen(new WaitCommand(0.5).deadlineWith(new intakeDeployCommand(m_intake), new indexerSingleIntakeCommand(m_indexer).perpetually())).
     andThen(moveForward3.deadlineWith(new InstantCommand(() -> m_shooter.setShooterRPM(3550), m_shooter), new InstantCommand(() -> m_turret.setAngleDegrees(-3), m_turret), new indexerStageForShootingCommand(m_indexer))).
     andThen(new hoodUpAutoShootCommand(m_indexer, m_turret, m_shooter, m_limelight));
   }
@@ -229,7 +229,7 @@ public class RobotContainer {
     
     return
     new InstantCommand(() -> m_shooter.setShooterPID(0.0005, 0.00000025, 0, 0.00022, 250), m_shooter).
-    andThen(moveBack1.deadlineWith(new intakeDeployCommand(m_intake), new indexerDefaultCommand(m_indexer).perpetually())).
+    andThen(moveBack1.deadlineWith(new intakeDeployCommand(m_intake), new indexerSingleIntakeCommand(m_indexer).perpetually())).
     andThen(moveForward2.alongWith(new InstantCommand(() -> m_shooter.setShooterRPM(3550), m_shooter), new InstantCommand(() -> m_turret.setAngleDegrees(3)))).
     andThen(new hoodUpAutoShootCommand(m_indexer, m_turret, m_shooter, m_limelight));
   }
