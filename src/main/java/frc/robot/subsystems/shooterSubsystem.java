@@ -98,6 +98,13 @@ public class shooterSubsystem extends SubsystemBase {
     // pick a default, so that it is never undefined
     m_lt = m_lt_hoodDownC;
 
+    if (Robot.isCompBot == true) {
+      setShooterPID(0.0006, 0.00000025, 0, 0.00022, 250)
+    }
+    else {
+      setShooterPID(0.0005, 0.00000025, 0, 0.00022, 250);
+    }
+
     SmartDashboard.putNumber("ShooterRPM", m_desiredRPM);
     SmartDashboard.putNumber("RPM_Error", 0);
   }
@@ -152,11 +159,9 @@ public class shooterSubsystem extends SubsystemBase {
   public void deployHood() {
     RobotContainer.m_limelight.setPipeline(5);
     if (Robot.isCompBot == true) {
-      setShooterPID(0.0004, 0.00000015, 0, 0.0002, 600);
       m_lt = m_lt_hoodUpC;
     }
     else {
-      setShooterPID(0.0005, 0.00000025, 0, 0.00022, 250);
       m_lt = m_lt_hoodUpP;
     }
     hood.set(true);
@@ -166,11 +171,9 @@ public class shooterSubsystem extends SubsystemBase {
   public void retractHood() {
     RobotContainer.m_limelight.setPipeline(4);
     if (Robot.isCompBot == true) {
-      setShooterPID(0.0005, 0.000000, 0, 0.00018, 250);
       m_lt = m_lt_hoodDownC;
     }
     else {
-      setShooterPID(0.0004, 0.00000025, 0, 0.0002, 250);
       m_lt = m_lt_hoodDownP;
     }
     hood.set(false);
