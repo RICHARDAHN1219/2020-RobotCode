@@ -99,7 +99,7 @@ public class shooterSubsystem extends SubsystemBase {
     m_lt = m_lt_hoodDownC;
 
     if (Robot.isCompBot == true) {
-      setShooterPID(0.0006, 0.00000025, 0, 0.00022, 250)
+      setShooterPID(0.0006, 0.00000025, 0, 0.00022, 250);
     }
     else {
       setShooterPID(0.0005, 0.00000025, 0, 0.00022, 250);
