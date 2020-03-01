@@ -23,8 +23,10 @@ import edu.wpi.first.wpilibj.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.trajectory.constraint.DifferentialDriveVoltageConstraint;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.RamseteCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -142,6 +144,24 @@ public class RobotContainer {
     new InstantCommand(() -> m_shooter.setShooterPID(0.0005, 0.00000025, 0, 0.00022, 250), m_shooter).
     andThen(moveBack1.alongWith(new InstantCommand(() -> m_shooter.setShooterRPM(3550), m_shooter))).
     andThen(new hoodUpAutoShootCommand(m_indexer, m_turret, m_shooter, m_limelight));
+  }
+
+  // same as straightOn3Ball() but with sing SequentialCommandGroup
+  public Command straightOn3Ball_reorg() {
+   
+    Command ac = new SequentialCommandGroup(
+      new ParallelCommandGroup(
+        new SequentialCommandGroup(
+          new InstantCommand(() -> m_shooter.deployHood(), m_shooter),
+          new InstantCommand(() -> m_shooter.setShooterRPM(3550), m_shooter)
+        ),
+        new InstantCommand(() -> m_turret.setAngleDegrees(-1), m_turret),
+        createTrajectoryCommand(new Pose2d(0, 0, new Rotation2d(0)), List.of(new Translation2d(-0.5, 0)), new Pose2d(-1, 0, new Rotation2d(0)), true, 2.5, 0.75)
+      ).withTimeout(5.0),
+      new hoodUpAutoShootCommand(m_indexer, m_turret, m_shooter, m_limelight)
+    );
+
+    return ac;
   }
 
   public Command rightSide3Ball() {
