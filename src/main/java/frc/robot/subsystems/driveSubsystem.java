@@ -24,6 +24,7 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.sensors.PigeonIMU;
+import edu.wpi.first.wpilibj.SlewRateLimiter;
 import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
@@ -45,13 +46,15 @@ public class driveSubsystem extends SubsystemBase {
 
   private boolean driveInvert = false;
 
+  // limit max ramp rate of joystick velocity and rotation. Set max units/sec.
+  private SlewRateLimiter speedFilter = new SlewRateLimiter(0.25);
+  private SlewRateLimiter rotationFilter = new SlewRateLimiter(0.1);
+
   // OLD Gyro, NAVX:
   //    private final AHRS m_gyro = new AHRS(SPI.Port.kMXP);
 
   // New Gyro, pigeon IMU on the CAN bus
   private PigeonIMU m_gyro = new PigeonIMU(driveConstants.pigeonCANid);
-
-  // Note: We do not use SpeedController. We use CAN based Lead/Follow. 
 
   private final DifferentialDrive m_drive;
   private final SimpleMotorFeedforward  m_feedforward = 
@@ -87,7 +90,7 @@ public class driveSubsystem extends SubsystemBase {
     setVoltageLimit(11);
 
     // set Ramp up speed, time in seconds (smaller is more responseive, 0 disables)
-    configOpenLoopRampRate(0.25);
+    // configOpenLoopRampRate(0.25);
     
     // set brake mode
     falcon1_leftLead.setNeutralMode(NeutralMode.Brake);
@@ -291,7 +294,8 @@ public class driveSubsystem extends SubsystemBase {
    * @param rot the commanded rotation
    */
   public void arcadeDrive(double fwd, double rot) {
-    m_drive.arcadeDrive(fwd, rot);
+    // use slew rate filters to implement ramp up/down of speed and rotation
+    m_drive.arcadeDrive(speedFilter.calculate(fwd), rotationFilter.calculate(rot));
   }
 
   /**
