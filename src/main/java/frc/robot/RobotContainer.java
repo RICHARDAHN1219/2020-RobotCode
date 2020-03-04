@@ -154,7 +154,20 @@ public class RobotContainer {
     andThen(moveForward1.alongWith(new InstantCommand(() -> m_shooter.setShooterRPM(2800), m_shooter))).
     andThen(new hoodDownAutoShootCommand(m_indexer, m_turret, m_shooter, m_limelight));
   }
-  
+
+  public Command straightOn6BallTrench() {//Gets the 3 balls on rendezvous point towards center of field
+    RamseteCommand moveBack1 = createTrajectoryCommand(new Pose2d(0, 0, new Rotation2d(0)), List.of(new Translation2d(-0.5, 0)), new Pose2d(-1, 0, new Rotation2d(0)), true, 2.5, 0.75);
+    RamseteCommand moveBack2 = createTrajectoryCommand(new Pose2d(-1, 0, new Rotation2d(0.4)), List.of(new Translation2d(-1, 0)), new Pose2d(-2, 0, new Rotation2d(0)), true, 2.5, 0.5); 
+    RamseteCommand moveForward3 = createTrajectoryCommand(new Pose2d(-2, 0, new Rotation2d(0)), List.of(new Translation2d(-1, 0)), new Pose2d(0, 0, new Rotation2d(0)), false, 2.5, 1);
+    return 
+    new InstantCommand(() -> m_shooter.setShooterPID(0.0005, 0.00000025, 0, 0.00022, 250), m_shooter).
+    andThen(moveBack1.alongWith(new InstantCommand(() -> m_shooter.setShooterRPM(3550), m_shooter))).
+    andThen(new WaitCommand(.5).deadlineWith(new intakeDeployCommand(m_intake), new indexerDefaultCommand(m_indexer).perpetually())).
+    andThen(moveBack2.deadlineWith(new intakeDeployCommand(m_intake), new indexerDefaultCommand(m_indexer).perpetually())).
+    andThen(moveForward3.alongWith(new InstantCommand(() -> m_shooter.setShooterRPM(3550), m_shooter), new InstantCommand(() -> m_turret.setAngleDegrees(3.0), m_turret)).
+    andThen(new hoodUpAutoShootCommand(m_indexer, m_turret, m_shooter, m_limelight)));
+  }
+
   // same as straightOn3Ball() but with sing SequentialCommandGroup
   public Command straightOn3Ball_reorg() {
    
@@ -172,6 +185,8 @@ public class RobotContainer {
 
     return ac;
   }
+  
+
 
   public Command rightSide3Ball() {
     RamseteCommand moveBack1 = createTrajectoryCommand(new Pose2d(0, 0, new Rotation2d(0)), List.of(new Translation2d(-0.1, 0)), new Pose2d(-1, 0, new Rotation2d(0)), true, 2.5, 0.75);
