@@ -78,7 +78,7 @@ public class hoodUpAutoShootCommand extends CommandBase {
     m_turret.stop();
     RobotContainer.limelightOnTarget = false;
     m_shooter.retractHood();
-    m_limelight.setLEDMode(1);
+    //m_limelight.setLEDMode(1);
   }
 
   @Override

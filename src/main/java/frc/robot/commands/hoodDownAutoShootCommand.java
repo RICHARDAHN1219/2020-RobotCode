@@ -78,7 +78,7 @@ public class hoodDownAutoShootCommand extends CommandBase {
     m_shooter.setShooterRPM(0);
     m_turret.stop();
     RobotContainer.limelightOnTarget = false;
-    m_limelight.setLEDMode(1);
+    //m_limelight.setLEDMode(1);
   }
 
   @Override

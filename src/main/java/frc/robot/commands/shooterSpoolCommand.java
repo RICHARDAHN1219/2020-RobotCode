@@ -42,7 +42,7 @@ public class shooterSpoolCommand extends CommandBase {
   @Override
   public void end(boolean interrupted) {
     m_shooter.setShooterRPM(0);
-    RobotContainer.m_limelight.setLEDMode(1);
+    //RobotContainer.m_limelight.setLEDMode(1);
   }
 
   @Override

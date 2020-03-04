@@ -34,6 +34,7 @@ public class Robot extends TimedRobot {
     chooser.addOption("Right 6 ball", "r6");
     chooser.addOption("Right 6 ball test", "r6t");
     chooser.addOption("straight on 3", "s3");
+    chooser.addOption("straight on 3 forward", "s3f");
     chooser.setDefaultOption("Center 3 ball", "m3");
     SmartDashboard.putData("Auto mode", chooser);
   }
@@ -48,7 +49,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void disabledInit() {
-    RobotContainer.m_limelight.setLEDMode(1);
+    //RobotContainer.m_limelight.setLEDMode(1);
   }
 
   @Override
@@ -80,6 +81,9 @@ public class Robot extends TimedRobot {
     }
     if (chooser.getSelected() == "r6t"){
       m_autonomousCommand = m_robotContainer.rightSide6BallTest();
+    }
+    if (chooser.getSelected() == "s3f") {
+      m_autonomousCommand = m_robotContainer.straightOn3BallForward();
     }
 
     if (m_autonomousCommand != null) {

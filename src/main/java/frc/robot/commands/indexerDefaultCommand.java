@@ -12,25 +12,22 @@ import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.indexerSubsystem;
-import frc.robot.subsystems.intakeSubsystem;
 
 public class indexerDefaultCommand extends CommandBase {
 
   private indexerSubsystem m_indexer;
-  private intakeSubsystem m_intake;
   private boolean clearedSensor2 = false;
   private XboxController opController = RobotContainer.m_operatorController;
 
-  public indexerDefaultCommand(indexerSubsystem indexer, intakeSubsystem intake) {
+  public indexerDefaultCommand(indexerSubsystem indexer) {
     addRequirements(indexer);
-    addRequirements(intake);
     m_indexer = indexer;
-    m_intake = intake;
   }
 
   @Override
   public void initialize() {
     clearedSensor2 = false;
+    m_indexer.runOnlyIntake();
   }
 
   @Override
@@ -50,17 +47,6 @@ public class indexerDefaultCommand extends CommandBase {
       m_indexer.setKickerPercentOutput(-opController.getTriggerAxis(Hand.kLeft));
     }
 
-    else {
-      if (opController.getAButton() == true) {
-        
-        m_intake.deployIntake();
-        m_indexer.setIntakePercentOutput(1);
-      }
-      else {
-        m_intake.retractIntake();
-        m_indexer.stopIntake();
-      }
-
       if (m_indexer.ballStaged() == false) {
         clearedSensor2 = true;
       }
@@ -73,11 +59,9 @@ public class indexerDefaultCommand extends CommandBase {
       else if (m_indexer.ballReadyForIndexer() == true) {
         // here we know ballExiting() == false
         // OK to pull in more balls and continue to fill indexer
-        m_indexer.setBeltsRPM(6380);
-        m_indexer.setKickerPercentOutput(0.3);
+        m_indexer.runIndexer();
       }
     } 
-  }
 
   @Override
   public void end(boolean interrupted) {

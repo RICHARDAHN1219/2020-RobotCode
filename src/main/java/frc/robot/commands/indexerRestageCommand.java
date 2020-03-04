@@ -38,7 +38,7 @@ public class indexerRestageCommand extends CommandBase {
     }
 
     if (m_indexer.ballReadyForIndexer() == true && m_indexer.getRestageState() == 0) {
-      m_indexer.stopIndexer();
+      m_indexer.runIndexer();
       m_indexer.setRestageState(1);
     }
 
@@ -55,6 +55,7 @@ public class indexerRestageCommand extends CommandBase {
   @Override
   public void end(boolean interrupted) {
     m_indexer.setBallCount(restageEndBallCount);
+    m_indexer.stopIndexer();
   }
 
   @Override
