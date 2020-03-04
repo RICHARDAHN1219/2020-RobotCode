@@ -85,6 +85,9 @@ public class driveSubsystem extends SubsystemBase {
 
     // Voltage limits
     setVoltageLimit(11);
+
+    // set Ramp up speed, time in seconds (smaller is more responseive, 0 disables)
+    configOpenLoopRampRate(0.25);
     
     // set brake mode
     falcon1_leftLead.setNeutralMode(NeutralMode.Brake);
@@ -370,8 +373,8 @@ public class driveSubsystem extends SubsystemBase {
     if (maxV > 12.0) {
       maxV = 12.0;
     }
-    if (maxV < 0.0) {
-      maxV = 0.0;
+    if (maxV < 2.0) {
+      maxV = 2.0;
     }
     falcon1_leftLead.configVoltageCompSaturation(maxV);
     falcon1_leftLead.enableVoltageCompensation(true);
@@ -381,6 +384,19 @@ public class driveSubsystem extends SubsystemBase {
     falcon3_rightLead.enableVoltageCompensation(true);
     falcon4_rightFollow.configVoltageCompSaturation(maxV);
     falcon4_rightFollow.enableVoltageCompensation(true);
+  }
+
+  /**
+   * configOpenLoopRampRate() - Set minimum desired time to go from neutral to full throttle. 
+   *      A value of '0' will disable the ramp.
+   *  
+   * @param secondsFromNeutralToFull
+   */
+  public void configOpenLoopRampRate(double secondsFromNeutralToFull) {
+    falcon1_leftLead.configOpenloopRamp(secondsFromNeutralToFull, driveTimeout);
+    falcon2_leftFollow.configOpenloopRamp(secondsFromNeutralToFull, driveTimeout);
+    falcon3_rightLead.configOpenloopRamp(secondsFromNeutralToFull, driveTimeout);
+    falcon4_rightFollow.configOpenloopRamp(secondsFromNeutralToFull, driveTimeout);
   }
 
   /**
