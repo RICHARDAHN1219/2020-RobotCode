@@ -73,6 +73,8 @@ public class shooterSubsystem extends SubsystemBase {
     //Current Limits for use on competition bot
     //neo_shooter1.setSmartCurrentLimit(35);
     //neo_shooter2.setSmartCurrentLimit(35);
+    neo_shooter1.setOpenLoopRampRate(0.5);
+    neo_shooter2.setOpenLoopRampRate(0.5);
     
     // Set coast mode
     neo_shooter1.setIdleMode(CANSparkMax.IdleMode.kCoast);
