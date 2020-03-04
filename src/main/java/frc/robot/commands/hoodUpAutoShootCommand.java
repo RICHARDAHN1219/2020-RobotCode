@@ -51,7 +51,10 @@ public class hoodUpAutoShootCommand extends CommandBase {
     if (tv != 1) {
       RobotContainer.limelightOnTarget = false;
       limelightSteerCommand = 0;
-      m_turret.setPercentOutput(RobotContainer.m_operatorController.getX(Hand.kLeft) * 0.5);
+      var manualInput = RobotContainer.m_operatorController.getX(Hand.kLeft);
+      if (Math.abs(manualInput) > 0.05) {
+        m_turret.setPercentOutput(manualInput * 0.5);
+      }
       return;
     }
     
