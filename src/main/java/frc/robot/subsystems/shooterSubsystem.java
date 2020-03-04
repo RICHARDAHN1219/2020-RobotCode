@@ -37,6 +37,7 @@ public class shooterSubsystem extends SubsystemBase {
   private linearInterpolator m_lt_hoodUpP;
   private linearInterpolator m_lt_hoodDownC;
   private linearInterpolator m_lt_hoodUpC;
+  private int m_idleRPM = 1000;
   
   private double hoodDownP[][] = {
     {15.4, 2600}, // 4.5 feet
@@ -71,8 +72,10 @@ public class shooterSubsystem extends SubsystemBase {
     neo_shooter2.restoreFactoryDefaults();
 
     //Current Limits for use on competition bot
-    //neo_shooter1.setSmartCurrentLimit(35);
-    //neo_shooter2.setSmartCurrentLimit(35);
+    neo_shooter1.setSmartCurrentLimit(35);
+    neo_shooter2.setSmartCurrentLimit(35);
+
+    // set min time to go from neutral to full power
     neo_shooter1.setOpenLoopRampRate(0.5);
     neo_shooter2.setOpenLoopRampRate(0.5);
     
@@ -88,7 +91,7 @@ public class shooterSubsystem extends SubsystemBase {
     m_pidController = neo_shooter1.getPIDController();
     m_encoder = neo_shooter1.getEncoder(EncoderType.kHallSensor, 4096);
     kMaxOutput = 1; 
-    kMinOutput = -1;
+    kMinOutput = -0.1;
     m_pidController.setOutputRange(kMinOutput, kMaxOutput);
 
     // Build the linear Interpolators just once each.
@@ -116,6 +119,7 @@ public class shooterSubsystem extends SubsystemBase {
         stop();
       }
       else if (m_desiredRPM != rpm ) {
+        setShooterPID(0.0005, 0.000000, 0, 0.00018, 250);
         setShooterRPM(rpm);
         System.out.println("New shooter desired RPM: "  + rpm);
         m_initalTime = System.nanoTime();
@@ -137,6 +141,11 @@ public class shooterSubsystem extends SubsystemBase {
     SmartDashboard.putBoolean("isAtSpeed", m_atSpeed);
   }
 
+  /**
+   * setShooterRPM - set desired flywheel RPM
+   * 
+   * @param desiredRPM
+   */
   public void setShooterRPM (double desiredRPM) {
     m_desiredRPM = desiredRPM;
     m_pidController.setReference(desiredRPM, ControlType.kVelocity);
@@ -178,6 +187,15 @@ public class shooterSubsystem extends SubsystemBase {
     hood.set(false);
   }
 
+  /**
+   * setShooterPID()   set flywheel PID parameters
+   * 
+   * @param kP
+   * @param kI
+   * @param kD
+   * @param kF, feed forward constant
+   * @param iZone, need to be this close to target to activate I
+   */
   public void setShooterPID (double P, double I, double D, double F, double iZ) {
     m_pidController.setP(P);
     m_pidController.setI(I);
@@ -222,7 +240,7 @@ public class shooterSubsystem extends SubsystemBase {
     return m_lt.getInterpolatedValue(distanceFeet);
   }
 
-    /**
+  /**
    * getRPMforDistanceFeet() - return RPM based on distance to target in METERS
    * 
    * @param distanceFeet distance in METERS to goal
@@ -231,6 +249,16 @@ public class shooterSubsystem extends SubsystemBase {
   public double getRPMforDistanceMeter(double distanceMeters) {
     return getRPMforDistanceFeet(distanceMeters * 3.28084);
   }
+
+  /**
+   * idle()  - run the flywheel at pre-determined idle speed
+   */
+  public void idle() {
+    // Use less power to maintain idle speed
+    setShooterPID(0.0003, 0, 0, 0.00018, 0);
+    setShooterRPM(m_idleRPM);   
+  }
+
 
   public void stop() {
     m_desiredRPM = 0;
