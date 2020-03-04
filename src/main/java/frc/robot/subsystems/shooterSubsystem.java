@@ -31,7 +31,7 @@ public class shooterSubsystem extends SubsystemBase {
   private double kMaxOutput, kMinOutput;
   private double m_desiredRPM = 0;
   private boolean m_atSpeed = false;
-  private long m_initalTime = 0;
+  private long m_initialTime = 0;
   private linearInterpolator m_lt;
   private linearInterpolator m_lt_hoodDownP;
   private linearInterpolator m_lt_hoodUpP;
@@ -72,8 +72,8 @@ public class shooterSubsystem extends SubsystemBase {
     neo_shooter2.restoreFactoryDefaults();
 
     //Current Limits for use on competition bot
-    neo_shooter1.setSmartCurrentLimit(35);
-    neo_shooter2.setSmartCurrentLimit(35);
+    //neo_shooter1.setSmartCurrentLimit(35);
+    //neo_shooter2.setSmartCurrentLimit(35);
 
     // set min time to go from neutral to full power
     neo_shooter1.setOpenLoopRampRate(0.5);
@@ -91,7 +91,7 @@ public class shooterSubsystem extends SubsystemBase {
     m_pidController = neo_shooter1.getPIDController();
     m_encoder = neo_shooter1.getEncoder(EncoderType.kHallSensor, 4096);
     kMaxOutput = 1; 
-    kMinOutput = -0.1;
+    kMinOutput = -0.5;
     m_pidController.setOutputRange(kMinOutput, kMaxOutput);
 
     // Build the linear Interpolators just once each.
@@ -112,6 +112,9 @@ public class shooterSubsystem extends SubsystemBase {
 
     SmartDashboard.putNumber("ActualShooterRPM", (int) m_encoder.getVelocity());
 
+    //
+    // Manual RPM control from Smartdashboard
+    //
     double rpm = SmartDashboard.getNumber("ShooterRPM", -1);
     if (rpm != -1) {
       if (rpm == 0.0) {
@@ -119,25 +122,24 @@ public class shooterSubsystem extends SubsystemBase {
         stop();
       }
       else if (m_desiredRPM != rpm ) {
-        setShooterPID(0.0005, 0.000000, 0, 0.00018, 250);
         setShooterRPM(rpm);
-        System.out.println("New shooter desired RPM: "  + rpm);
-        m_initalTime = System.nanoTime();
         m_atSpeed = false;
       }
     }
 
-    m_initalTime = System.nanoTime();
+    //
+    // Track how long it takes to reach desired RPM, set m_asSpeed
+    // 
     if (isAtSpeed()) {
       if (!m_atSpeed) {
-        SmartDashboard.putNumber("Time2RPM", System.nanoTime() - m_initalTime);
+        SmartDashboard.putNumber("Time2RPM", System.nanoTime() - m_initialTime);
       }
       m_atSpeed = true;
     }
     else {
       m_atSpeed = false;
-      m_initalTime = System.nanoTime();
     }
+
     SmartDashboard.putBoolean("isAtSpeed", m_atSpeed);
   }
 
@@ -148,13 +150,23 @@ public class shooterSubsystem extends SubsystemBase {
    */
   public void setShooterRPM (double desiredRPM) {
     m_desiredRPM = desiredRPM;
+    m_initialTime = System.nanoTime();
+    m_atSpeed = false;
+    if (m_desiredRPM <= m_idleRPM) {
+      m_pidController.setOutputRange(0, kMaxOutput);
+      setShooterPID(0.0003, 0, 0, 0.00018, 0);
+    }
+    else {
+      m_pidController.setOutputRange(kMinOutput, kMaxOutput);
+      setShooterPID(0.0005, 0.00000015, 0, 0.0002, 600);
+    }
     m_pidController.setReference(desiredRPM, ControlType.kVelocity);
     SmartDashboard.putNumber("ShooterRPM", m_desiredRPM);
   }
 
   public void testMode(){
     m_desiredRPM = SmartDashboard.getNumber("DesiredShooterRPM", 0);
-    System.out.println("Shooter desired ROM: "  + m_desiredRPM);
+    System.out.println("Shooter desired RPM: "  + m_desiredRPM);
     m_pidController.setReference(m_desiredRPM, ControlType.kVelocity);
     System.out.println("Activating Test Mode");
   }
@@ -163,11 +175,9 @@ public class shooterSubsystem extends SubsystemBase {
   public void deployHood() {
     RobotContainer.m_limelight.setPipeline(5);
     if (Robot.isCompBot == true) {
-      setShooterPID(0.0004, 0.00000015, 0, 0.0002, 600);
       m_lt = m_lt_hoodUpC;
     }
     else {
-      setShooterPID(0.0005, 0.00000025, 0, 0.00022, 250);
       m_lt = m_lt_hoodUpP;
     }
     hood.set(true);
@@ -177,11 +187,9 @@ public class shooterSubsystem extends SubsystemBase {
   public void retractHood() {
     RobotContainer.m_limelight.setPipeline(4);
     if (Robot.isCompBot == true) {
-      setShooterPID(0.0005, 0.000000, 0, 0.00018, 250);
       m_lt = m_lt_hoodDownC;
     }
     else {
-      setShooterPID(0.0004, 0.00000025, 0, 0.0002, 250);
       m_lt = m_lt_hoodDownP;
     }
     hood.set(false);
@@ -254,8 +262,6 @@ public class shooterSubsystem extends SubsystemBase {
    * idle()  - run the flywheel at pre-determined idle speed
    */
   public void idle() {
-    // Use less power to maintain idle speed
-    setShooterPID(0.0003, 0, 0, 0.00018, 0);
     setShooterRPM(m_idleRPM);   
   }
 
