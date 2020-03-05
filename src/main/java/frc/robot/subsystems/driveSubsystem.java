@@ -295,7 +295,8 @@ public class driveSubsystem extends SubsystemBase {
    */
   public void arcadeDrive(double fwd, double rot) {
     // use slew rate filters to implement ramp up/down of speed and rotation
-    m_drive.arcadeDrive(speedFilter.calculate(fwd), rotationFilter.calculate(rot));
+    //m_drive.arcadeDrive(speedFilter.calculate(fwd), rotationFilter.calculate(rot));
+    m_drive.arcadeDrive(fwd, rot);
   }
 
   /**

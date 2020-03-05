@@ -26,7 +26,7 @@ public class Robot extends TimedRobot {
   public void robotInit() {
     m_robotContainer = new RobotContainer();
     SmartDashboard.putNumber("distance", 0);
-    RobotContainer.m_limelight.setLEDMode(1);
+    //RobotContainer.m_limelight.setLEDMode(1);
     CameraServer.getInstance().startAutomaticCapture();
     chooser.addOption("Right 3 Ball", "r3");
     chooser.addOption("Right 4 ball", "r4");

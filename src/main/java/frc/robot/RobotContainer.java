@@ -242,9 +242,9 @@ public class RobotContainer {
   }
 
   public Command rightSide6BallTest() {
-    RamseteCommand moveBack1 = createTrajectoryCommand(new Pose2d(0, 0, new Rotation2d(0)), List.of(new Translation2d(-1.15, 0)), new Pose2d(-2.3, 0, new Rotation2d(0)), true, 3, 2);
-    RamseteCommand moveBack2 = createTrajectoryCommand(new Pose2d(-2.3, 0, new Rotation2d(0)), List.of(new Translation2d(-2.6, 0)), new Pose2d(-4.35, 0, new Rotation2d(0)), true, 1, 0.5);
-    RamseteCommand moveForward3 = createTrajectoryCommand(new Pose2d(-4.35, 0, new Rotation2d(0)), List.of(new Translation2d(-4, 0)), new Pose2d(-1.5, 0, new Rotation2d(0)), false, 3.75, 2.75);
+    RamseteCommand moveBack1 = createTrajectoryCommand(new Pose2d(0, 0, new Rotation2d(0)), List.of(new Translation2d(-1.15, 0)), new Pose2d(-1.75, 0, new Rotation2d(0)), true, 2.5, 1.5);
+    RamseteCommand moveBack2 = createTrajectoryCommand(new Pose2d(-1.75, 0, new Rotation2d(0)), List.of(new Translation2d(-2.6, 0)), new Pose2d(-4.35, 0, new Rotation2d(0)), true, 0.75, 0.5);
+    RamseteCommand moveForward3 = createTrajectoryCommand(new Pose2d(-4.35, 0, new Rotation2d(0)), List.of(new Translation2d(-4, 0)), new Pose2d(-1.5, 0, new Rotation2d(0)), false, 2.5, 1.5);
 
     // To try and save time, this version continues through the 3 balls slowly rather than stopping at each one
     return 
