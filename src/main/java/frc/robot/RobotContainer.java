@@ -155,7 +155,7 @@ public class RobotContainer {
     andThen(new hoodDownAutoShootCommand(m_indexer, m_turret, m_shooter, m_limelight));
   }
 
-  public Command straightOn6BallTrench() {//Gets the 3 balls on rendezvous point towards center of field
+  public Command straightOn6BallRendezvous() {//Gets the 3 balls on rendezvous point towards center of field
     RamseteCommand moveBack1 = createTrajectoryCommand(new Pose2d(0, 0, new Rotation2d(0)), List.of(new Translation2d(-0.5, 0)), new Pose2d(-1, 0, new Rotation2d(0)), true, 2.5, 0.75);
     RamseteCommand moveBack2 = createTrajectoryCommand(new Pose2d(-1, 0, new Rotation2d(0.4)), List.of(new Translation2d(-1, 0)), new Pose2d(-2, 0, new Rotation2d(0)), true, 2.5, 0.5); 
     RamseteCommand moveForward3 = createTrajectoryCommand(new Pose2d(-2, 0, new Rotation2d(0)), List.of(new Translation2d(-1, 0)), new Pose2d(0, 0, new Rotation2d(0)), false, 2.5, 1);
