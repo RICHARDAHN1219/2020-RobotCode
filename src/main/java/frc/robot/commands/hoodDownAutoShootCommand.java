@@ -63,7 +63,7 @@ public class hoodDownAutoShootCommand extends CommandBase {
     limelightSteerCommand = tx * steer_k;
     m_turret.setPercentOutput(limelightSteerCommand);
 
-    if (Math.abs(m_limelight.getTX()) < 0.25) {
+    if (Math.abs(m_limelight.getTX()) < 0.5) {
       RobotContainer.limelightOnTarget = true;
     }
     else {
@@ -78,7 +78,7 @@ public class hoodDownAutoShootCommand extends CommandBase {
   @Override
   public void end(boolean interrupted) {
     m_indexer.stopIndexer();
-    m_shooter.setShooterRPM(0);
+    m_shooter.idle();
     m_turret.stop();
     RobotContainer.limelightOnTarget = false;
     //m_limelight.setLEDMode(1);

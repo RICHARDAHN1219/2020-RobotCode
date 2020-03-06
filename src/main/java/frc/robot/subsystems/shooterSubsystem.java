@@ -37,7 +37,7 @@ public class shooterSubsystem extends SubsystemBase {
   private linearInterpolator m_lt_hoodUpP;
   private linearInterpolator m_lt_hoodDownC;
   private linearInterpolator m_lt_hoodUpC;
-  private int m_idleRPM = 1000;
+  private int m_idleRPM = 1500;
   
   private double hoodDownP[][] = {
     {15.4, 2600}, // 4.5 feet
@@ -54,17 +54,17 @@ public class shooterSubsystem extends SubsystemBase {
   };
 
   private double hoodDownC[][] = {
-    {21.7, 2800}, // 4.5 feet
-    {8.9, 2900}, // 7 feet
-    {-0.9, 3000}, // 10 feet
-    {-4.6, 3100} // 12 feet
+    {24.7, 2800}, // 4 feet
+    {12.3, 2900}, // 7 feet
+    {2.75, 3000}, // 10 feet
+    {-2.85, 3100} // 12 feet
   };
   private double hoodUpC[][] = {
-    {11, 3800}, // 9 feet
-    {6.3, 3550}, // 13 feet
-    {1.2, 3650}, // 17 feet
-    {-2, 3800}, // 21 feet
-    {-4.7, 4350} // 25 feet
+    {5, 3800}, // 9 feet
+    {-4.3, 3550}, // 13 feet
+    {-9.85, 3650}, // 17 feet
+    {-13.5, 3800}, // 21 feet
+    {-16, 4350} // 25 feet
   };
 
   public shooterSubsystem() {
@@ -76,8 +76,8 @@ public class shooterSubsystem extends SubsystemBase {
     //neo_shooter2.setSmartCurrentLimit(35);
 
     // set min time to go from neutral to full power
-    neo_shooter1.setOpenLoopRampRate(0.5);
-    neo_shooter2.setOpenLoopRampRate(0.5);
+    neo_shooter1.setClosedLoopRampRate(0.5);
+    neo_shooter2.setClosedLoopRampRate(0.5);
     
     // Set coast mode
     neo_shooter1.setIdleMode(CANSparkMax.IdleMode.kCoast);
@@ -173,7 +173,7 @@ public class shooterSubsystem extends SubsystemBase {
 
   // TODO: put pipeline setting in if statement if we make different comp bot pipelines
   public void deployHood() {
-    RobotContainer.m_limelight.setPipeline(5);
+    RobotContainer.m_limelight.setPipeline(4);
     if (Robot.isCompBot == true) {
       m_lt = m_lt_hoodUpC;
     }
@@ -221,7 +221,7 @@ public class shooterSubsystem extends SubsystemBase {
     double error = m_desiredRPM - m_encoder.getVelocity();
     SmartDashboard.putNumber("RPM_Error", error);
     
-    if (Math.abs(error) < 50) {
+    if (Math.abs(error) < 75) {
       return true;
     } else {
       return false;

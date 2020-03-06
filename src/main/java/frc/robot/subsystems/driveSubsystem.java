@@ -119,6 +119,14 @@ public class driveSubsystem extends SubsystemBase {
 
     m_drive.setRightSideInverted(false);
 
+    falcon1_leftLead.configVoltageCompSaturation(11);
+    falcon3_rightLead.configVoltageCompSaturation(11);
+    falcon1_leftLead.enableVoltageCompensation(true);
+    falcon3_rightLead.enableVoltageCompensation(true);
+
+    falcon1_leftLead.configOpenloopRamp(0.25);
+    falcon3_rightLead.configOpenloopRamp(0.25);
+
     resetEncoders();
     m_odometry = new DifferentialDriveOdometry(Rotation2d.fromDegrees(getHeading()));
 
@@ -295,7 +303,8 @@ public class driveSubsystem extends SubsystemBase {
    */
   public void arcadeDrive(double fwd, double rot) {
     // use slew rate filters to implement ramp up/down of speed and rotation
-    m_drive.arcadeDrive(speedFilter.calculate(fwd), rotationFilter.calculate(rot));
+    //m_drive.arcadeDrive(speedFilter.calculate(fwd), rotationFilter.calculate(rot));
+    m_drive.arcadeDrive(fwd, rot);
   }
 
   /**

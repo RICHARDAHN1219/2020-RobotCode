@@ -27,16 +27,16 @@ public class elevatorSubsystem extends SubsystemBase {
 
   private DoubleSolenoid elevatorDeploySolenoid = new DoubleSolenoid(elevatorConstants.deploySolenoid1, elevatorConstants.deploySolenoid2);
   private Solenoid brakeSolenoid = new Solenoid(elevatorConstants.brakeSolenoid);
-  private CANSparkMax elevatorWinchP = new CANSparkMax(elevatorConstants.elevatorWinch, MotorType.kBrushless);
+  //private CANSparkMax elevatorWinchP = new CANSparkMax(elevatorConstants.elevatorWinch, MotorType.kBrushless);
   private WPI_VictorSPX elevatorWinchC = new WPI_VictorSPX(elevatorConstants.elevatorWinch);
-  private final CANEncoder elevatorEncoder = elevatorWinchP.getEncoder(EncoderType.kHallSensor, 2048);
+  //private final CANEncoder elevatorEncoder = elevatorWinchP.getEncoder(EncoderType.kHallSensor, 2048);
   private boolean elevatorDeployed = false;
 
   public elevatorSubsystem() {
     elevatorDeploySolenoid.set(Value.kReverse);
 
-    elevatorWinchP.restoreFactoryDefaults();
-    elevatorWinchP.setIdleMode(CANSparkMax.IdleMode.kBrake);
+    //elevatorWinchP.restoreFactoryDefaults();
+    //elevatorWinchP.setIdleMode(CANSparkMax.IdleMode.kBrake);
     elevatorWinchC.configFactoryDefault();
     elevatorWinchC.setNeutralMode(NeutralMode.Brake);
   }
@@ -67,7 +67,7 @@ public class elevatorSubsystem extends SubsystemBase {
       elevatorWinchC.set(ControlMode.PercentOutput, Percent);
     }
     else {
-      elevatorWinchP.set(Percent);
+      //elevatorWinchP.set(Percent);
     }
   }
 
@@ -86,7 +86,7 @@ public class elevatorSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    SmartDashboard.putNumber("Winch_RPM", elevatorEncoder.getVelocity());
+    //SmartDashboard.putNumber("Winch_RPM", elevatorEncoder.getVelocity());
   }
 
 }

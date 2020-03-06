@@ -29,7 +29,7 @@ public class turretDefaultCommand extends CommandBase {
 
   @Override
   public void execute() {
-    if (Math.abs(opController.getX(Hand.kLeft)) >= 0.05) {
+    if (Math.abs(opController.getX(Hand.kLeft)) >= 0.1) {
       m_turret.setPercentOutput(opController.getX(Hand.kLeft) * 0.5);
     }
 

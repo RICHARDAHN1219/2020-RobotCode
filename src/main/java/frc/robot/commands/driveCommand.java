@@ -46,7 +46,7 @@ public class driveCommand extends CommandBase {
         m_drive.arcadeDrive(-driveController.getY(Hand.kLeft), -driveController.getX(Hand.kRight));
       }
     }
-  }
+    }
 
   @Override
   public void end(boolean interrupted) {
