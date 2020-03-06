@@ -55,6 +55,9 @@ public class hoodDownAutoShootCommand extends CommandBase {
       if (Math.abs(manualInput) > 0.05) {
         m_turret.setPercentOutput(manualInput * 0.5);
       }
+      else {
+        m_turret.setPercentOutput(0);
+      }
       return;
     }
     
