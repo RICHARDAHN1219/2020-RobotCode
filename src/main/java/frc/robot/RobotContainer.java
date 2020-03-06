@@ -24,6 +24,7 @@ import edu.wpi.first.wpilibj.trajectory.constraint.DifferentialDriveVoltageConst
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.RamseteCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -240,6 +241,60 @@ public class RobotContainer {
     andThen(moveForward4.deadlineWith(new InstantCommand(() -> m_shooter.setShooterRPM(3550), m_shooter), new InstantCommand(() -> m_turret.setAngleDegrees(-3), m_turret), new indexerStageForShootingCommand(m_indexer)))).
     andThen(new hoodUpAutoShootCommand(m_indexer, m_turret, m_shooter, m_limelight));
   }
+
+  public Command rightSide6Ball_reorg() {
+    RamseteCommand moveBack1 = createTrajectoryCommand(new Pose2d(0, 0, new Rotation2d(0)), List.of(new Translation2d(-1.15, 0)), new Pose2d(-2.49, 0, new Rotation2d(0)), true, 3.5, 2.5);
+    RamseteCommand moveBack2 = createTrajectoryCommand(new Pose2d(-2.49, 0, new Rotation2d(0)), List.of(new Translation2d(-2.6, 0)), new Pose2d(-4.35, 0, new Rotation2d(0)), true, 3, 1.5);
+    RamseteCommand moveForward4 = createTrajectoryCommand(new Pose2d(-4.35, 0, new Rotation2d(0)), List.of(new Translation2d(-4, 0)), new Pose2d(-1.5, 0, new Rotation2d(0)), false, 3.75, 2.75);
+
+    Command ac = new SequentialCommandGroup(
+      // Do these setup things in parallel
+      new ParallelCommandGroup(
+        new InstantCommand(() -> m_indexer.setBallCount(3), m_indexer),
+        new SequentialCommandGroup(
+          new InstantCommand(() -> m_shooter.setShooterRPM(3650), m_shooter),  // aprox rpm for 17'
+          new InstantCommand(() -> m_shooter.deployHood(), m_shooter)    // deploy hood, set ll pipeline
+        ),
+        new InstantCommand(() -> m_turret.setAngleDegrees(-17), m_turret), // look left
+        moveBack1),   // Move left
+
+      // shoot until all the balls are gone
+      new ParallelRaceGroup(
+        new hoodUpAutoShootCommand(m_indexer, m_turret, m_shooter, m_limelight),
+        new WaitUntilCommand(() -> m_indexer.getBallCount() == 0)
+      ),
+
+      // Move back get 3 more balls
+      new ParallelCommandGroup(
+        new intakeDeployCommand(m_intake),
+        new indexerDefaultCommand(m_indexer),
+        new SequentialCommandGroup(
+          moveBack2,                    // move back slow
+          new WaitCommand(0.1)          // time to finish sucking in last ball
+        )
+      ),
+
+      // Move forward prepare to shoot
+      new ParallelCommandGroup(
+        new SequentialCommandGroup(
+          new InstantCommand(() -> m_shooter.setShooterRPM(3650), m_shooter),  // aprox rpm for 17'
+          new InstantCommand(() -> m_shooter.deployHood(), m_shooter)    // deploy hood, set ll pipeline
+        ),
+        new indexerStageForShootingCommand(m_indexer),
+        moveForward4
+      ),
+
+      // shoot, finish when all the balls are gone
+      new ParallelRaceGroup(
+        new hoodUpAutoShootCommand(m_indexer, m_turret, m_shooter, m_limelight),
+        new WaitUntilCommand(() -> m_indexer.getBallCount() == 0)
+      )
+
+    );
+
+    return  ac;
+  }
+
 
   public Command rightSide6BallTest() {
     RamseteCommand moveBack1 = createTrajectoryCommand(new Pose2d(0, 0, new Rotation2d(0)), List.of(new Translation2d(-1.15, 0)), new Pose2d(-2.3, 0, new Rotation2d(0)), true, 3, 2);
