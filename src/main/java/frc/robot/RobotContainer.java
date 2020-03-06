@@ -260,7 +260,7 @@ public class RobotContainer {
 
       // shoot until all the balls are gone
       new ParallelRaceGroup(
-        new hoodUpAutoShootCommand(m_indexer, m_turret, m_shooter, m_limelight),
+        new hoodUpAutoShootCommand(m_indexer, m_turret, m_shooter, m_limelight, true),
         new WaitUntilCommand(() -> m_indexer.getBallCount() == 0)
       ),
 
@@ -277,6 +277,7 @@ public class RobotContainer {
       // Move forward prepare to shoot
       new ParallelCommandGroup(
         new SequentialCommandGroup(
+          // no need to turn turret, should still be on target from last time
           new InstantCommand(() -> m_shooter.setShooterRPM(3650), m_shooter),  // aprox rpm for 17'
           new InstantCommand(() -> m_shooter.deployHood(), m_shooter)    // deploy hood, set ll pipeline
         ),
@@ -286,7 +287,7 @@ public class RobotContainer {
 
       // shoot, finish when all the balls are gone
       new ParallelRaceGroup(
-        new hoodUpAutoShootCommand(m_indexer, m_turret, m_shooter, m_limelight),
+        new hoodUpAutoShootCommand(m_indexer, m_turret, m_shooter, m_limelight, true),
         new WaitUntilCommand(() -> m_indexer.getBallCount() == 0)
       )
 
