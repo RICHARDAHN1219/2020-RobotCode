@@ -77,7 +77,7 @@ public class hoodUpAutoShootCommand extends CommandBase {
   @Override
   public void end(boolean interrupted) {
     m_indexer.stopIndexer();
-    m_shooter.setShooterRPM(0);
+    m_shooter.idle();
     m_turret.stop();
     RobotContainer.limelightOnTarget = false;
     m_shooter.retractHood();
