@@ -44,12 +44,14 @@ public class turretSubsystem extends SubsystemBase {
     }
 
     if (Robot.isCompBot == true) {
+      // +- 81 deg
       turretDrive.configForwardSoftLimitThreshold(12308, kTimeout);
       turretDrive.configReverseSoftLimitThreshold(-11629, kTimeout);
     }
     else {
-    turretDrive.configForwardSoftLimitThreshold(13808, kTimeout);
-    turretDrive.configReverseSoftLimitThreshold(-13423, kTimeout);
+      // +- 90 deg
+      turretDrive.configForwardSoftLimitThreshold(13808, kTimeout);
+      turretDrive.configReverseSoftLimitThreshold(-13423, kTimeout);
     }
 
     turretDrive.configForwardSoftLimitEnable(true);
