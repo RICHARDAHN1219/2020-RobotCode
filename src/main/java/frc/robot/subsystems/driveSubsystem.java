@@ -119,11 +119,7 @@ public class driveSubsystem extends SubsystemBase {
 
     m_drive.setRightSideInverted(false);
 
-    falcon1_leftLead.configVoltageCompSaturation(11);
-    falcon3_rightLead.configVoltageCompSaturation(11);
-    falcon1_leftLead.enableVoltageCompensation(true);
-    falcon3_rightLead.enableVoltageCompensation(true);
-
+    // TODO: only set open loop ramp AFTER auton, so not to conflict with path follow
     falcon1_leftLead.configOpenloopRamp(0.25);
     falcon3_rightLead.configOpenloopRamp(0.25);
 
