@@ -243,9 +243,9 @@ public class RobotContainer {
   }
 
   public Command rightSide6Ball_reorg() {
-    RamseteCommand moveBack1 = createTrajectoryCommand(new Pose2d(0, 0, new Rotation2d(0)), List.of(new Translation2d(-1.15, 0)), new Pose2d(-2.49, 0, new Rotation2d(0)), true, 3.5, 2.5);
-    RamseteCommand moveBack2 = createTrajectoryCommand(new Pose2d(-2.49, 0, new Rotation2d(0)), List.of(new Translation2d(-2.6, 0)), new Pose2d(-4.35, 0, new Rotation2d(0)), true, 3, 1.5);
-    RamseteCommand moveForward4 = createTrajectoryCommand(new Pose2d(-4.35, 0, new Rotation2d(0)), List.of(new Translation2d(-4, 0)), new Pose2d(-1.5, 0, new Rotation2d(0)), false, 3.75, 2.75);
+    RamseteCommand moveBack1 = createTrajectoryCommand(new Pose2d(0, 0, new Rotation2d(0)), List.of(new Translation2d(-1.15, 0)), new Pose2d(-1.75, 0, new Rotation2d(0)), true, 3.0, 1.8); 
+    RamseteCommand moveBack2 = createTrajectoryCommand(new Pose2d(-1.75, 0, new Rotation2d(0)), List.of(new Translation2d(-2.6, 0)), new Pose2d(-4.35, 0, new Rotation2d(0)), true, 0.80, 0.5);
+    RamseteCommand moveForward = createTrajectoryCommand(new Pose2d(-4.35, 0, new Rotation2d(0)), List.of(new Translation2d(-4, 0)), new Pose2d(-2, 0, new Rotation2d(0)), false, 3.0, 1.8);
 
     Command ac = new SequentialCommandGroup(
       // Do these setup things in parallel
@@ -265,9 +265,9 @@ public class RobotContainer {
       ),
 
       // Move back get 3 more balls
-      new ParallelCommandGroup(
-        new intakeDeployCommand(m_intake),
-        new indexerDefaultCommand(m_indexer),
+      new intakeDeployCommand(m_intake),
+      new ParallelRaceGroup(
+        new indexerDefaultCommand(m_indexer).perpetually(),
         new SequentialCommandGroup(
           moveBack2,                    // move back slow
           new WaitCommand(0.1)          // time to finish sucking in last ball
@@ -281,7 +281,7 @@ public class RobotContainer {
           new InstantCommand(() -> m_shooter.deployHood(), m_shooter)    // deploy hood, set ll pipeline
         ),
         new indexerStageForShootingCommand(m_indexer),
-        moveForward4
+        moveForward
       ),
 
       // shoot, finish when all the balls are gone
