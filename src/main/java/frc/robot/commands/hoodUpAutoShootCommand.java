@@ -17,15 +17,27 @@ import frc.robot.subsystems.turretSubsystem;
 
 public class hoodUpAutoShootCommand extends CommandBase {
 
-  indexerSubsystem m_indexer;
-  turretSubsystem m_turret;
-  shooterSubsystem m_shooter;
-  limelight m_limelight;
+  private indexerSubsystem m_indexer;
+  private turretSubsystem m_turret;
+  private shooterSubsystem m_shooter;
+  private limelight m_limelight;
+  private boolean m_stationary;
 
   private double steer_k = 0.075;
   private double tv;
   private double tx;
   private double limelightSteerCommand = 0;
+
+  public hoodUpAutoShootCommand(indexerSubsystem indexer, turretSubsystem turret, shooterSubsystem shooter, limelight ll_util, boolean stationary) {
+    addRequirements(indexer);
+    addRequirements(turret);
+    addRequirements(shooter);
+    m_indexer = indexer;
+    m_turret = turret;
+    m_shooter = shooter;
+    m_limelight = ll_util;
+    m_stationary = stationary;
+  }
 
   public hoodUpAutoShootCommand(indexerSubsystem indexer, turretSubsystem turret, shooterSubsystem shooter, limelight ll_util) {
     addRequirements(indexer);
@@ -35,6 +47,7 @@ public class hoodUpAutoShootCommand extends CommandBase {
     m_turret = turret;
     m_shooter = shooter;
     m_limelight = ll_util;
+    m_stationary = false;
   }
 
   @Override
@@ -48,27 +61,40 @@ public class hoodUpAutoShootCommand extends CommandBase {
     tv = m_limelight.getTV();
     tx = m_limelight.getTX();
 
-    if (tv != 1) {
-      RobotContainer.limelightOnTarget = false;
-      limelightSteerCommand = 0;
-      var manualInput = RobotContainer.m_operatorController.getX(Hand.kLeft);
-      if (Math.abs(manualInput) > 0.05) {
-        m_turret.setPercentOutput(manualInput * 0.5);
-      }
-      return;
-    }
-    
-    m_shooter.setShooterRPM(m_shooter.getRPMforTY(m_limelight.getTY()));
-    limelightSteerCommand = tx * steer_k;
-    m_turret.setPercentOutput(limelightSteerCommand);
-
-    if (Math.abs(m_limelight.getTX()) < 0.75) {
-      RobotContainer.limelightOnTarget = true;
+    if (m_stationary && RobotContainer.limelightOnTarget) {
+      // we're stationary and we saw the target
+      // Trust that the target didn't move
+      m_turret.setPercentOutput(0);
     }
     else {
-      RobotContainer.limelightOnTarget = false;
+      
+      if (tv != 1) {
+        RobotContainer.limelightOnTarget = false;
+        limelightSteerCommand = 0;
+        var manualInput = RobotContainer.m_operatorController.getX(Hand.kLeft);
+        if (Math.abs(manualInput) > 0.05) {
+          m_turret.setPercentOutput(manualInput * 0.5);
+        }
+        else {
+          // if we don't see a target stop the turret
+          m_turret.setPercentOutput(0);
+        }
+        return;
+      }
+    
+      m_shooter.setShooterRPM(m_shooter.getRPMforTY(m_limelight.getTY()));
+      limelightSteerCommand = tx * steer_k;
+      m_turret.setPercentOutput(limelightSteerCommand);
+
+      if (Math.abs(m_limelight.getTX()) < 0.75) {
+        RobotContainer.limelightOnTarget = true;
+      }
+      else {
+        RobotContainer.limelightOnTarget = false;
+      }
     }
 
+    // shoot! 
     if (m_shooter.isAtSpeed() == true && RobotContainer.limelightOnTarget == true) {
       m_indexer.ejectOneBall();
     }
@@ -82,6 +108,7 @@ public class hoodUpAutoShootCommand extends CommandBase {
     RobotContainer.limelightOnTarget = false;
     m_shooter.retractHood();
     //m_limelight.setLEDMode(1);
+    m_stationary = false;
   }
 
   @Override
