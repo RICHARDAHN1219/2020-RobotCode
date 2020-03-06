@@ -48,7 +48,7 @@ public class RobotContainer {
   // NOTE: blinkin needs to be first and public static to be accessed by other subsystems
   public final static blinkinSubsystem m_blinkin = new blinkinSubsystem(pwmConstants.blinkin);
   // All other subsystems should be private
-  private final driveSubsystem m_drive = new driveSubsystem();
+  public final driveSubsystem m_drive = new driveSubsystem();
   // public so that it can get the right instance.
   public static final limelight m_limelight = new limelight("limelight-one");
   private final turretSubsystem m_turret = new turretSubsystem();
@@ -244,7 +244,7 @@ public class RobotContainer {
   public Command rightSide6BallTest() {
     RamseteCommand moveBack1 = createTrajectoryCommand(new Pose2d(0, 0, new Rotation2d(0)), List.of(new Translation2d(-1.15, 0)), new Pose2d(-1.75, 0, new Rotation2d(0)), true, 2.5, 1.5);
     RamseteCommand moveBack2 = createTrajectoryCommand(new Pose2d(-1.75, 0, new Rotation2d(0)), List.of(new Translation2d(-2.6, 0)), new Pose2d(-4.35, 0, new Rotation2d(0)), true, 0.75, 0.5);
-    RamseteCommand moveForward3 = createTrajectoryCommand(new Pose2d(-4.35, 0, new Rotation2d(0)), List.of(new Translation2d(-4, 0)), new Pose2d(-1.5, 0, new Rotation2d(0)), false, 2.5, 1.5);
+    RamseteCommand moveForward3 = createTrajectoryCommand(new Pose2d(-4.35, 0, new Rotation2d(0)), List.of(new Translation2d(-4, 0)), new Pose2d(-2, 0, new Rotation2d(0)), false, 2.5, 1.5);
 
     // To try and save time, this version continues through the 3 balls slowly rather than stopping at each one
     return 
@@ -254,7 +254,6 @@ public class RobotContainer {
     andThen(moveBack1.deadlineWith(new intakeDeployCommand(m_intake), new indexerDefaultCommand(m_indexer).perpetually())).
     andThen(new WaitUntilCommand(() -> m_indexer.getBallCount() == 0).deadlineWith(new hoodUpAutoShootCommand(m_indexer, m_turret, m_shooter, m_limelight))).
     andThen(moveBack2.deadlineWith(new intakeDeployCommand(m_intake), new indexerDefaultCommand(m_indexer).perpetually())).
-    andThen(new WaitCommand(0.5).deadlineWith(new intakeDeployCommand(m_intake), new indexerDefaultCommand(m_indexer).perpetually())).
     andThen(moveForward3.deadlineWith(new InstantCommand(() -> m_shooter.setShooterRPM(3550), m_shooter), new InstantCommand(() -> m_turret.setAngleDegrees(-3), m_turret), new indexerStageForShootingCommand(m_indexer), new InstantCommand(() -> m_limelight.setLEDMode(0)))).
     andThen(new hoodUpAutoShootCommand(m_indexer, m_turret, m_shooter, m_limelight));
   }

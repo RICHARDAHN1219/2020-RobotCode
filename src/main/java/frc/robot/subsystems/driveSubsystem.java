@@ -119,6 +119,14 @@ public class driveSubsystem extends SubsystemBase {
 
     m_drive.setRightSideInverted(false);
 
+    falcon1_leftLead.configVoltageCompSaturation(11);
+    falcon3_rightLead.configVoltageCompSaturation(11);
+    falcon1_leftLead.enableVoltageCompensation(true);
+    falcon3_rightLead.enableVoltageCompensation(true);
+
+    falcon1_leftLead.configOpenloopRamp(0.25);
+    falcon3_rightLead.configOpenloopRamp(0.25);
+
     resetEncoders();
     m_odometry = new DifferentialDriveOdometry(Rotation2d.fromDegrees(getHeading()));
 
