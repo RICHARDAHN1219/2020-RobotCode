@@ -22,7 +22,6 @@ public class turretAutoTargeting extends CommandBase {
   private Translation2d m_target;
   private driveSubsystem m_drive;
   private limelight m_limelight;
-  private shooterSubsystem m_shooter;
   private double m_targetAngleDegrees = 0.0;
   private double m_errorDegrees = 0.0;
   double h1 = 0.6096;

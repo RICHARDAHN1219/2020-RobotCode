@@ -106,7 +106,7 @@ public class turretSubsystem extends SubsystemBase {
    * @param  angle in RADIANS
    */
   public void setAngleRadians(double angleRad) {
-    setAngleDegrees(angleRad * 180.0 / Math.PI);
+    setAngleDegrees(Math.toDegrees(angleRad));
   }
 
   /**
@@ -135,7 +135,7 @@ public class turretSubsystem extends SubsystemBase {
    * @return angle in radians
    */
   public double getAngleRadians() {
-    return(getAngleDegrees() * Math.PI / 180.0);
+    return(Math.toRadians(getAngleDegrees()));
   }
 
   @Override
