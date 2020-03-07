@@ -186,7 +186,6 @@ public class RobotContainer {
 
     return ac;
   }
-  
 
 
   public Command rightSide3Ball() {
@@ -364,7 +363,7 @@ public class RobotContainer {
     var initalTime = System.nanoTime();
 
     // trajectory to follow. All units in meters.
-   var trajectory = TrajectoryGenerator.generateTrajectory(
+    var trajectory = TrajectoryGenerator.generateTrajectory(
         startPose,
         translationList,
         endPose,

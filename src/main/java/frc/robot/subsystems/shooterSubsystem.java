@@ -19,7 +19,6 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.team2930.lib.util.linearInterpolator;
 import frc.robot.Robot;
 import frc.robot.RobotContainer;
-import frc.robot.Constants.shooterConstants;
 
 public class shooterSubsystem extends SubsystemBase {
 
@@ -71,7 +70,7 @@ public class shooterSubsystem extends SubsystemBase {
     neo_shooter1.restoreFactoryDefaults();
     neo_shooter2.restoreFactoryDefaults();
 
-    //Current Limits for use on competition bot
+    //TODO: turn current limits back on
     //neo_shooter1.setSmartCurrentLimit(35);
     //neo_shooter2.setSmartCurrentLimit(35);
 
@@ -91,6 +90,7 @@ public class shooterSubsystem extends SubsystemBase {
     m_pidController = neo_shooter1.getPIDController();
     m_encoder = neo_shooter1.getEncoder(EncoderType.kHallSensor, 4096);
     kMaxOutput = 1; 
+
     kMinOutput = -0.5;
     m_pidController.setOutputRange(kMinOutput, kMaxOutput);
 
@@ -123,6 +123,7 @@ public class shooterSubsystem extends SubsystemBase {
       }
       else if (m_desiredRPM != rpm ) {
         setShooterRPM(rpm);
+        m_initalTime = System.nanoTime();
         m_atSpeed = false;
       }
     }
@@ -163,7 +164,6 @@ public class shooterSubsystem extends SubsystemBase {
     m_pidController.setReference(desiredRPM, ControlType.kVelocity);
     SmartDashboard.putNumber("ShooterRPM", m_desiredRPM);
   }
-
   public void testMode(){
     m_desiredRPM = SmartDashboard.getNumber("DesiredShooterRPM", 0);
     System.out.println("Shooter desired RPM: "  + m_desiredRPM);
@@ -204,6 +204,7 @@ public class shooterSubsystem extends SubsystemBase {
    * @param kF, feed forward constant
    * @param iZone, need to be this close to target to activate I
    */
+
   public void setShooterPID (double P, double I, double D, double F, double iZ) {
     m_pidController.setP(P);
     m_pidController.setI(I);
@@ -217,6 +218,11 @@ public class shooterSubsystem extends SubsystemBase {
     neo_shooter1.set(percent);
   }
 
+  /**
+   * isAtSpeed() - check if flywheel is at the desired RPM
+   * 
+   * @return true if at correct speed, else false
+   */
   public boolean isAtSpeed(){
     double error = m_desiredRPM - m_encoder.getVelocity();
     SmartDashboard.putNumber("RPM_Error", error);
