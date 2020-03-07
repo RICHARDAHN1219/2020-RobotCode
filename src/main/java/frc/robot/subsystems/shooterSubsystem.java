@@ -124,7 +124,6 @@ public class shooterSubsystem extends SubsystemBase {
       }
       else if (m_desiredRPM != rpm ) {
         setShooterRPM(rpm);
-        m_initialTime = System.nanoTime();
         m_atSpeed = false;
       }
     }
