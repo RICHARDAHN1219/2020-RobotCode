@@ -45,6 +45,9 @@ import frc.robot.commands.*;
 
 public class RobotContainer {
 
+  // Position of Power Port, needs to be set in each auton routine
+  public Translation2d powerPortLocation = new Translation2d(feet2Meters(10), 0);
+
   // Subsystems
   // NOTE: blinkin needs to be first and public static to be accessed by other subsystems
   public final static blinkinSubsystem m_blinkin = new blinkinSubsystem(pwmConstants.blinkin);
@@ -172,16 +175,20 @@ public class RobotContainer {
   // same as straightOn3Ball() but with sing SequentialCommandGroup
   public Command straightOn3Ball_reorg() {
    
+    // power port is directly in front of robot, center limelight over initiaton line
+    powerPortLocation = new Translation2d(feet2Meters(10), 0);
+
     Command ac = new SequentialCommandGroup(
+      // Do these setup things in parallel
       new ParallelCommandGroup(
+        new InstantCommand(() -> m_indexer.setBallCount(3), m_indexer),
         new SequentialCommandGroup(
-          new InstantCommand(() -> m_shooter.deployHood(), m_shooter),
-          new InstantCommand(() -> m_shooter.setShooterRPM(3550), m_shooter)
+          new InstantCommand(() -> m_shooter.setShooterRPM(3550), m_shooter),  // aprox rpm for 13'
+          new InstantCommand(() -> m_shooter.deployHood(), m_shooter)    // deploy hood, set ll pipeline
         ),
-        new InstantCommand(() -> m_turret.setAngleDegrees(-1), m_turret),
         createTrajectoryCommand(new Pose2d(0, 0, new Rotation2d(0)), List.of(new Translation2d(-0.5, 0)), new Pose2d(-1, 0, new Rotation2d(0)), true, 2.5, 0.75)
-      ).withTimeout(5.0),
-      new hoodUpAutoShootCommand(m_indexer, m_turret, m_shooter, m_limelight)
+      ),
+      new hoodUpAutoShootCommand(m_indexer, m_turret, m_shooter, m_limelight, true)
     );
 
     return ac;
@@ -242,6 +249,12 @@ public class RobotContainer {
   }
 
   public Command rightSide6Ball_reorg() {
+
+    // power port is left of robot, 
+    // 1. front of frame over initiaton line
+    // 2. robot lined up on row of balls
+    powerPortLocation = new Translation2d(feet2Meters(10.5), inches2Meters(66.91));
+
     RamseteCommand moveBack1 = createTrajectoryCommand(new Pose2d(0, 0, new Rotation2d(0)), List.of(new Translation2d(-1.15, 0)), new Pose2d(-1.75, 0, new Rotation2d(0)), true, 3.0, 1.8); 
     RamseteCommand moveBack2 = createTrajectoryCommand(new Pose2d(-1.75, 0, new Rotation2d(0)), List.of(new Translation2d(-2.6, 0)), new Pose2d(-4.35, 0, new Rotation2d(0)), true, 0.80, 0.5);
     RamseteCommand moveForward = createTrajectoryCommand(new Pose2d(-4.35, 0, new Rotation2d(0)), List.of(new Translation2d(-4, 0)), new Pose2d(-2, 0, new Rotation2d(0)), false, 3.0, 1.8);
@@ -389,8 +402,13 @@ public class RobotContainer {
   }
   
 
-  // TODO: this should be in Math Utils or a new Units.java under Utils
+  // TODO: this should be in com/team2930/utils/units.java or a new Units.java under Utils
   public double inches2Meters(double i) {
     return i * 0.0254;
   }
+
+  public double feet2Meters(double feet) {
+    return (feet * 0.3048);
+  }
+
 }

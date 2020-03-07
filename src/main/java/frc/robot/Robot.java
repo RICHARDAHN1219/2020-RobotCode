@@ -76,11 +76,17 @@ public class Robot extends TimedRobot {
     if (chooser.getSelected() == "s3"){
       m_autonomousCommand = m_robotContainer.straightOn3Ball();
     }
+    if (chooser.getSelected() == "s3_reorg"){
+      m_autonomousCommand = m_robotContainer.straightOn3Ball_reorg();
+    }
     if (chooser.getSelected() == "r6"){
       m_autonomousCommand = m_robotContainer.rightSide6Ball();
     }
     if (chooser.getSelected() == "r6t"){
       m_autonomousCommand = m_robotContainer.rightSide6BallTest();
+    }
+    if (chooser.getSelected() == "r6reorg"){
+      m_autonomousCommand = m_robotContainer.rightSide6Ball_reorg();
     }
     if (chooser.getSelected() == "s3f") {
       m_autonomousCommand = m_robotContainer.straightOn3BallForward();
