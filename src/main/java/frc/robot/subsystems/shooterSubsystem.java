@@ -19,6 +19,7 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.team2930.lib.util.linearInterpolator;
 import frc.robot.Robot;
 import frc.robot.RobotContainer;
+import frc.robot.Constants.shooterConstants;
 
 public class shooterSubsystem extends SubsystemBase {
 
@@ -123,7 +124,7 @@ public class shooterSubsystem extends SubsystemBase {
       }
       else if (m_desiredRPM != rpm ) {
         setShooterRPM(rpm);
-        m_initalTime = System.nanoTime();
+        m_initialTime = System.nanoTime();
         m_atSpeed = false;
       }
     }
