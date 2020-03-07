@@ -14,7 +14,7 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
+import frc.robot.Robot;
 import static frc.robot.Constants.turretConstants.kSoftMaxTurretAngle;
 import static frc.robot.Constants.turretConstants.kSoftMinTurretAngle;
 import static frc.robot.Constants.turretConstants.kDegreesPerTick;
@@ -22,31 +22,41 @@ import static frc.robot.Constants.turretConstants.kTimeout;
 import static frc.robot.Constants.turretConstants.kIndex;
 import static frc.robot.Constants.turretConstants.kMaxDegreesPerSecond;
 import static frc.robot.Constants.turretConstants.kMaxDegreesPerSecondSquared;
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.FeedbackDevice;
-import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import static frc.robot.Constants.turretConstants.turret;
+import static frc.robot.Constants.digitalIOConstants.dio7_turretLimit;
 
 public class turretSubsystem extends SubsystemBase {
 
-  private TalonSRX turretDrive = new TalonSRX(Constants.turretConstants.turret);
-  private DigitalInput limit = new DigitalInput(7);
+  private TalonSRX turretDrive = new TalonSRX(turret);
+  private DigitalInput limit = new DigitalInput(dio7_turretLimit);
 
   public turretSubsystem() {
     turretDrive.configFactoryDefault();
     turretDrive.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, kIndex, kTimeout);
 
-    // TODO: fix rotational direction and sensor phase
-    turretDrive.setInverted(true); // CCW is positive direction
-    turretDrive.setSensorPhase(false);
+    if (Robot.isCompBot == true) {
+      turretDrive.setInverted(false);
+      turretDrive.setSensorPhase(false);
+    }
+    else {
+      turretDrive.setInverted(true);
+      turretDrive.setSensorPhase(true);
+    }
 
-    // set soft limits
-    turretDrive.configForwardSoftLimitThreshold((int) (kSoftMaxTurretAngle / kDegreesPerTick));
-    turretDrive.configReverseSoftLimitThreshold((int) (kSoftMinTurretAngle / kDegreesPerTick));
+    if (Robot.isCompBot == true) {
+      // +- 81 deg
+      turretDrive.configForwardSoftLimitThreshold(12308, kTimeout);
+      turretDrive.configReverseSoftLimitThreshold(-11629, kTimeout);
+    }
+    else {
+      // +- 90 deg
+      turretDrive.configForwardSoftLimitThreshold(13808, kTimeout);
+      turretDrive.configReverseSoftLimitThreshold(-13423, kTimeout);
+    }
+
     turretDrive.configForwardSoftLimitEnable(true);
     turretDrive.configReverseSoftLimitEnable(true);
 
-    // TODO: tune max current
     turretDrive.configContinuousCurrentLimit(25);
 
     // zero the position. start position becomes center
@@ -96,7 +106,7 @@ public class turretSubsystem extends SubsystemBase {
    * @param  angle in RADIANS
    */
   public void setAngleRadians(double angleRad) {
-    setAngleDegrees(angleRad * 180.0 / Math.PI);
+    setAngleDegrees(Math.toDegrees(angleRad));
   }
 
   /**
@@ -125,7 +135,7 @@ public class turretSubsystem extends SubsystemBase {
    * @return angle in radians
    */
   public double getAngleRadians() {
-    return(getAngleDegrees() * Math.PI / 180.0);
+    return(Math.toRadians(getAngleDegrees()));
   }
 
   @Override

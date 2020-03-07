@@ -1,56 +1,91 @@
 package frc.robot;
 
-import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
-import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.subsystems.elevatorSubsystem;
-import frc.robot.subsystems.turretSubsystem;
-import com.ctre.phoenix.motorcontrol.*;
+import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DriverStation;
+import frc.robot.RobotContainer;
 
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
   public static boolean manualMode = false;
   public static boolean turretHome = false;
   public char stage2ColorChar = 'U';
-
   private RobotContainer m_robotContainer;
-  // TODO: current limits belong in Constants.java
-  public static SupplyCurrentLimitConfiguration m_currentlimitMain = new SupplyCurrentLimitConfiguration(true, 35, 1, 1);
-  public static SupplyCurrentLimitConfiguration m_currentlimitSecondary = new SupplyCurrentLimitConfiguration(true, 25, 1, 1);
   public PowerDistributionPanel m_pdp = new PowerDistributionPanel();
+  public Compressor Compressor;
+  public static boolean isCompBot = true;
+  SendableChooser <String> chooser = new SendableChooser<>();
 
   @Override
   public void robotInit() {
     m_robotContainer = new RobotContainer();
+    SmartDashboard.putNumber("distance", 0);
+    //RobotContainer.m_limelight.setLEDMode(1);
+    CameraServer.getInstance().startAutomaticCapture();
+    chooser.addOption("Right 3 Ball", "r3");
+    chooser.addOption("Right 4 ball", "r4");
+    chooser.addOption("Right 5 ball", "r5");
+    chooser.addOption("Right 6 ball", "r6");
+    chooser.addOption("Right 6 ball test", "r6t");
+    chooser.addOption("straight on 3", "s3");
+    chooser.addOption("straight on 3 forward", "s3f");
+    chooser.setDefaultOption("Center 3 ball", "m3");
+    SmartDashboard.putData("Auto mode", chooser);
   }
 
   @Override
   public void robotPeriodic() {
     CommandScheduler.getInstance().run();
+    SmartDashboard.putBoolean("limelight on target", RobotContainer.limelightOnTarget);
+    double distance = RobotContainer.m_limelight.getDist(0.6096, 2.5019, 32);
+    SmartDashboard.putNumber("distance", distance);
   }
 
   @Override
   public void disabledInit() {
+    //RobotContainer.m_limelight.setLEDMode(1);
   }
 
   @Override
   public void disabledPeriodic() {
-    // intakeSubsystem.intakeSolenoid.set(false);
-    // intakeSubsystem.intakeSolenoid2.set(true);
   }
 
-  /**
-   * This autonomous runs the autonomous command selected by your {@link RobotContainer} class.
-   */
   @Override
   public void autonomousInit() {
-    m_autonomousCommand = m_robotContainer.getAutonomousCommand();
-    
-    // schedule the autonomous command (example)
+    // TODO: move this to RobotInit() that get's run when the robot is powered on instead of here when
+    // Autonomous starts. Auton command geneneration can take almost a second. Don't waste it during a 
+    // match.
+    if (chooser.getSelected() == "r3"){
+      m_autonomousCommand = m_robotContainer.rightSide3Ball();
+    }
+    if (chooser.getSelected() == "r4"){
+      m_autonomousCommand = m_robotContainer.rightSide4Ball();
+    }
+    if (chooser.getSelected() == "r5"){
+      m_autonomousCommand = m_robotContainer.rightSide5Ball();
+    }
+    if (chooser.getSelected() == "m3"){
+      m_autonomousCommand = m_robotContainer.middle3Ball();
+    }
+    if (chooser.getSelected() == "s3"){
+      m_autonomousCommand = m_robotContainer.straightOn3Ball();
+    }
+    if (chooser.getSelected() == "r6"){
+      m_autonomousCommand = m_robotContainer.rightSide6Ball();
+    }
+    if (chooser.getSelected() == "r6t"){
+      m_autonomousCommand = m_robotContainer.rightSide6BallTest();
+    }
+    if (chooser.getSelected() == "s3f") {
+      m_autonomousCommand = m_robotContainer.straightOn3BallForward();
+    }
+
     if (m_autonomousCommand != null) {
       System.out.println("Scheduling Autonomous Command");
       m_autonomousCommand.schedule();
@@ -67,6 +102,8 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       System.out.println("Cancelling Autonomous Command");
       m_autonomousCommand.cancel();
+      // TODO: each of those commands is going to re-create a new command, the ones with trajectories will take a non-trivial amount of time
+      // maybe create the them in RobotContainer and save them to a variable?
     }
   }
 
@@ -109,5 +146,6 @@ public class Robot extends TimedRobot {
 
   @Override
   public void testPeriodic() {
+    RobotContainer.m_shooter.testMode();
   }
 }

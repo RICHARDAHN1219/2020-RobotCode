@@ -161,7 +161,7 @@ public class limelight {
    */
   public double getDist(double h1, double h2, double a1) {
     double a2 = getTY();
-    double currentDist = ((Math.abs(h2 - h1) / Math.tan((a1 + a2) * Math.PI / 180)) / 1.1154856);
+    double currentDist = ((Math.abs(h2 - h1) / Math.tan((a1 + a2) * Math.PI / 180)));
     return currentDist;
   }
 }

@@ -11,84 +11,82 @@ import com.revrobotics.CANEncoder;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.EncoderType;
-
-import edu.wpi.first.wpilibj.Solenoid;
+import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.elevatorConstants;
+import frc.robot.Robot;
 import frc.robot.RobotContainer;
+import frc.robot.Constants.elevatorConstants;
+import edu.wpi.first.wpilibj.Solenoid;
+import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
 public class elevatorSubsystem extends SubsystemBase {
 
-  private Solenoid stage1Solenoid = new Solenoid(elevatorConstants.solenoid1); // TODO: get correct ids
-  private Solenoid stage2Solenoid = new Solenoid(elevatorConstants.solenoid2);
+  private DoubleSolenoid elevatorDeploySolenoid = new DoubleSolenoid(elevatorConstants.deploySolenoid1, elevatorConstants.deploySolenoid2);
   private Solenoid brakeSolenoid = new Solenoid(elevatorConstants.brakeSolenoid);
+  //private CANSparkMax elevatorWinchP = new CANSparkMax(elevatorConstants.elevatorWinch, MotorType.kBrushless);
+  private WPI_VictorSPX elevatorWinchC = new WPI_VictorSPX(elevatorConstants.elevatorWinch);
+  //private final CANEncoder elevatorEncoder = elevatorWinchP.getEncoder(EncoderType.kHallSensor, 2048);
+  private boolean elevatorDeployed = false;
 
-  public final static CANSparkMax elevatorWinch = new CANSparkMax(elevatorConstants.elevatorWinch, MotorType.kBrushless);
-  private final CANEncoder elevatorEncoder = elevatorWinch.getEncoder(EncoderType.kHallSensor, 2048);
-
-  /**
-   * Creates a new Climber.
-   */
   public elevatorSubsystem() {
+    elevatorDeploySolenoid.set(Value.kReverse);
 
-    stage1Solenoid.set(false);
-    stage2Solenoid.set(false);
-
-    elevatorWinch.restoreFactoryDefaults();
-    elevatorWinch.setIdleMode(CANSparkMax.IdleMode.kBrake);
-    elevatorEncoder.setInverted(false);
-
-
-    // Compressor not needed when solenoid is present.
-    // RobotContainer.airCompressor.start();
-
+    //elevatorWinchP.restoreFactoryDefaults();
+    //elevatorWinchP.setIdleMode(CANSparkMax.IdleMode.kBrake);
+    elevatorWinchC.configFactoryDefault();
+    elevatorWinchC.setNeutralMode(NeutralMode.Brake);
   }
 
-  public void deployStage1() {
-    stage1Solenoid.set(true);
+  public void deployElevator() {
+    setElevatorDeployed(true);
+    elevatorDeploySolenoid.set(Value.kForward);
+    RobotContainer.m_limelight.setCAMMode(1);
+    RobotContainer.m_limelight.setLEDMode(1);
   }
 
-  public void deployStage2() {
-    stage2Solenoid.set(true);
-  }
-
-  public void retract1() {
-    stage1Solenoid.set(false);
-  }
-
-  public void retract2() {
-    stage2Solenoid.set(false);
-  }
-
-  public void raiseRobot() {
-    brakeOff();
-    elevatorWinch.setVoltage(6);
-    //TODO: experimentally find correct voltage
-  }
-
-  public void lowerRobot() {
-    brakeOff();
-    elevatorWinch.setVoltage(-2);
-     //TODO: experimentally find correct voltage
-  }
-
-  public void stopWinch() {
-    elevatorWinch.setVoltage(0);
-    brakeOn();
-  }
-
-  public void brakeOn() {
-    brakeSolenoid.set(true);
+  public void retractElevator() {
+    setElevatorDeployed(false);
+    elevatorDeploySolenoid.set(Value.kReverse);
+    RobotContainer.m_limelight.setCAMMode(0);
   }
 
   public void brakeOff() {
+    brakeSolenoid.set(true);
+  }
+
+  public void brakeOn() {
     brakeSolenoid.set(false);
+  }
+
+  public void setWinchPercentOutput(double Percent) {
+    if (Robot.isCompBot == true) {
+      elevatorWinchC.set(ControlMode.PercentOutput, Percent);
+    }
+    else {
+      //elevatorWinchP.set(Percent);
+    }
+  }
+
+  public void stop() {
+    brakeOn();
+    setWinchPercentOutput(0.0);
+  }
+
+  public void setElevatorDeployed(boolean state) {
+    elevatorDeployed = state;
+  }
+
+  public boolean getElevatorDeployed() {
+    return elevatorDeployed;
   }
 
   @Override
   public void periodic() {
-    SmartDashboard.putNumber("Winch_RPM", elevatorEncoder.getVelocity());
+    //SmartDashboard.putNumber("Winch_RPM", elevatorEncoder.getVelocity());
   }
 
 }

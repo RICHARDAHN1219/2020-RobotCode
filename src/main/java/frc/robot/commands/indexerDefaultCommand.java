@@ -13,13 +13,13 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.indexerSubsystem;
 
-public class indexerSingleIntakeCommand extends CommandBase {
+public class indexerDefaultCommand extends CommandBase {
 
   private indexerSubsystem m_indexer;
   private boolean clearedSensor2 = false;
   private XboxController opController = RobotContainer.m_operatorController;
 
-  public indexerSingleIntakeCommand(indexerSubsystem indexer) {
+  public indexerDefaultCommand(indexerSubsystem indexer) {
     addRequirements(indexer);
     m_indexer = indexer;
   }
@@ -47,12 +47,10 @@ public class indexerSingleIntakeCommand extends CommandBase {
       m_indexer.setKickerPercentOutput(-opController.getTriggerAxis(Hand.kLeft));
     }
 
-    else {
-
       if (m_indexer.ballStaged() == false) {
         clearedSensor2 = true;
       }
-
+        
       if (m_indexer.ballExiting() == true) {
         // Always stop indexer if a ball is at the exit point.
         // Don't eject a ball unless we're shooting.
@@ -63,19 +61,18 @@ public class indexerSingleIntakeCommand extends CommandBase {
         // OK to pull in more balls and continue to fill indexer
         m_indexer.runIndexer();
       }
-      if (clearedSensor2 && m_indexer.ballStaged()) {
-        m_indexer.runOnlyIntake();
-        clearedSensor2 = false;
-      }
-    }
-  }
+    } 
 
   @Override
   public void end(boolean interrupted) {
+    m_indexer.stopIndexer();
   }
 
   @Override
   public boolean isFinished() {
+    if (clearedSensor2 && m_indexer.ballStaged()) {
+      return true;
+    }
     return false;
   }
 }

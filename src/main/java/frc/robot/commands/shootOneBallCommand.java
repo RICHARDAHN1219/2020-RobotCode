@@ -46,7 +46,7 @@ public class shootOneBallCommand extends CommandBase {
 
   @Override
   public void execute() {
-    m_shooter.setShooterRPM(m_shooter.getRPMforDistanceMeter(m_limelight.getDist(0.6096, 2.5019, 32)));
+    m_shooter.setShooterRPM(m_shooter.getRPMforTY(m_limelight.getTY()));
     tv = m_limelight.getTV();
     tx = m_limelight.getTX();
 
@@ -59,7 +59,10 @@ public class shootOneBallCommand extends CommandBase {
     limelightSteerCommand = tx * steer_k;
     m_turret.setPercentOutput(limelightSteerCommand);
 
-    if (tv == 1 && m_shooter.isAtSpeed() == true && tx < 1) {
+    if (tv == 1 && m_shooter.isAtSpeed() == true && Math.abs(tx) < 2.5) {
+      // TODO: this is not the correct way to start a new command, need make a command group
+      // It's the right idea, and needs a command group to schedule one thing after another
+      // I see this command isn't used. Perhapse it's best to delete this file to avoid confusion?
       new indexerSingleFeedCommand(m_indexer);
       finished = true;
     }

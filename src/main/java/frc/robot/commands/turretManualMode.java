@@ -8,17 +8,16 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.GenericHID.HIDType;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.turretSubsystem;
 
 public class turretManualMode extends CommandBase {
+  
   private turretSubsystem m_turret;
-  /**
-   * Creates a new turretManualMode.
-   */
+  XboxController controller = RobotContainer.m_operatorController;
+
   public turretManualMode(turretSubsystem turret) {
     addRequirements(turret);
     m_turret = turret;
@@ -32,12 +31,11 @@ public class turretManualMode extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    XboxController controller = RobotContainer.m_operatorController;
-
+    
     double stickInput = controller.getX(Hand.kLeft);
     if (Math.abs(stickInput) > 0.05) {
       // invert stick, as positive is CCW
-      m_turret.setPercentOutput( - stickInput * 0.25);
+      m_turret.setPercentOutput( - stickInput * 0.5);
     }
     else {
       if (controller.getStickButtonPressed(Hand.kLeft)) {
