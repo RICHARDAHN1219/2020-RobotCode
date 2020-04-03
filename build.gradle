@@ -11,6 +11,9 @@ repositories {
    maven {
     url 'https://pkgs.dev.azure.com/gabrielmcmillan/limelight_library/_packaging/limelight_library_maven/maven/v1'
 }
+maven {
+    url 'https://pkgs.dev.azure.com/SonicSquirrels/geometry/_packaging/geometry/maven/v1'
+}
 }
 
 // Define my targets (RoboRIO) and artifacts (deployable files)
@@ -58,8 +61,8 @@ dependencies {
     nativeDesktopZip wpi.deps.vendor.jni(wpi.platforms.desktop)
 
     testImplementation 'junit:junit:4.12'
-    compile(group: 'com.fearxzombie', name: 'limelight_library', version: 'unspecified')
-
+    compile(group: 'com.fearxzombie', name: 'limelight_library', version: '0.7')
+    compile(group: 'com.team2930.lib.util', name: 'geometry', version: '2.0')
     // Enable simulation gui support. Must check the box in vscode to enable support
     // upon debugging
     simulation wpi.deps.sim.gui(wpi.platforms.desktop, false)
