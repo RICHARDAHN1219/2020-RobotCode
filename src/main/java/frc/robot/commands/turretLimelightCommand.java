@@ -40,7 +40,7 @@ public class turretLimelightCommand extends CommandBase {
   public void execute() {
     // These numbers must be tuned for Comp Robot! Be careful!
     final double STEER_K = 0.1; // how hard to turn toward the target
-    double rpm = m_shooter.getRPMforDistanceMeter(m_limelight.getDist(0.6096, 2.5019, 32));
+    double rpm = m_shooter.getRPMforDistanceMeter(m_limelight.getDist(0.6096, 2.5019, 32, false));
     double tv = m_limelight.getTV();;
     double tx = m_limelight.getTX();
     // boolean m_LimelightHasValidTarget = false;

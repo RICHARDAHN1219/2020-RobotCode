@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -43,7 +44,7 @@ public class Robot extends TimedRobot {
   public void robotPeriodic() {
     CommandScheduler.getInstance().run();
     SmartDashboard.putBoolean("limelight on target", RobotContainer.limelightOnTarget);
-    double distance = RobotContainer.m_limelight.getDist(0.6096, 2.5019, 32);
+    double distance = RobotContainer.m_limelight.getDist(0.6096, 2.5019, 32, false);
     SmartDashboard.putNumber("distance", distance);
   }
 
