@@ -35,6 +35,7 @@ public class Robot extends TimedRobot {
     chooser.addOption("Right 6 ball test", "r6t");
     chooser.addOption("straight on 3", "s3");
     chooser.addOption("straight on 3 forward", "s3f");
+    chooser.addOption("right side 6 reorg", "r6reorg");
     chooser.setDefaultOption("Center 3 ball", "m3");
     SmartDashboard.putData("Auto mode", chooser);
   }
