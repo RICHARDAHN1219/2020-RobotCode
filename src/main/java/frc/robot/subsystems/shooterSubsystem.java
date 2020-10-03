@@ -17,15 +17,17 @@ import com.revrobotics.ControlType;
 import com.revrobotics.EncoderType;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.team2930.lib.util.linearInterpolator;
+
+import frc.robot.Constants;
 import frc.robot.Robot;
 import frc.robot.RobotContainer;
 import frc.robot.Constants.shooterConstants;
 
 public class shooterSubsystem extends SubsystemBase {
 
-  private CANSparkMax neo_shooter1 = new CANSparkMax(shooterConstants.shooter1, MotorType.kBrushless);
-  private CANSparkMax neo_shooter2 = new CANSparkMax(shooterConstants.shooter2, MotorType.kBrushless);
-  private Solenoid hood = new Solenoid(shooterConstants.shooterHood);
+  private CANSparkMax neo_shooter1 = new CANSparkMax(Constants.shooterConstants.shooter1, MotorType.kBrushless);
+  private CANSparkMax neo_shooter2 = new CANSparkMax(Constants.shooterConstants.shooter2, MotorType.kBrushless);
+  private Solenoid hood = new Solenoid(Constants.shooterConstants.shooterHood);
   private CANPIDController m_pidController;
   private CANEncoder m_encoder;
   private double kMaxOutput, kMinOutput;
@@ -54,26 +56,23 @@ public class shooterSubsystem extends SubsystemBase {
   };
 
   private double hoodDownC[][] = {
-    {24.7, 2800}, // 4 feet
-    {12.3, 2900}, // 7 feet
-    {2.75, 3000}, // 10 feet
-    {-2.85, 3100} // 12 feet
+    {24.7, 2750}, // 4 feet
+    {12.3, 2850}, // 7 feet
+    {2.75, 2950}, // 10 feet
+    {-2.85, 3050} // 12 feet
   };
   private double hoodUpC[][] = {
-    {5, 3800}, // 9 feet
-    {-4.3, 3550}, // 13 feet
-    {-9.85, 3650}, // 17 feet
-    {-13.5, 3800}, // 21 feet
-    {-16, 4350} // 25 feet
+    {5, 3750}, // 9 feet
+    {-4.3, 3500}, // 13 feet
+    {-9.85, 3600}, // 17 feet
+    {-13.5, 3750}, // 21 feet
+    {-16, 4300} // 25 feet
   };
 
   public shooterSubsystem() {
     neo_shooter1.restoreFactoryDefaults();
     neo_shooter2.restoreFactoryDefaults();
 
-    //TODO: turn current limits back on
-    //neo_shooter1.setSmartCurrentLimit(35);
-    //neo_shooter2.setSmartCurrentLimit(35);
 
     // set min time to go from neutral to full power
     neo_shooter1.setClosedLoopRampRate(0.5);
@@ -124,6 +123,7 @@ public class shooterSubsystem extends SubsystemBase {
       }
       else if (m_desiredRPM != rpm ) {
         setShooterRPM(rpm);
+        m_initialTime = System.nanoTime();
         m_atSpeed = false;
       }
     }
@@ -171,7 +171,6 @@ public class shooterSubsystem extends SubsystemBase {
     System.out.println("Activating Test Mode");
   }
 
-  // TODO: put pipeline setting in if statement if we make different comp bot pipelines
   public void deployHood() {
     RobotContainer.m_limelight.setPipeline(4);
     if (Robot.isCompBot == true) {
@@ -183,7 +182,6 @@ public class shooterSubsystem extends SubsystemBase {
     hood.set(true);
   }
 
-  // TODO: put pipeline setting in if statement if we make different comp bot pipelines
   public void retractHood() {
     RobotContainer.m_limelight.setPipeline(4);
     if (Robot.isCompBot == true) {
