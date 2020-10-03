@@ -10,41 +10,50 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.can.BaseMotorController;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Robot;
 import frc.robot.Constants.indexConstants;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.Robot;
 import frc.robot.RobotContainer;
-import edu.wpi.first.wpilibj.GenericHID.Hand;
-import frc.robot.subsystems.blinkinSubsystem;
+import frc.robot.Constants.currentLimits;
+import frc.robot.Constants.digitalIOConstants;
 
 public class indexerSubsystem extends SubsystemBase {
 
-  private WPI_TalonSRX indexIntake = new WPI_TalonSRX(indexConstants.indexIntake);
+  private BaseMotorController indexIntake;
+  private BaseMotorController indexKicker;
   private WPI_TalonFX indexBelts = new WPI_TalonFX(indexConstants.indexBelts);
-  private WPI_TalonFX indexKicker = new WPI_TalonFX(indexConstants.indexKicker);
-  private DigitalInput Sensor1 = new DigitalInput(0);
-  private DigitalInput Sensor2 = new DigitalInput(1);
-  private DigitalInput Sensor3 = new DigitalInput(2);
+  private DigitalInput Sensor1 = new DigitalInput(digitalIOConstants.dio0_indexerSensor1);
+  private DigitalInput Sensor2 = new DigitalInput(digitalIOConstants.dio1_indexerSensor2);
+  private DigitalInput Sensor3 = new DigitalInput(digitalIOConstants.dio2_indexerSensor3);
   private boolean ballReady4IndexerLast = false;
-  private boolean ballStagedLast = false;
   private boolean ballExitingLast = false;
-  private boolean ballReady4Indexer;
-  private boolean ballStaged;
-  private boolean ballExiting;
-  private boolean eject = false;
-  private int stateChangeCount = 0;
-  private int exitStateChangeCount = 0;
+  private boolean ejectMode = false;
+  private boolean ejectBallStep1 = false;
+  private boolean ejectBallStep2 = false;
+  private boolean ejectBallStep3 = false;
   private int ballCount = 0;
   private int restageState = 0;
-  private boolean periodic = true;
   private blinkinSubsystem m_blinkin = RobotContainer.m_blinkin;
   private boolean finishedSingleFeed;
 
   public indexerSubsystem() {
+
+    if (Robot.isCompBot) {
+      // Comp Bot uses Victors
+      indexIntake = new WPI_VictorSPX(indexConstants.indexIntake);
+      indexKicker = new WPI_VictorSPX(indexConstants.indexKicker);
+    }
+    else {
+      indexIntake = new WPI_TalonSRX(indexConstants.indexIntake);
+      indexKicker = new WPI_TalonFX(indexConstants.indexKicker);
+    }
+    
     indexBelts.configFactoryDefault();
     indexKicker.configFactoryDefault();
     indexIntake.configFactoryDefault();
@@ -58,9 +67,11 @@ public class indexerSubsystem extends SubsystemBase {
     indexIntake.enableVoltageCompensation(true);
 
     // current limits
-    indexBelts.configSupplyCurrentLimit(Robot.m_currentlimitSecondary);
-    indexKicker.configSupplyCurrentLimit(Robot.m_currentlimitSecondary);
-    indexIntake.configSupplyCurrentLimit(Robot.m_currentlimitSecondary);
+    indexBelts.configSupplyCurrentLimit(currentLimits.m_currentlimitSecondary);
+
+    // configSupplyCurrentLimit not available on Victors
+    //indexKicker.configSupplyCurrentLimit(currentLimits.m_currentlimitSecondary);
+    //indexIntake.configSupplyCurrentLimit(currentLimits.m_currentlimitSecondary);
 
     // Brake mode
     indexBelts.setNeutralMode(NeutralMode.Brake);
@@ -70,7 +81,7 @@ public class indexerSubsystem extends SubsystemBase {
     // Invert
     indexBelts.setInverted(false);
     indexKicker.setInverted(false);
-    indexIntake.setInverted(false);
+    indexIntake.setInverted(true);
 
     indexBelts.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor, 0, 10);
     indexKicker.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor, 0, 10);
@@ -78,6 +89,10 @@ public class indexerSubsystem extends SubsystemBase {
 
     // TalonFX don't have sensor phase only TalonSRX
     indexIntake.setSensorPhase(false);
+    if (Robot.isCompBot) {
+      // only comp bot
+      indexKicker.setSensorPhase(false);
+    }
     
     //Set Ramp-Up
     //indexKicker.configClosedloopRamp(0.1);
@@ -102,100 +117,46 @@ public class indexerSubsystem extends SubsystemBase {
     indexIntake.config_kF(0, 0.0, 10);
 
     // Note: if we add position control, then we need to add a second set of PID parameters
-    // on PID index 1, and then swtich between the Talon PID index when setting RPM and Position
-  }
-
-  private void stash_old_periodic() {
-    boolean ballExiting = false;
-    // temporarily put old periodic stuff here until it get's put into Commands
-    // prevent intake of new balls when we already have 5
-    // EDIT: We are aiming for 4 balls by week 1 until 5 is figured out
-    if (periodic == true) {
-      // move indexer when a new ball is ready to enter the system
-      if (ballReady4Indexer == true) {
-        setIntakePercentOutput(0.6);
-        setBeltsPercentOutput(1);
-        setKickerPercentOutput(0.3);
-        m_blinkin.solid_blue();
-      }
-
-      // stop indexer when balls are properly staged
-      else if (ballStaged == true) {
-        setBeltsPercentOutput(0);
-        m_blinkin.solid_red();
-      }
-
-      // finish staging balls when this error state occurs
-      if ((-1 + (ballCount * 2)) != stateChangeCount) {
-        setIntakePercentOutput(0.6);
-        setBeltsPercentOutput(1);
-        setKickerPercentOutput(0.3);
-        m_blinkin.solid_blue();
-      }
-
-      // finish staging balls when this error state occurs
-      if ((ballCount >= 1) && ballReady4Indexer == false && ballStaged == false) {
-        setIntakePercentOutput(0.6);
-        setBeltsPercentOutput(1);
-        setKickerPercentOutput(0.3);
-        m_blinkin.solid_blue();
-      }
-
-      // automatically stage the balls for shooting when we have 4
-      if (ballCount == 4 && ballExiting == false) {
-        setIntakePercentOutput(0.6);
-        setBeltsPercentOutput(1);
-        m_blinkin.solid_green_lime();
-      }
-
-      // stop indexer when all 4 balls are staged for shooting
-      else if (ballCount == 4 && ballExiting == true) {
-        setIntakePercentOutput(0);
-        setBeltsPercentOutput(0);
-        m_blinkin.solid_pink();
-      }
-
-      if (ballExiting == true) {
-        setIntakePercentOutput(0);
-        setBeltsPercentOutput(0);
-        setKickerPercentOutput(0);
-        m_blinkin.solid_red();
-      }
-
-      if (eject == true) {
-        // setBeltsPercentOutput(1);
-        // setKickerPercentOutput(1);
-        setIntakePercentOutput(0.6);
-        setBeltsRPM(6380);
-        setKickerRPM(6380);
-        m_blinkin.solid_green();
-      }
-
-    }
+    // on PID index 1, and then swtich between the Talon PID index when setting a and Position
   }
 
   @Override
   public void periodic() {
     boolean ballReady4Indexer = !Sensor1.get();
-    boolean ballStaged = !Sensor2.get();
     boolean ballExiting = !Sensor3.get();
     SmartDashboard.putNumber("ball count", ballCount);
-    SmartDashboard.putNumber("state change count", stateChangeCount);
     SmartDashboard.putNumber("restage state", restageState);
     SmartDashboard.putNumber("Belt RPM", indexBelts.getSelectedSensorVelocity() * 600 / 2048);
     SmartDashboard.putNumber("Kicker RPM", indexKicker.getSelectedSensorVelocity() * 600 / 2048);
-    
-    //TODO: No globals. Put this into a command
-    // if (Robot.manualMode == true) {
-    //   setIntakePercentOutput((RobotContainer.m_operatorController.getTriggerAxis(Hand.kRight)
-    //       - RobotContainer.m_operatorController.getTriggerAxis(Hand.kLeft)) * 0.6);
-    //   setBeltsPercentOutput(RobotContainer.m_operatorController.getTriggerAxis(Hand.kRight)
-    //       - RobotContainer.m_operatorController.getTriggerAxis(Hand.kLeft));
-    //   setKickerPercentOutput(RobotContainer.m_operatorController.getTriggerAxis(Hand.kRight)
-    //       - RobotContainer.m_operatorController.getTriggerAxis(Hand.kLeft));
-    
-    //TODO: if we ever put an encoder on intake motor
-    //SmartDashboard.putNumber("Intake RPM", indexIntake.getSelectedSensorVelocity() * 600 / 2048);
+
+    // eject Mode runs the indexer 7 kicker until one ball has been ejected
+    if (ejectMode) {
+      if (ejectBallStep3) {
+        // step 3, run indexer until next ball is waiting
+        SmartDashboard.putNumber("Eject State", 3);
+        if (ballExiting) {
+          ejectMode = false;
+          stopIndexer();
+        }
+      }
+      else if (ejectBallStep2) {
+        // step 2, run indexer until ball leaves
+        SmartDashboard.putNumber("Eject State", 2);
+        if (!ballExiting) {
+          ejectBallStep3 = true;
+        }
+      }
+      else if (ejectBallStep1) {
+        // Step 1, run indexer until ball is ready to shoot
+        SmartDashboard.putNumber("Eject State", 1);
+        if (ballExiting) {
+            ejectBallStep2 = true;
+        }
+      }
+    }
+    else {
+      SmartDashboard.putNumber("Eject State", 0);
+    }
 
     // increase ball count as balls enter the indexer
     if (ballReady4Indexer != ballReady4IndexerLast && ballReady4Indexer == false) {
@@ -203,44 +164,11 @@ public class indexerSubsystem extends SubsystemBase {
     }
     ballReady4IndexerLast = ballReady4Indexer;
 
-    // count number of state changes on ballStaged sensor to combat error states
-    if (ballStaged != ballStagedLast) {
-     stateChangeCount += 1;
-     ballStagedLast = ballStaged;
-    }
-    
     // decrease ballCount as balls leave the indexer
     if (ballExiting != ballExitingLast && ballExiting == false) {
       ballCount -= 1;
-      stateChangeCount = stateChangeCount - 2;
     }
     ballExitingLast = ballExiting;
-
-    // count number of state changes as balls leave the system
-    if (ballExiting != ballExitingLast) {
-      exitStateChangeCount += 1;
-      ballExitingLast = ballExiting;
-    }
-
-    // don't let state changes go below zero
-    if (stateChangeCount < 0) {
-      stateChangeCount = 0;
-    }
-
-    // can't have negative balls in the robot
-    if (ballCount == 0) {
-      stateChangeCount = 0;
-    }
-
-    //TODO: test this autostaging code
-    /*
-    if (ballCount == 4 && ballExiting != true) {
-      runIndexer();
-    }
-    else if (ballCount == 4 && ballExiting == true) {
-      stopIndexer();
-    }
-    */
   }
 
   public void setBeltsPercentOutput(double percent) {
@@ -252,7 +180,7 @@ public class indexerSubsystem extends SubsystemBase {
   }
 
   public void setIntakePercentOutput(double percent) {
-    indexIntake.set(ControlMode.PercentOutput, percent);
+      indexIntake.set(ControlMode.PercentOutput, percent);
   }
 
   public void setBeltsRPM(double rpm) {
@@ -267,10 +195,33 @@ public class indexerSubsystem extends SubsystemBase {
     indexIntake.set(ControlMode.Velocity, rpm * 2048 / 600);
   }
 
+  public void ejectOneBall() {
+
+    if (ejectMode) {
+      // we're alread in ejectMode
+      return;
+    }
+
+    /**
+     * steps:
+     * 1. run indexer until ball exiting (get ready to shoot)
+     * 2. run indexer until ball not exiting (shooting!)
+     * 3. stop indexer when ball ready to exit (ready for next shot)
+     */
+    ejectMode = true;
+    ejectBallStep1 = true;
+    ejectBallStep2 = ballExiting();
+    ejectBallStep3 = false;
+
+    // start the indexer
+    ejectIndexer();
+  }
+
   /** 
    * Stop all motors
    */
   public void stopIndexer() {
+    ejectMode = false;
     setBeltsPercentOutput(0.0);
     setKickerPercentOutput(0.0);
     setIntakePercentOutput(0.0);
@@ -308,56 +259,77 @@ public class indexerSubsystem extends SubsystemBase {
    * runIndexer() - run all indexer motors at ball staging speeds
    */
   public void runIndexer() {
-    setBeltsRPM(6380);
-    setKickerRPM(1914);
-    setIntakePercentOutput(0.6);
-    m_blinkin.solid_green();
-  }
-
-  /**
-   * runKicker() - eject ball from indexer
-   */
-  public void runKicker() {
-    setBeltsRPM(6380);
-    setKickerRPM(6380);
-    setIntakePercentOutput(0.6);
-    m_blinkin.solid_pink();
+    if (Robot.isCompBot == true) {
+      setIntakePercentOutput(1);
+      setBeltsRPM(6380);
+      setKickerPercentOutput(0.3);
+      m_blinkin.solid_green();
+    }
+    else {
+      setIntakePercentOutput(1);
+      setBeltsRPM(6380);
+      setKickerRPM(1914);
+      m_blinkin.solid_green();
+    }
   }
 
   /**
    * runBelts() - run only the belts
    */
   public void runOnlyBelts() {
-    setBeltsRPM(6380);
-    setKickerRPM(0);
-    setIntakePercentOutput(0);
-    m_blinkin.solid_blue();
+    if (Robot.isCompBot == true) {
+      setIntakePercentOutput(0);
+      setBeltsRPM(6380);
+      setKickerPercentOutput(0);
+      m_blinkin.solid_blue();
+    }
+    else {
+      setIntakePercentOutput(0);
+      setBeltsRPM(6380);
+      setKickerRPM(0);
+      m_blinkin.solid_blue();
+    }
   }
 
   /**
    * reverseIndexer() - run all indexer motors backwards at staging speeds
    */
   public void reverseIndexer() {
-    setBeltsRPM(-6380);
-    setKickerRPM(-1914);
-    setIntakePercentOutput(-0.6);
-    m_blinkin.strobe_red();
+    if (Robot.isCompBot == true) {
+      setIntakePercentOutput(-1);
+      setBeltsRPM(-6380);
+      setKickerPercentOutput(-0.3);
+      m_blinkin.strobe_red();
+    }
+    else {
+      setIntakePercentOutput(-1);
+      setBeltsRPM(-6380);
+      setKickerRPM(-1914);
+      m_blinkin.strobe_red();
+    }
   }
 
   /**
    * ejectIndexer() - run all indexer motors at eject/shooting speeds
    */
   public void ejectIndexer() {
-    setBeltsRPM(6380);
-    setKickerRPM(6380);
-    setIntakePercentOutput(0.6);
+    if (Robot.isCompBot == true) {
+      setIntakePercentOutput(1);
+      setBeltsRPM(6380);
+      setKickerPercentOutput(1);
+    }
+    else {
+      setIntakePercentOutput(1);
+      setBeltsRPM(6380);
+      setKickerRPM(6380);
+    }
   }
 
   /**
    * runIntake() - run intake motor
    */
   public void runIntake() {
-    setIntakePercentOutput(0.6);
+    setIntakePercentOutput(1);
   }
 
   /**
@@ -371,9 +343,16 @@ public class indexerSubsystem extends SubsystemBase {
    * runOnlyIntake() - run intake motor and stop the belts and kicker
    */
   public void runOnlyIntake() {
-    setIntakePercentOutput(0.6);
-    setBeltsRPM(0);
-    setKickerRPM(0);
+    if (Robot.isCompBot == true) {
+      setIntakePercentOutput(1);
+      setBeltsRPM(0);
+      setKickerPercentOutput(0);
+    }
+    else {
+      setIntakePercentOutput(1);
+      setBeltsRPM(0);
+      setKickerRPM(0);
+    }
   } 
 
   /**
@@ -387,7 +366,12 @@ public class indexerSubsystem extends SubsystemBase {
    * stopKicker() - stop the kicker motor
    */
   public void stopKicker() {
-    setKickerRPM(0);
+    if (Robot.isCompBot == true) {
+      setKickerPercentOutput(0);
+    }
+    else {
+      setKickerRPM(0);
+    }
   }
 
   /**
@@ -407,46 +391,12 @@ public class indexerSubsystem extends SubsystemBase {
   }
 
   /**
-   * getStateChangeCount() - return the number of state changes on the staging sensor
-   * 
-   * @return int state change count
-   */
-  public int getStateChangeCount() {
-    return stateChangeCount;
-  }
-
-  /**
-   * setBallCount() - set the number of balls in the indexer
-   */
-  public void setStateChangeCount(int StateChangeCount) {
-    stateChangeCount = StateChangeCount;
-  }
-
-  /**
-   * getExitStateChangeCount() - return the number of state changes on the exiting sensor
-   * 
-   * @return int exit state change count
-   */
-  public int getExitStateChangeCount() {
-    return exitStateChangeCount;
-  }
-
-  /**
    * getRestageState() - return the state number of the restage command
    * 
    * @return int restage state
    */
   public int getRestageState() {
     return restageState;
-  }
-
-  /**
-   * getBallStagedLast() - get the last state of the stagind sensor
-   * 
-   * @return boolean ball staged last
-   */
-  public boolean getBallStagedLast() {
-    return ballStagedLast;
   }
 
   /**

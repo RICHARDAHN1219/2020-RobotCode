@@ -23,7 +23,7 @@ public class indexerRestageCommand extends CommandBase {
   @Override
   public void initialize() {
     m_indexer.setRestageState(0);
-    final int restageEndBallCount = m_indexer.getBallCount();
+    restageEndBallCount = m_indexer.getBallCount();
   }
 
   @Override
@@ -33,8 +33,12 @@ public class indexerRestageCommand extends CommandBase {
       m_indexer.reverseIndexer();
     }
 
+    if (m_indexer.ballReadyForIndexer() == true && m_indexer.ballStaged() == true) {
+      m_indexer.runIndexer();
+    }
+
     if (m_indexer.ballReadyForIndexer() == true && m_indexer.getRestageState() == 0) {
-      m_indexer.stopIndexer();
+      m_indexer.runIndexer();
       m_indexer.setRestageState(1);
     }
 
@@ -42,7 +46,7 @@ public class indexerRestageCommand extends CommandBase {
       m_indexer.runIndexer();
     }
 
-    if (!m_indexer.ballStaged() == true && m_indexer.getRestageState() == 1) {
+    if (m_indexer.ballStaged() == true && m_indexer.getRestageState() == 1) {
       m_indexer.stopIndexer();
       m_indexer.setRestageState(2);
     }
@@ -51,7 +55,7 @@ public class indexerRestageCommand extends CommandBase {
   @Override
   public void end(boolean interrupted) {
     m_indexer.setBallCount(restageEndBallCount);
-    m_indexer.setStateChangeCount(2 * restageEndBallCount);
+    m_indexer.stopIndexer();
   }
 
   @Override

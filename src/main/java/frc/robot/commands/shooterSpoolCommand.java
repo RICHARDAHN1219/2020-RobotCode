@@ -8,36 +8,43 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.elevatorSubsystem;
-public class winchDown extends CommandBase {
-  elevatorSubsystem m_elevator;
-  /**
-   * Creates a new winchDown.
-   */
-  public winchDown(elevatorSubsystem elevator) {
-    m_elevator = elevator;
-    addRequirements(m_elevator);
-    // Use addRequirements() here to declare subsystem dependencies.
+import frc.robot.Robot;
+import frc.robot.RobotContainer;
+import frc.robot.subsystems.shooterSubsystem;
+
+public class shooterSpoolCommand extends CommandBase {
+  
+  shooterSubsystem m_shooter;
+  
+  public shooterSpoolCommand(shooterSubsystem shooter) {
+    addRequirements(shooter);
+    m_shooter = shooter;
   }
 
-  // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_elevator.lowerRobot();
+    if (Robot.isCompBot == true) {
+      m_shooter.setShooterPID(0.0005, 0.000000, 0, 0.00018, 250);
+      m_shooter.setShooterRPM(2800);
+    }
+    else {
+      m_shooter.setShooterPID(0.0004, 0.00000025, 0, 0.0002, 250);
+      m_shooter.setShooterRPM(2600);
+    }
+    
+    RobotContainer.m_limelight.setLEDMode(0);
   }
 
-  // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
   }
 
-  // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_elevator.stopWinch();
+    m_shooter.setShooterRPM(0);
+    //RobotContainer.m_limelight.setLEDMode(1);
   }
 
-  // Returns true when the command should end.
   @Override
   public boolean isFinished() {
     return false;

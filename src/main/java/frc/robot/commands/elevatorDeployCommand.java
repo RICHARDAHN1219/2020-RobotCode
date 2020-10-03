@@ -8,20 +8,20 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.indexerSubsystem;
+import frc.robot.subsystems.elevatorSubsystem;
 
-public class indexerStageForShootingCommand extends CommandBase {
+public class elevatorDeployCommand extends CommandBase {
 
-  indexerSubsystem m_indexer;
+  elevatorSubsystem m_elevator;
 
-  public indexerStageForShootingCommand(indexerSubsystem indexer) {
-    addRequirements(indexer);
-    m_indexer = indexer;
+  public elevatorDeployCommand(elevatorSubsystem elevator) {
+    addRequirements(elevator);
+    m_elevator = elevator;
   }
 
   @Override
   public void initialize() {
-    m_indexer.runIndexer();
+   m_elevator.deployElevator();
   }
 
   @Override
@@ -30,15 +30,10 @@ public class indexerStageForShootingCommand extends CommandBase {
 
   @Override
   public void end(boolean interrupted) {
-    m_indexer.stopIndexer();
   }
 
   @Override
   public boolean isFinished() {
-    if (m_indexer.ballExiting() == true) {
-      return true;
-    }
-    
     return false;
   }
 }

@@ -10,18 +10,18 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.indexerSubsystem;
 
-public class indexerStageForShootingCommand extends CommandBase {
+public class indexerReverseEjectCommand extends CommandBase {
 
-  indexerSubsystem m_indexer;
+  private indexerSubsystem m_indexer;
 
-  public indexerStageForShootingCommand(indexerSubsystem indexer) {
+  public indexerReverseEjectCommand(indexerSubsystem indexer) {
     addRequirements(indexer);
     m_indexer = indexer;
   }
 
   @Override
   public void initialize() {
-    m_indexer.runIndexer();
+    m_indexer.reverseIndexer();
   }
 
   @Override
@@ -35,10 +35,6 @@ public class indexerStageForShootingCommand extends CommandBase {
 
   @Override
   public boolean isFinished() {
-    if (m_indexer.ballExiting() == true) {
-      return true;
-    }
-    
     return false;
   }
 }

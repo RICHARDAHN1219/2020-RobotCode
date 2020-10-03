@@ -1,12 +1,20 @@
 plugins {
     id "java"
-    id "edu.wpi.first.GradleRIO" version "2020.2.2"
+    id "edu.wpi.first.GradleRIO" version "2020.3.2"
 }
 
 sourceCompatibility = JavaVersion.VERSION_11
 targetCompatibility = JavaVersion.VERSION_11
 
 def ROBOT_MAIN_CLASS = "frc.robot.Main"
+repositories {
+   maven {
+    url 'https://pkgs.dev.azure.com/gabrielmcmillan/limelight_library/_packaging/limelight_library_maven/maven/v1'
+}
+maven {
+    url 'https://pkgs.dev.azure.com/SonicSquirrels/geometry/_packaging/geometry/maven/v1'
+}
+}
 
 // Define my targets (RoboRIO) and artifacts (deployable files)
 // This is added by GradleRIO's backing project EmbeddedTools.
@@ -53,7 +61,8 @@ dependencies {
     nativeDesktopZip wpi.deps.vendor.jni(wpi.platforms.desktop)
 
     testImplementation 'junit:junit:4.12'
-
+    compile(group: 'com.fearxzombie', name: 'limelight_library', version: '0.7')
+    compile(group: 'com.team2930.lib.util', name: 'geometry', version: '2.0')
     // Enable simulation gui support. Must check the box in vscode to enable support
     // upon debugging
     simulation wpi.deps.sim.gui(wpi.platforms.desktop, false)

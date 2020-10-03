@@ -7,11 +7,12 @@
 
 package frc.robot.commands;
 
+import com.fearxzombie.limelight;
+
 import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.indexerSubsystem;
-import frc.robot.subsystems.limelightSubsystem;
 import frc.robot.subsystems.shooterSubsystem;
 import frc.robot.subsystems.turretSubsystem;
 
@@ -20,7 +21,7 @@ public class shootOneBallCommand extends CommandBase {
   indexerSubsystem m_indexer;
   turretSubsystem m_turret;
   shooterSubsystem m_shooter;
-  limelightSubsystem m_limelight;
+  limelight m_limelight;
 
   private double steer_k = 0.1;
   private double tv;
@@ -28,15 +29,14 @@ public class shootOneBallCommand extends CommandBase {
   private double limelightSteerCommand = 0;
   private boolean finished;
   
-  public shootOneBallCommand(indexerSubsystem indexer, turretSubsystem turret, shooterSubsystem shooter, limelightSubsystem limelight) {
+  public shootOneBallCommand(indexerSubsystem indexer, turretSubsystem turret, shooterSubsystem shooter, limelight ll_util) {
     addRequirements(indexer);
     addRequirements(turret);
     addRequirements(shooter);
-    addRequirements(limelight);
     m_indexer = indexer;
     m_turret = turret;
     m_shooter = shooter;
-    m_limelight = limelight;
+    m_limelight = ll_util;
   }
 
   @Override
@@ -46,7 +46,7 @@ public class shootOneBallCommand extends CommandBase {
 
   @Override
   public void execute() {
-    m_shooter.setShooterRPM(m_shooter.getRPMforDistanceMeter(m_limelight.getDist()));
+    m_shooter.setShooterRPM(m_shooter.getRPMforTY(m_limelight.getTY()));
     tv = m_limelight.getTV();
     tx = m_limelight.getTX();
 
@@ -59,7 +59,10 @@ public class shootOneBallCommand extends CommandBase {
     limelightSteerCommand = tx * steer_k;
     m_turret.setPercentOutput(limelightSteerCommand);
 
-    if (tv == 1 && m_shooter.isAtSpeed() == true && tx < 1) {
+    if (tv == 1 && m_shooter.isAtSpeed() == true && Math.abs(tx) < 2.5) {
+      // TODO: this is not the correct way to start a new command, need make a command group
+      // It's the right idea, and needs a command group to schedule one thing after another
+      // I see this command isn't used. Perhapse it's best to delete this file to avoid confusion?
       new indexerSingleFeedCommand(m_indexer);
       finished = true;
     }

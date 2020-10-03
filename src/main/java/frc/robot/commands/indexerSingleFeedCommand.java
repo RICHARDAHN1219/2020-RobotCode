@@ -24,7 +24,7 @@ public class indexerSingleFeedCommand extends CommandBase {
   @Override
   public void initialize() {
     clearedSensor3 = false;
-    final int startBallCount = m_indexer.getBallCount();
+    startBallCount = m_indexer.getBallCount();
     m_indexer.setFinishedSingleFeed(false);
   }
 

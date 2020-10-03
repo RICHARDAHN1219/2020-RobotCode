@@ -24,6 +24,7 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.sensors.PigeonIMU;
+import edu.wpi.first.wpilibj.SlewRateLimiter;
 import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
@@ -43,13 +44,17 @@ public class driveSubsystem extends SubsystemBase {
   private WPI_TalonFX falcon3_rightLead   = new WPI_TalonFX(driveConstants.falcon3_rightLead);
   private WPI_TalonFX falcon4_rightFollow = new WPI_TalonFX(driveConstants.falcon4_rightFollow);
 
+  private boolean driveInvert = false;
+
+  // limit max ramp rate of joystick velocity and rotation. Set max units/sec.
+  private SlewRateLimiter speedFilter = new SlewRateLimiter(0.25);
+  private SlewRateLimiter rotationFilter = new SlewRateLimiter(0.1);
+
   // OLD Gyro, NAVX:
   //    private final AHRS m_gyro = new AHRS(SPI.Port.kMXP);
 
   // New Gyro, pigeon IMU on the CAN bus
   private PigeonIMU m_gyro = new PigeonIMU(driveConstants.pigeonCANid);
-
-  // Note: We do not use SpeedController. We use CAN based Lead/Follow. 
 
   private final DifferentialDrive m_drive;
   private final SimpleMotorFeedforward  m_feedforward = 
@@ -83,6 +88,9 @@ public class driveSubsystem extends SubsystemBase {
 
     // Voltage limits
     setVoltageLimit(11);
+
+    // set Ramp up speed, time in seconds (smaller is more responseive, 0 disables)
+    // configOpenLoopRampRate(0.25);
     
     // set brake mode
     falcon1_leftLead.setNeutralMode(NeutralMode.Brake);
@@ -110,6 +118,10 @@ public class driveSubsystem extends SubsystemBase {
     falcon3_rightLead.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor, 0, driveTimeout);
 
     m_drive.setRightSideInverted(false);
+
+    // TODO: only set open loop ramp AFTER auton, so not to conflict with path follow
+    falcon1_leftLead.configOpenloopRamp(0.25);
+    falcon3_rightLead.configOpenloopRamp(0.25);
 
     resetEncoders();
     m_odometry = new DifferentialDriveOdometry(Rotation2d.fromDegrees(getHeading()));
@@ -286,6 +298,8 @@ public class driveSubsystem extends SubsystemBase {
    * @param rot the commanded rotation
    */
   public void arcadeDrive(double fwd, double rot) {
+    // use slew rate filters to implement ramp up/down of speed and rotation
+    //m_drive.arcadeDrive(speedFilter.calculate(fwd), rotationFilter.calculate(rot));
     m_drive.arcadeDrive(fwd, rot);
   }
 
@@ -368,8 +382,8 @@ public class driveSubsystem extends SubsystemBase {
     if (maxV > 12.0) {
       maxV = 12.0;
     }
-    if (maxV < 0.0) {
-      maxV = 0.0;
+    if (maxV < 2.0) {
+      maxV = 2.0;
     }
     falcon1_leftLead.configVoltageCompSaturation(maxV);
     falcon1_leftLead.enableVoltageCompensation(true);
@@ -379,6 +393,19 @@ public class driveSubsystem extends SubsystemBase {
     falcon3_rightLead.enableVoltageCompensation(true);
     falcon4_rightFollow.configVoltageCompSaturation(maxV);
     falcon4_rightFollow.enableVoltageCompensation(true);
+  }
+
+  /**
+   * configOpenLoopRampRate() - Set minimum desired time to go from neutral to full throttle. 
+   *      A value of '0' will disable the ramp.
+   *  
+   * @param secondsFromNeutralToFull
+   */
+  public void configOpenLoopRampRate(double secondsFromNeutralToFull) {
+    falcon1_leftLead.configOpenloopRamp(secondsFromNeutralToFull, driveTimeout);
+    falcon2_leftFollow.configOpenloopRamp(secondsFromNeutralToFull, driveTimeout);
+    falcon3_rightLead.configOpenloopRamp(secondsFromNeutralToFull, driveTimeout);
+    falcon4_rightFollow.configOpenloopRamp(secondsFromNeutralToFull, driveTimeout);
   }
 
   /**
@@ -406,6 +433,14 @@ public class driveSubsystem extends SubsystemBase {
   public void disableCurrentLimit() {
     // not completely disabled, 4x80 amps is 240Amps, wich is almost 100% of the battery output
     setCurrentLimit(new SupplyCurrentLimitConfiguration(true, 80, 60, 1));
+  }
+
+  public boolean getDriveInvert() {
+    return driveInvert;
+  }
+
+  public void setDriveInvert(boolean invert) {
+    driveInvert = invert;
   }
 
 }

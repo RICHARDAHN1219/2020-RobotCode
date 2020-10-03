@@ -7,14 +7,19 @@
 
 package frc.robot;
 
+import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveKinematics;
 
 public final class Constants {
+    public static final class currentLimits {
+        public static SupplyCurrentLimitConfiguration m_currentlimitMain = new SupplyCurrentLimitConfiguration(true, 35, 1, 1);
+        public static SupplyCurrentLimitConfiguration m_currentlimitSecondary = new SupplyCurrentLimitConfiguration(true, 25, 1, 1);
+    }
     public static final class driveConstants {
-        public static final int falcon1_leftLead = 1;
-        public static final int falcon2_leftFollow = 3;
-        public static final int falcon3_rightLead = 0;
-        public static final int falcon4_rightFollow = 2;
+        public static final int falcon1_leftLead = 12;
+        public static final int falcon2_leftFollow = 13;
+        public static final int falcon3_rightLead = 14;
+        public static final int falcon4_rightFollow = 15;
         public static final int driveTimeout = 30;
         public static final int pigeonCANid = 15;
         public static final int driveController = 0;
@@ -27,8 +32,8 @@ public final class Constants {
 
         // Comp bot track width (center of wheel to center of wheel) is 0.627m
         public static final double kTrackwidthMeters = 0.627;
-        public static final DifferentialDriveKinematics kDriveKinematics =
-                new DifferentialDriveKinematics(kTrackwidthMeters);
+        public static final DifferentialDriveKinematics kDriveKinematics = 
+            new DifferentialDriveKinematics(kTrackwidthMeters);
 
         // Determined using frc-characterization tool
         public static final double ksVolts = 0.05; // 0.0491;
@@ -57,14 +62,12 @@ public final class Constants {
                 (kDistancePerWheelRevolutionMeters * kGearReduction) / (double) kEncoderCPR;
     }
     public static final class AutoConstants {
-        public static final double kMaxSpeedMetersPerSecond = .5;
-        public static final double kMaxAccelerationMetersPerSecondSquared = 0.25;
         // Reasonable baseline values for a RAMSETE follower in units of meters and seconds
         public static final double kRamseteB = 2;
         public static final double kRamseteZeta = 0.7;
     }
     public static final class turretConstants {
-        public static final int turret = 11;
+        public static final int turret = 5;
         public static final int kSoftMaxTurretAngle = 90;
         public static final int kSoftMinTurretAngle = -90;
         public static final int kEncoderCPR = 4096; // CTRE Quadrature?
@@ -72,7 +75,7 @@ public final class Constants {
         // BAG motor controlled by Talon
         // Turret inner teeth = 264. * 360
         // gear teeth = 20
-        // gearbox = 30:1
+        // gearbox = 35:1
         // Total motor to turret rotation ration: 1/396
         // public static final double kGearRation = 1 / 396.0; // turret rotations per motor
         // rotation
@@ -90,27 +93,27 @@ public final class Constants {
         public static final int kIndex = 0; // Talon PID index
     }
     public static final class shooterConstants {
-        public static final int shooter1 = 4;
-        public static final int shooter2 = 5;
+        public static final int shooter1 = 16;
+        public static final int shooter2 = 17;
         public static final int shooterTimeout = 30;
         public static final int shooterSlotIdx = 0;
-        public static final int shooterHood = 1;
+        public static final int shooterHood = 7;
     }
     public static final class elevatorConstants {
-        public static final int solenoid1 = 6;
-        public static final int solenoid2 = 7;
+        public static final int deploySolenoid1 = 0;
+        public static final int deploySolenoid2 = 2;
+        public static final int brakeSolenoid = 6;
         public static final int elevatorWinch = 12;
-        public static final int brakeSolenoid = 14;
         public static final int elevatorPivotTimeout = 30;
         public static final int elevatorSlotIdx = 1;
     }
     public static final class indexConstants {
         public static final int indexIntake = 8;
-        public static final int indexBelts = 9;
-        public static final int indexKicker = 10;
+        public static final int indexBelts = 10;
+        public static final int indexKicker = 11;
     }
     public static final class controlPanelConstants {
-        public static final int motor = 13;
+        public static final int motor = 20;
         public static final int controlPanelSlotIdx = 0;
         public static final int PIDLoopIdx = 0;
         public static final int timeoutMs = 30;
@@ -119,11 +122,17 @@ public final class Constants {
         public static final Gains gains = new Gains(0.15, 0.0, 0.0, 0.0, 0, 1.0);
     }
     public static final class intakeConstants {
-        public static final int intakeMotor = 20;
-        public static final int intakeSolenoid = 6;
-        public static final int intakeSolenoid2 = 7;
+        public static final int intakeMotor = 9;
+        public static final int intakeSolenoid = 5;
     }
     public static final class pwmConstants {
         public static final int blinkin = 0;
+    }
+    public static final class digitalIOConstants {
+        // assign digital IO (DIO) ports 0-9
+        public static final int dio0_indexerSensor1 = 0;
+        public static final int dio1_indexerSensor2 = 1;
+        public static final int dio2_indexerSensor3 = 2;
+        public static final int dio7_turretLimit = 7;
     }
 }

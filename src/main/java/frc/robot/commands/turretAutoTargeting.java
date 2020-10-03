@@ -7,21 +7,27 @@
 
 package frc.robot.commands;
 
+import com.fearxzombie.limelight;
+
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Translation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.driveSubsystem;
-import frc.robot.subsystems.limelightSubsystem;
+import frc.robot.subsystems.shooterSubsystem;
 import frc.robot.subsystems.turretSubsystem;
+import com.team2930.lib.util.geometry;
 
 public class turretAutoTargeting extends CommandBase {
   private turretSubsystem m_turret;
   private Translation2d m_target;
   private driveSubsystem m_drive;
-  private limelightSubsystem m_limelight;
+  private limelight m_limelight;
   private double m_targetAngleDegrees = 0.0;
   private double m_errorDegrees = 0.0;
+  double h1 = 0.6096;
+  double h2 = 2.5019;
+  double a1 = 32;
 
   // kP for limelight must be 1.0 or less
   private double kPlimelight = 0.5;
@@ -37,15 +43,14 @@ public class turretAutoTargeting extends CommandBase {
    * @param drive  Subsystem
    * @param limelight Subsystem
    */
-  public turretAutoTargeting(Translation2d target, turretSubsystem turret, driveSubsystem drive,
-      limelightSubsystem limelight) {
+  public turretAutoTargeting(Translation2d target, turretSubsystem turret, driveSubsystem drive, limelight ll_util) {
     m_target = target;
     m_turret = turret;
     m_drive = drive;
-    m_limelight = limelight;
+    m_limelight = ll_util;
     // NOTE: do not add drive to addRequirements() or else we cannot drive while targeting
     // IMPORTANT: use READ ONLY methods from m_drive
-    addRequirements(turret, limelight);
+    addRequirements(turret);
   }
 
   // Called when the command is initially scheduled.
@@ -64,11 +69,11 @@ public class turretAutoTargeting extends CommandBase {
     Pose2d future_pose = m_drive.getFuturePose(0.1);
 
     // calculate m_targetAngleDegrees from robot to target
-    m_targetAngleDegrees = angle2TargetDegrees(future_pose, m_target);
+    m_targetAngleDegrees = geometry.angle2TargetDegrees(future_pose, m_target);
     SmartDashboard.putNumber("OdometryAngle2Target", m_targetAngleDegrees);
 
     // estimated distance to target based on odometery
-    double dist_pose = distance2Target(future_pose, m_target);
+    double dist_pose = geometry.distance2Target(future_pose, m_target);
 
     double ll_angleDegrees = 0;
     if ((int) m_limelight.getTV() == 1 ) {
@@ -83,7 +88,7 @@ public class turretAutoTargeting extends CommandBase {
 
     SmartDashboard.putNumber("Angle2Target", m_targetAngleDegrees);
     SmartDashboard.putNumber("Dist2Target", dist_pose);
-    SmartDashboard.putNumber("LL_Dist2Target", m_limelight.getDist());
+    SmartDashboard.putNumber("LL_Dist2Target", m_limelight.getDist(h1, h2, a1));
     SmartDashboard.putNumber("AngleError", m_errorDegrees);
     SmartDashboard.putNumber("LL_Angle", ll_angleDegrees);
   }
@@ -120,56 +125,4 @@ public class turretAutoTargeting extends CommandBase {
   public boolean isFinished() {
     return false;
   }
-
-
-  // ------- Utility functions below ---------
-
-  /**
-   * Distance from robot to a given point on the field
-   * 
-   * @param pose     of the robot
-   * @param location of the target
-   * 
-   * @return distance in meters
-   **/
-  public static double distance2Target(Pose2d robotPose, Translation2d target) {
-    return robotPose.getTranslation().getDistance(target);
-  }
-
-  /**
-   * Angle between robot pose and target
-   * 
-   * @param pose     of the robot
-   * @param location of the target
-   * 
-   * @return angle to target in Radians
-   **/
-  public static double angle2TargetRadians(Pose2d robotPose, Translation2d target) {
-    double robot_angle_to_field = robotPose.getRotation().getRadians();
-    double angle_to_target = Math.atan2(robotPose.getTranslation().getX() - target.getX(),
-        robotPose.getTranslation().getY() - target.getY());
-    double theta = angle_to_target - robot_angle_to_field;
-
-    // make sure resulting angle is between -pi and pi (or -180 and 180 degrees)
-    if (theta < -Math.PI) {
-      theta = theta + 2 * Math.PI;
-    } else if (theta > Math.PI) {
-      theta = theta - 2 * Math.PI;
-    }
-
-    return theta;
-  }
-
-  /**
-   * Angle between robot pose and target
-   * 
-   * @param pose     of the robot
-   * @param location of the target
-   * 
-   * @return angle to target in Degrees
-   **/
-  public static double angle2TargetDegrees(Pose2d robotPose, Translation2d target) {
-    return Math.toDegrees(angle2TargetRadians(robotPose, target));
-  }
-
 }

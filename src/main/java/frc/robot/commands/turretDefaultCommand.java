@@ -5,38 +5,43 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package frc.robot.subsystems;
+package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-public class winchDown extends CommandBase {
-  elevatorSubsystem m_elevator;
-  /**
-   * Creates a new winchDown.
-   */
-  public winchDown(elevatorSubsystem elevator) {
-    m_elevator = elevator;
-    addRequirements(m_elevator);
-    // Use addRequirements() here to declare subsystem dependencies.
+import frc.robot.RobotContainer;
+import frc.robot.subsystems.turretSubsystem;
+
+public class turretDefaultCommand extends CommandBase {
+  
+  turretSubsystem m_turret;
+  XboxController opController = RobotContainer.m_operatorController;
+
+  public turretDefaultCommand(turretSubsystem turret) {
+    addRequirements(turret);
+    m_turret = turret;
   }
 
-  // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_elevator.lowerRobot();
   }
 
-  // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    if (Math.abs(opController.getX(Hand.kLeft)) >= 0.1) {
+      m_turret.setPercentOutput(opController.getX(Hand.kLeft) * 0.5);
+    }
+
+    if (opController.getStartButton() == true) {
+      m_turret.turretHome();
+    }
   }
 
-  // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_elevator.stopWinch();
   }
 
-  // Returns true when the command should end.
   @Override
   public boolean isFinished() {
     return false;

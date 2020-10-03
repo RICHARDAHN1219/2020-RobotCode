@@ -5,38 +5,34 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package frc.robot.subsystems;
+package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-public class winchUp extends CommandBase {
-  elevatorSubsystem m_elevator;
-  /**
-   * Creates a new ElevatorWinch.
-   */
-  public winchUp(elevatorSubsystem elevator) {
-    m_elevator = elevator;
-    addRequirements(m_elevator);
-    // Use addRequirements() here to declare subsystem dependencies.
+import frc.robot.subsystems.shooterSubsystem;
+
+public class shooterHoodCommand extends CommandBase {
+  
+  shooterSubsystem m_shooter;
+
+  public shooterHoodCommand(shooterSubsystem shooter) {
+    addRequirements(shooter);
+    m_shooter = shooter;
   }
 
-  // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_elevator.raiseRobot();
+    m_shooter.deployHood();
   }
 
-  // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
   }
 
-  // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_elevator.stopWinch();
+    m_shooter.retractHood();
   }
 
-  // Returns true when the command should end.
   @Override
   public boolean isFinished() {
     return false;
