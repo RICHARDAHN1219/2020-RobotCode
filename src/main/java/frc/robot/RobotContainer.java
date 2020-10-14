@@ -100,6 +100,7 @@ public class RobotContainer {
       // Left Trigger - climber down (raise robot)
       // Right Trigger - climber up (lower robot)
       // Right Bumper - invert drive controls
+      // Left Bumper - Slow down robot by 1/2
       driverYButton.whenPressed(new InstantCommand(() -> m_turret.setAngleDegrees(0), m_turret).andThen(() -> m_elevator.deployElevator()));
       driverXButton.whenPressed(() -> m_elevator.retractElevator());
       driverRightBumper.whenPressed(new driveInvertCommand(m_drive));
