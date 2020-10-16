@@ -90,9 +90,9 @@ public class shooterSubsystem extends SubsystemBase {
     neo_shooter2.follow(neo_shooter1, true);
     m_pidController = neo_shooter1.getPIDController();
     m_encoder = neo_shooter1.getEncoder(EncoderType.kHallSensor, 4096);
-    kMaxOutput = 1; 
-
-    kMinOutput = -0.5;
+    
+    kMaxOutput = 0.9; 
+    kMinOutput = -0.0;
     m_pidController.setOutputRange(kMinOutput, kMaxOutput);
 
     // Build the linear Interpolators just once each.
@@ -159,7 +159,8 @@ public class shooterSubsystem extends SubsystemBase {
     }
     else {
       m_pidController.setOutputRange(kMinOutput, kMaxOutput);
-      setShooterPID(0.0005, 0.00000015, 0, 0.0002, 600);
+      // Old values: setShooterPID(0.0005, 0.00000015, 0, 0.0002, 600);
+      setShooterPID(0.0004, 0.000001, 0.0, 0.0002, 200);
     }
     m_pidController.setReference(desiredRPM, ControlType.kVelocity);
     SmartDashboard.putNumber("ShooterRPM", m_desiredRPM);
