@@ -14,9 +14,6 @@ repositories {
 maven {
     url 'https://pkgs.dev.azure.com/SonicSquirrels/geometry/_packaging/geometry/maven/v1'
 }
-   maven {
-    url 'https://pkgs.dev.azure.com/gabrielmcmillan/datum_library/_packaging/datum_library/maven/v1'
-}
 }
 
 // Define my targets (RoboRIO) and artifacts (deployable files)
@@ -66,7 +63,6 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     compile(group: 'com.fearxzombie', name: 'limelight_library', version: '20.07')
     compile(group: 'com.team2930.lib.util', name: 'geometry', version: '2.0')
-    compile(group: 'com.jandjstudios', name: 'jandj_datum', version: '0.5')
     // Enable simulation gui support. Must check the box in vscode to enable support
     // upon debugging
     simulation wpi.deps.sim.gui(wpi.platforms.desktop, false)
