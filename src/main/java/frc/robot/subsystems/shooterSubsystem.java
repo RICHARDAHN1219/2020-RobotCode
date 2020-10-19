@@ -35,25 +35,9 @@ public class shooterSubsystem extends SubsystemBase {
   private boolean m_atSpeed = false;
   private long m_initialTime = 0;
   private linearInterpolator m_lt;
-  private linearInterpolator m_lt_hoodDownP;
-  private linearInterpolator m_lt_hoodUpP;
   private linearInterpolator m_lt_hoodDownC;
   private linearInterpolator m_lt_hoodUpC;
   private int m_idleRPM = 1500;
-  
-  private double hoodDownP[][] = {
-    {15.4, 2600}, // 4.5 feet
-    {3, 2650}, // 7 feet
-    {-7.2, 2750}, // 10 feet
-    {-12.2, 2900} // 12 feet
-  };
-  private double hoodUpP[][] = {
-    {8, 3900}, // 9 feet
-    {-0.1, 3550}, // 13 feet
-    {-5, 3600}, // 17 feet
-    {-8.5, 3800}, // 21 feet
-    {-11, 4100} // 25 feet
-  };
 
   private double hoodDownC[][] = {
     {24.7, 2750}, // 4 feet
@@ -82,9 +66,7 @@ public class shooterSubsystem extends SubsystemBase {
     neo_shooter1.setIdleMode(CANSparkMax.IdleMode.kCoast);
     neo_shooter2.setIdleMode(CANSparkMax.IdleMode.kCoast);
     
-    if (Robot.isCompBot == true) {
-      neo_shooter1.setInverted(true);
-    }
+    neo_shooter1.setInverted(true);
 
     neo_shooter2.follow(neo_shooter1, true);
     m_pidController = neo_shooter1.getPIDController();
@@ -97,8 +79,6 @@ public class shooterSubsystem extends SubsystemBase {
     // Build the linear Interpolators just once each.
     m_lt_hoodUpC = new linearInterpolator(hoodUpC);
     m_lt_hoodDownC = new linearInterpolator(hoodDownC);
-    m_lt_hoodUpP = new linearInterpolator(hoodUpP);
-    m_lt_hoodDownP = new linearInterpolator(hoodDownP);
 
     // pick a default, so that it is never undefined
     m_lt = m_lt_hoodDownC;
@@ -174,23 +154,13 @@ public class shooterSubsystem extends SubsystemBase {
 
   public void deployHood() {
     RobotContainer.m_limelight.setPipeline(4);
-    if (Robot.isCompBot == true) {
-      m_lt = m_lt_hoodUpC;
-    }
-    else {
-      m_lt = m_lt_hoodUpP;
-    }
+    m_lt = m_lt_hoodUpC;
     hood.set(true);
   }
 
   public void retractHood() {
     RobotContainer.m_limelight.setPipeline(4);
-    if (Robot.isCompBot == true) {
-      m_lt = m_lt_hoodDownC;
-    }
-    else {
-      m_lt = m_lt_hoodDownP;
-    }
+    m_lt = m_lt_hoodDownC;
     hood.set(false);
   }
 
