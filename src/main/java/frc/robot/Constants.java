@@ -97,12 +97,12 @@ public final class Constants {
         public static final int shooter2 = 17;
         public static final int shooterTimeout = 30;
         public static final int shooterSlotIdx = 0;
-        public static final int shooterHood = 7;
+        public static final int shooterHood = 6;
     }
     public static final class elevatorConstants {
         public static final int deploySolenoid1 = 0;
         public static final int deploySolenoid2 = 2;
-        public static final int brakeSolenoid = 6;
+        public static final int brakeSolenoid = 5;
         public static final int elevatorWinch = 12;
         public static final int elevatorPivotTimeout = 30;
         public static final int elevatorSlotIdx = 1;
@@ -123,7 +123,7 @@ public final class Constants {
     }
     public static final class intakeConstants {
         public static final int intakeMotor = 9;
-        public static final int intakeSolenoid = 5;
+        public static final int intakeSolenoid = 7;
     }
     public static final class pwmConstants {
         public static final int blinkin = 0;

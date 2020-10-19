@@ -18,6 +18,7 @@ import static frc.robot.Constants.driveConstants.kGearReduction;
 import static frc.robot.Constants.driveConstants.kGyroReversed;
 import static frc.robot.Constants.driveConstants.kDriveKinematics;
 import static frc.robot.Constants.driveConstants.driveTimeout;
+import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.InvertType;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
@@ -35,7 +36,9 @@ import edu.wpi.first.wpilibj.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpiutil.math.MathUtil;
 import frc.robot.Constants.driveConstants;
+import edu.wpi.first.wpilibj.drive.RobotDriveBase;
 
 public class driveSubsystem extends SubsystemBase {
 
@@ -47,8 +50,8 @@ public class driveSubsystem extends SubsystemBase {
   private boolean driveInvert = false;
 
   // limit max ramp rate of joystick velocity and rotation. Set max units/sec.
-  private SlewRateLimiter speedFilter = new SlewRateLimiter(0.25);
-  private SlewRateLimiter rotationFilter = new SlewRateLimiter(0.1);
+  private SlewRateLimiter speedFilter = new SlewRateLimiter(0.05);
+  private SlewRateLimiter rotationFilter = new SlewRateLimiter(0.05);
 
   // OLD Gyro, NAVX:
   //    private final AHRS m_gyro = new AHRS(SPI.Port.kMXP);
@@ -72,7 +75,7 @@ public class driveSubsystem extends SubsystemBase {
   // Battery can at best supply around 250A
   private SupplyCurrentLimitConfiguration m_limit =
       new SupplyCurrentLimitConfiguration(true, 30, 20, 0.5);
-
+  
   public driveSubsystem() {
 
     m_gyro.configFactoryDefault();
@@ -120,8 +123,8 @@ public class driveSubsystem extends SubsystemBase {
     m_drive.setRightSideInverted(false);
 
     // TODO: only set open loop ramp AFTER auton, so not to conflict with path follow
-    falcon1_leftLead.configOpenloopRamp(0.25);
-    falcon3_rightLead.configOpenloopRamp(0.25);
+    falcon1_leftLead.configOpenloopRamp(0.2);
+    falcon3_rightLead.configOpenloopRamp(0.2);
 
     resetEncoders();
     m_odometry = new DifferentialDriveOdometry(Rotation2d.fromDegrees(getHeading()));

@@ -32,6 +32,9 @@ public class turretDefaultCommand extends CommandBase {
     if (Math.abs(opController.getX(Hand.kLeft)) >= 0.1) {
       m_turret.setPercentOutput(opController.getX(Hand.kLeft) * 0.5);
     }
+    else {
+      m_turret.setPercentOutput(0);
+    }
 
     if (opController.getStartButton() == true) {
       m_turret.turretHome();
