@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.driveSubsystem;
 import frc.robot.subsystems.shooterSubsystem;
+import frc.robot.Constants.limeLightConstants;
 
 public class shooterSetRPM extends CommandBase {
   private shooterSubsystem m_shooter;
@@ -52,7 +53,7 @@ public class shooterSetRPM extends CommandBase {
       if (m_limelight.getTV() == 1) {
         // we have limelight target lock
         // TODO: these constants should be in Constants.java
-        targetDistance = m_limelight.getDist(0.6096, 2.5019, 32);
+        targetDistance = m_limelight.getDist(limeLightConstants.limeLightHeight_meters, limeLightConstants.targetHeight_meters, limeLightConstants.limeLightAngle_degrees);
 
         // TODO: our own fudge factor for distance, this shouldn't happen in limelight class
         //targetDistance = targetDistance / 1.1154856;

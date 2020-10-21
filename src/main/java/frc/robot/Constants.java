@@ -92,6 +92,11 @@ public final class Constants {
         public static final int kTimeout = 30; // Talon command timeout
         public static final int kIndex = 0; // Talon PID index
     }
+    public static final class limeLightConstants {
+        public static final double limeLightHeight_meters = 0.6096;  // TODO: measured 0.60 meters
+        public static final double targetHeight_meters = 2.5019;  // TODO: 89.75 inches to center of vision target == 2.278 m
+        public static final double limeLightAngle_degrees = 32;      // TODO: now 30
+    }
     public static final class shooterConstants {
         public static final int shooter1 = 16;
         public static final int shooter2 = 17;

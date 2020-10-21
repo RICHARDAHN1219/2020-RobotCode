@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.shooterSubsystem;
 import frc.robot.subsystems.turretSubsystem;
+import frc.robot.Constants.limeLightConstants;
 
 /**
  * turretLimelightCommand() - Deprecated. Use this only if turretAutoTargeting doesn't work.
@@ -41,7 +42,7 @@ public class turretLimelightCommand extends CommandBase {
     // These numbers must be tuned for Comp Robot! Be careful!
     final double STEER_K = 0.1; // how hard to turn toward the target
     // TODO: angle is 30deg not 32, and what are the unites on h1 and h2?
-    double rpm = m_shooter.getRPMforDistanceMeter(m_limelight.getDist(0.6096, 2.5019, 32));
+    double rpm = m_shooter.getRPMforDistanceMeter(m_limelight.getDist(limeLightConstants.limeLightHeight_meters, limeLightConstants.targetHeight_meters, limeLightConstants.limeLightAngle_degrees));
     double tv = m_limelight.getTV();;
     double tx = m_limelight.getTX();
     // boolean m_LimelightHasValidTarget = false;

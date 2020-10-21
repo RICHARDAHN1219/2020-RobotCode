@@ -45,7 +45,7 @@ public class Robot extends TimedRobot {
     CommandScheduler.getInstance().run();
     SmartDashboard.putBoolean("limelight on target", RobotContainer.limelightOnTarget);
     double distance = RobotContainer.m_limelight.getDist(0.6096, 2.5019, 32);
-    SmartDashboard.putNumber("distance", distance);
+    SmartDashboard.putNumber("distance ft", distance * 3.281);
   }
 
   @Override
