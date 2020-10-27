@@ -7,6 +7,9 @@
 
 package frc.robot.subsystems;
 
+import static frc.robot.Constants.shooterConstants.shooter1;
+import static frc.robot.Constants.shooterConstants.shooter2;
+
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -21,12 +24,12 @@ import com.team2930.lib.util.linearInterpolator;
 import frc.robot.Constants;
 import frc.robot.Robot;
 import frc.robot.RobotContainer;
-import frc.robot.Constants.shooterConstants;
+
 
 public class shooterSubsystem extends SubsystemBase {
 
-  private CANSparkMax neo_shooter1 = new CANSparkMax(Constants.shooterConstants.shooter1, MotorType.kBrushless);
-  private CANSparkMax neo_shooter2 = new CANSparkMax(Constants.shooterConstants.shooter2, MotorType.kBrushless);
+  private CANSparkMax neo_shooter1 = new CANSparkMax(shooter1, MotorType.kBrushless);
+  private CANSparkMax neo_shooter2 = new CANSparkMax(shooter2, MotorType.kBrushless);
   private Solenoid hood = new Solenoid(Constants.shooterConstants.shooterHood);
   private CANPIDController m_pidController;
   private CANEncoder m_encoder;
