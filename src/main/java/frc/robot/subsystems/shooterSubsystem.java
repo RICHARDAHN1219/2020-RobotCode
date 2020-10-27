@@ -47,9 +47,9 @@ public class shooterSubsystem extends SubsystemBase {
   };
   private double hoodUpC[][] = {
     {5, 3750}, // 9 feet
-    {-4.3, 3500}, // 13 feet
-    {-9.85, 3600}, // 17 feet
-    {-13.5, 3750}, // 21 feet
+    {-4.3, 3300}, // 13 feet
+    {-9.85, 3400}, // 17 feet
+    {-13.5, 3400}, // 21 feet
     {-16, 4300} // 25 feet
   };
 
