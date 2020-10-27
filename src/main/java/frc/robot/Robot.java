@@ -25,7 +25,7 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
     m_robotContainer = new RobotContainer();
-    SmartDashboard.putNumber("distance", 0);
+    SmartDashboard.putNumber("distance ft", 0);
     //RobotContainer.m_limelight.setLEDMode(1);
     CameraServer.getInstance().startAutomaticCapture();
     chooser.addOption("Right 3 Ball", "r3");
@@ -45,7 +45,7 @@ public class Robot extends TimedRobot {
     CommandScheduler.getInstance().run();
     SmartDashboard.putBoolean("limelight on target", RobotContainer.limelightOnTarget);
     double distance = RobotContainer.m_limelight.getDist(0.6096, 2.5019, 32);
-    SmartDashboard.putNumber("distance ft", distance * 3.281);
+    SmartDashboard.putNumber("distance ft", distance * 3.28084);
   }
 
   @Override
