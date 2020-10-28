@@ -9,7 +9,6 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DriverStation;
-import frc.robot.RobotContainer;
 
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
@@ -21,6 +20,7 @@ public class Robot extends TimedRobot {
   public Compressor Compressor;
   public static boolean isCompBot = true;
   SendableChooser <String> chooser = new SendableChooser<>();
+  public double distance = 0.0;
 
   @Override
   public void robotInit() {
@@ -44,8 +44,12 @@ public class Robot extends TimedRobot {
   public void robotPeriodic() {
     CommandScheduler.getInstance().run();
     SmartDashboard.putBoolean("limelight on target", RobotContainer.limelightOnTarget);
-    double distance = RobotContainer.m_limelight.getDist(0.6096, 2.5019, 32);
-    SmartDashboard.putNumber("distance ft", distance * 3.28084);
+    if (RobotContainer.m_limelight.getTV() == 1 ) {
+      // limelight can see a target
+      // distance = RobotContainer.m_limelight.getDist(0.603250, 2.5019, 30);
+      distance = ( 2.5019 - 0.603250) / Math.tan( Math.toRadians(30 + RobotContainer.m_limelight.getTY()));
+      SmartDashboard.putNumber("distance ft", distance * 3.28084);
+    }
   }
 
   @Override
@@ -153,6 +157,5 @@ public class Robot extends TimedRobot {
 
   @Override
   public void testPeriodic() {
-    RobotContainer.m_shooter.testMode();
   }
 }

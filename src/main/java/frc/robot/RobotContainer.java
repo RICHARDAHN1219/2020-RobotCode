@@ -122,6 +122,7 @@ public class RobotContainer {
       // D Pad Down - manually decrease ball count
       // Start Button - zero the turret
       // Back Button - spool up the shooter
+      opStartButton.whenPressed(() -> m_shooter.stop());
       opAButton.whileHeld(new intakeDeployCommand(m_intake));
       opBButton.whenPressed(new indexerStageForShootingCommand(m_indexer));
       opXButton.whenPressed(new indexerRestageCommand(m_indexer));
@@ -177,7 +178,7 @@ public class RobotContainer {
   // same as straightOn3Ball() but with sing SequentialCommandGroup
   public Command straightOn3Ball_reorg() {
    
-    // power port is directly in front of robot, center limelight over initiaton line
+    // power port is directly in front of robot, center limelight over initiation line
     powerPortLocation = new Translation2d(feet2Meters(10), 0);
 
     Command ac = new SequentialCommandGroup(
@@ -253,7 +254,7 @@ public class RobotContainer {
   public Command rightSide6Ball_reorg() {
 
     // power port is left of robot, 
-    // 1. front of frame over initiaton line
+    // 1. front of frame over initiation line
     // 2. robot lined up on row of balls
     powerPortLocation = new Translation2d(feet2Meters(10.5), inches2Meters(66.91));
 
@@ -376,7 +377,7 @@ public class RobotContainer {
         .addConstraint(autoVoltageConstraint)
         .setReversed(isReversed);
 
-    var initalTime = System.nanoTime();
+    var initialTime = System.nanoTime();
 
     // trajectory to follow. All units in meters.
     var trajectory = TrajectoryGenerator.generateTrajectory(
@@ -397,7 +398,7 @@ public class RobotContainer {
             m_drive::tankDriveVolts,
             m_drive);
 
-    var dt = (System.nanoTime() - initalTime) / 1E6;
+    var dt = (System.nanoTime() - initialTime) / 1E6;
     System.out.println("RamseteCommand generation time: " + dt + "ms");
 
     // Run path following command, then stop at the end.
