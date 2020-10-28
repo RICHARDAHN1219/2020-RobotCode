@@ -7,15 +7,9 @@
 
 package frc.robot.subsystems;
 
-import com.revrobotics.CANEncoder;
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-import com.revrobotics.EncoderType;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Robot;
 import frc.robot.RobotContainer;
 import frc.robot.Constants.elevatorConstants;
 import edu.wpi.first.wpilibj.Solenoid;
@@ -63,12 +57,7 @@ public class elevatorSubsystem extends SubsystemBase {
   }
 
   public void setWinchPercentOutput(double Percent) {
-    if (Robot.isCompBot == true) {
-      elevatorWinchC.set(ControlMode.PercentOutput, Percent);
-    }
-    else {
-      //elevatorWinchP.set(Percent);
-    }
+    elevatorWinchC.set(ControlMode.PercentOutput, Percent);
   }
 
   public void stop() {
