@@ -14,7 +14,6 @@ import edu.wpi.first.wpilibj.geometry.Translation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.driveSubsystem;
-import frc.robot.subsystems.shooterSubsystem;
 import frc.robot.subsystems.turretSubsystem;
 import com.team2930.lib.util.geometry;
 import frc.robot.Constants.limeLightConstants;

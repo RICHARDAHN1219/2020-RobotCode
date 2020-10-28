@@ -44,15 +44,8 @@ public class indexerSubsystem extends SubsystemBase {
 
   public indexerSubsystem() {
 
-    if (Robot.isCompBot) {
-      // Comp Bot uses Victors
-      indexIntake = new WPI_VictorSPX(indexConstants.indexIntake);
-      indexKicker = new WPI_VictorSPX(indexConstants.indexKicker);
-    }
-    else {
-      indexIntake = new WPI_TalonSRX(indexConstants.indexIntake);
-      indexKicker = new WPI_TalonFX(indexConstants.indexKicker);
-    }
+    indexIntake = new WPI_VictorSPX(indexConstants.indexIntake);
+    indexKicker = new WPI_VictorSPX(indexConstants.indexKicker);
     
     indexBelts.configFactoryDefault();
     indexKicker.configFactoryDefault();
@@ -89,10 +82,7 @@ public class indexerSubsystem extends SubsystemBase {
 
     // TalonFX don't have sensor phase only TalonSRX
     indexIntake.setSensorPhase(false);
-    if (Robot.isCompBot) {
-      // only comp bot
-      indexKicker.setSensorPhase(false);
-    }
+    indexKicker.setSensorPhase(false);
     
     //Set Ramp-Up
     //indexKicker.configClosedloopRamp(0.1);
@@ -259,70 +249,39 @@ public class indexerSubsystem extends SubsystemBase {
    * runIndexer() - run all indexer motors at ball staging speeds
    */
   public void runIndexer() {
-    if (Robot.isCompBot == true) {
       setIntakePercentOutput(1);
       setBeltsRPM(6380);
       setKickerPercentOutput(0.3);
       m_blinkin.solid_green();
-    }
-    else {
-      setIntakePercentOutput(1);
-      setBeltsRPM(6380);
-      setKickerRPM(1914);
-      m_blinkin.solid_green();
-    }
   }
 
   /**
    * runBelts() - run only the belts
    */
   public void runOnlyBelts() {
-    if (Robot.isCompBot == true) {
       setIntakePercentOutput(0);
       setBeltsRPM(6380);
       setKickerPercentOutput(0);
       m_blinkin.solid_blue();
-    }
-    else {
-      setIntakePercentOutput(0);
-      setBeltsRPM(6380);
-      setKickerRPM(0);
-      m_blinkin.solid_blue();
-    }
   }
 
   /**
    * reverseIndexer() - run all indexer motors backwards at staging speeds
    */
   public void reverseIndexer() {
-    if (Robot.isCompBot == true) {
       setIntakePercentOutput(-1);
       setBeltsRPM(-6380);
       setKickerPercentOutput(-0.3);
       m_blinkin.strobe_red();
-    }
-    else {
-      setIntakePercentOutput(-1);
-      setBeltsRPM(-6380);
-      setKickerRPM(-1914);
-      m_blinkin.strobe_red();
-    }
   }
 
   /**
    * ejectIndexer() - run all indexer motors at eject/shooting speeds
    */
   public void ejectIndexer() {
-    if (Robot.isCompBot == true) {
       setIntakePercentOutput(1);
       setBeltsRPM(6380);
       setKickerPercentOutput(1);
-    }
-    else {
-      setIntakePercentOutput(1);
-      setBeltsRPM(6380);
-      setKickerRPM(6380);
-    }
   }
 
   /**
@@ -343,16 +302,9 @@ public class indexerSubsystem extends SubsystemBase {
    * runOnlyIntake() - run intake motor and stop the belts and kicker
    */
   public void runOnlyIntake() {
-    if (Robot.isCompBot == true) {
       setIntakePercentOutput(1);
       setBeltsRPM(0);
       setKickerPercentOutput(0);
-    }
-    else {
-      setIntakePercentOutput(1);
-      setBeltsRPM(0);
-      setKickerRPM(0);
-    }
   } 
 
   /**
@@ -366,12 +318,7 @@ public class indexerSubsystem extends SubsystemBase {
    * stopKicker() - stop the kicker motor
    */
   public void stopKicker() {
-    if (Robot.isCompBot == true) {
-      setKickerPercentOutput(0);
-    }
-    else {
-      setKickerRPM(0);
-    }
+    setKickerPercentOutput(0);
   }
 
   /**

@@ -18,7 +18,7 @@ public class Robot extends TimedRobot {
   private RobotContainer m_robotContainer;
   public PowerDistributionPanel m_pdp = new PowerDistributionPanel();
   public Compressor Compressor;
-  public static boolean isCompBot = true;
+  //public static boolean isCompBot = true;
   SendableChooser <String> chooser = new SendableChooser<>();
   public double distance = 0.0;
 

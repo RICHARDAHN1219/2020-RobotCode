@@ -8,7 +8,6 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.Robot;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.shooterSubsystem;
 
@@ -23,14 +22,8 @@ public class shooterSpoolCommand extends CommandBase {
 
   @Override
   public void initialize() {
-    if (Robot.isCompBot == true) {
       m_shooter.setShooterPID(0.0005, 0.000000, 0, 0.00018, 250);
       m_shooter.setShooterRPM(2800);
-    }
-    else {
-      m_shooter.setShooterPID(0.0004, 0.00000025, 0, 0.0002, 250);
-      m_shooter.setShooterRPM(2600);
-    }
     
     RobotContainer.m_limelight.setLEDMode(0);
   }
