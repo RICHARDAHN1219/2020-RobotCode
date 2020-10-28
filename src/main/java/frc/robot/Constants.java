@@ -44,7 +44,7 @@ public final class Constants {
         public static final double kPDriveVel = 5.0; // frc-characterization 14.4
         public static final double kDDriveVel = 0.0; // frc-characterization 5.16
 
-        // TalonFX encoders have 2048, Rev Robitics have 4096
+        // TalonFX encoders have 2048, Rev Robotics have 4096
         public static final int kEncoderCPR = 2048;
 
         // Aprox 6 inch (0.1524 meters) traction wheels, measured 0.15836 m
@@ -93,9 +93,9 @@ public final class Constants {
         public static final int kIndex = 0; // Talon PID index
     }
     public static final class limeLightConstants {
-        public static final double limeLightHeight_meters = 0.6096;  // TODO: measured 0.60 meters
-        public static final double targetHeight_meters = 2.5019;  // TODO: 89.75 inches to center of vision target == 2.278 m
-        public static final double limeLightAngle_degrees = 32;      // TODO: now 30
+        public static final double limeLightHeight_meters = 0.603250;
+        public static final double targetHeight_meters = 2.5019;
+        public static final double limeLightAngle_degrees = 30;
     }
     public static final class shooterConstants {
         public static final int shooter1 = 16;
