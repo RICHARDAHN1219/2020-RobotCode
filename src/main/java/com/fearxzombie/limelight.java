@@ -157,9 +157,9 @@ public class limelight {
    * @param limelightAngle = angle in degrees of the limelight on the robot.
    * @return approx distance in same units as target and limelight height
    */
-  public double getDist(double targetHeight, double limelightHeight, double limelightAngle) {
+  public double getDist(double targetHeight, double limelightHeight, double limelightAngleDeg) {
     double targetAngleDeg = getTY();
-    double currentDist = (targetHeight - limelightHeight) / Math.tan(Math.toRadians(limelightAngle + a2));
+    double currentDist = (targetHeight - limelightHeight) / Math.tan(Math.toRadians(limelightAngleDeg + targetAngleDeg));
     return currentDist;
   }
 }
