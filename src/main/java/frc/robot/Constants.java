@@ -93,7 +93,7 @@ public final class Constants {
         public static final int kIndex = 0; // Talon PID index
     }
     public static final class limeLightConstants {
-        public static final double limeLightHeight_meters = 0.603250;
+        public static final double limeLightHeight_meters = .68394;
         public static final double targetHeight_meters = 2.5019;
         public static final double limeLightAngle_degrees = 30;
     }
