@@ -150,15 +150,16 @@ public class limelight {
    * getDist() - calculates approximate distance from a fixed angled limelight to
    * the target.
    * 
-   * @param targetHeight = target height in meters
-   * @param limelightHeight = height of limelight from the ground in meters, 
+   * Reference: https://docs.limelightvision.io/en/latest/cs_estimating_distance.html
+   * 
+   * @param targetHeight = target height from ground
+   * @param limelightHeight = height of limelight from the ground
    * @param limelightAngle = angle in degrees of the limelight on the robot.
-   * @param debug = Enable printing current distance to console
-   * @return approx distance in meters
+   * @return approx distance in same units as target and limelight height
    */
   public double getDist(double targetHeight, double limelightHeight, double limelightAngle) {
-    double a2 = getTY();
-    double currentDist = (Math.abs(targetHeight - limelightHeight) / Math.tan(Math.toRadians(limelightAngle + a2)));
+    double targetAngleDeg = getTY();
+    double currentDist = (targetHeight - limelightHeight) / Math.tan(Math.toRadians(limelightAngle + a2));
     return currentDist;
   }
 }
