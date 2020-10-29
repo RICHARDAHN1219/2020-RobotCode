@@ -39,9 +39,7 @@ public class turretLimelightCommand extends CommandBase {
 
   @Override
   public void execute() {
-    // These numbers must be tuned for Comp Robot! Be careful!
     final double STEER_K = 0.1; // how hard to turn toward the target
-    // TODO: angle is 30deg not 32, and what are the unites on h1 and h2?
     double rpm = m_shooter.getRPMforDistanceMeter(m_limelight.getDist(limeLightConstants.limeLightHeight_meters, limeLightConstants.targetHeight_meters, limeLightConstants.limeLightAngle_degrees));
     double tv = m_limelight.getTV();;
     double tx = m_limelight.getTX();
