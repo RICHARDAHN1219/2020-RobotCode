@@ -1,5 +1,9 @@
 package frc.robot;
 
+import static frc.robot.Constants.limeLightConstants.targetHeight_meters;
+import static frc.robot.Constants.limeLightConstants.limeLightHeight_meters;
+import static frc.robot.Constants.limeLightConstants.limeLightAngle_degrees;
+
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -20,7 +24,7 @@ public class Robot extends TimedRobot {
   public Compressor Compressor;
   //public static boolean isCompBot = true;
   SendableChooser <String> chooser = new SendableChooser<>();
-  public double distance = 0.0;
+  public double distance_meters = 0.0;
 
   @Override
   public void robotInit() {
@@ -46,9 +50,9 @@ public class Robot extends TimedRobot {
     SmartDashboard.putBoolean("limelight on target", RobotContainer.limelightOnTarget);
     if (RobotContainer.m_limelight.getTV() == 1 ) {
       // limelight can see a target
-      // distance = RobotContainer.m_limelight.getDist(0.603250, 2.5019, 30);
-      distance = ( 2.5019 - 0.603250) / Math.tan( Math.toRadians(30 + RobotContainer.m_limelight.getTY()));
-      SmartDashboard.putNumber("distance ft", distance * 3.28084);
+      distance_meters = RobotContainer.m_limelight.getDist(targetHeight_meters, limeLightHeight_meters , limeLightAngle_degrees);
+      // distance_meters = ( 2.5019 - 0.603250) / Math.tan( Math.toRadians(30 + RobotContainer.m_limelight.getTY()));
+      SmartDashboard.putNumber("distance ft", distance_meters * 3.28084);
     }
   }
 
@@ -63,8 +67,8 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousInit() {
-    // TODO: move this to RobotInit() that get's run when the robot is powered on instead of here when
-    // Autonomous starts. Auton command geneneration can take almost a second. Don't waste it during a 
+    // TODO: move this to RobotInit() that gets run when the robot is powered on instead of here when
+    // Autonomous starts. Auton command generation can take almost a second. Don't waste it during a 
     // match.
     if (chooser.getSelected() == "r3"){
       m_autonomousCommand = m_robotContainer.rightSide3Ball();
