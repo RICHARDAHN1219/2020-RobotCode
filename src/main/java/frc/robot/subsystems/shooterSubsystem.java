@@ -60,8 +60,9 @@ public class shooterSubsystem extends SubsystemBase {
 
   // based on the reported limelight angle
   private double hoodUpAngle[][] = {
-    {5, 3750}, // 9 feet
-    {-4.3, 3300}, // 13 feet
+    {5, 3000}, // 9 feet
+    {-0.11, 3100}, // 10 ft
+    {-4.3, 3250}, // 13 feet
     {-9.85, 3400}, // 17 feet
     {-13.5, 3400}, // 21 feet
     {-16, 4300} // 25 feet
