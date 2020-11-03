@@ -107,7 +107,7 @@ public class indexerSubsystem extends SubsystemBase {
     indexIntake.config_kF(0, 0.0, 10);
 
     // Note: if we add position control, then we need to add a second set of PID parameters
-    // on PID index 1, and then swtich between the Talon PID index when setting a and Position
+    // on PID index 1, and then switch between the Talon PID index when setting a and Position
   }
 
   @Override
@@ -188,7 +188,7 @@ public class indexerSubsystem extends SubsystemBase {
   public void ejectOneBall() {
 
     if (ejectMode) {
-      // we're alread in ejectMode
+      // we're already in ejectMode
       return;
     }
 
