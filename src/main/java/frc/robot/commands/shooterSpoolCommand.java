@@ -22,8 +22,13 @@ public class shooterSpoolCommand extends CommandBase {
 
   @Override
   public void initialize() {
-      m_shooter.setShooterPID(0.0005, 0.000000, 0, 0.00018, 250);
+    double setpoint = m_shooter.getSetPoint();
+    if (setpoint < 2800) {
       m_shooter.setShooterRPM(2800);
+    }
+    else {
+      m_shooter.setShooterRPM(0);
+    }
     
     RobotContainer.m_limelight.setLEDMode(0);
   }
@@ -34,12 +39,10 @@ public class shooterSpoolCommand extends CommandBase {
 
   @Override
   public void end(boolean interrupted) {
-    m_shooter.setShooterRPM(0);
-    //RobotContainer.m_limelight.setLEDMode(1);
   }
 
   @Override
   public boolean isFinished() {
-    return false;
+    return true;
   }
 }

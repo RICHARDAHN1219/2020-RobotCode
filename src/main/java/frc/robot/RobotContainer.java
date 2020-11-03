@@ -122,7 +122,6 @@ public class RobotContainer {
       // D Pad Down - manually decrease ball count
       // Start Button - zero the turret
       // Back Button - spool up the shooter
-      opStartButton.whenPressed(() -> m_shooter.stop());
       opAButton.whileHeld(new intakeDeployCommand(m_intake));
       opBButton.whenPressed(new indexerStageForShootingCommand(m_indexer));
       opXButton.whenPressed(new indexerRestageCommand(m_indexer));
@@ -131,7 +130,7 @@ public class RobotContainer {
       opLeftBumper.whileHeld(new hoodDownAutoShootCommand(m_indexer, m_turret, m_shooter, m_limelight));
       opDPadUp.whenPressed(() -> m_indexer.setBallCount(m_indexer.getBallCount() + 1));
       opDPadDown.whenPressed(() -> m_indexer.setBallCount(m_indexer.getBallCount() - 1));
-      opBackButton.toggleWhenPressed(new shooterSpoolCommand(m_shooter));
+      opBackButton.whenPressed(new shooterSpoolCommand(m_shooter));
   }
   
   /**
