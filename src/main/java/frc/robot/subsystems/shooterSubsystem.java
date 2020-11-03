@@ -23,7 +23,6 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.team2930.lib.util.linearInterpolator;
 
 import frc.robot.Constants;
-import frc.robot.Robot;
 import frc.robot.RobotContainer;
 
 
@@ -84,6 +83,9 @@ public class shooterSubsystem extends SubsystemBase {
     {12.0, 3050}  // 12 feet
   };
 
+  /**
+   * shooterSubsystem() - constructor for shooterSubsytem class
+   */
   public shooterSubsystem() {
     neo_shooter1.restoreFactoryDefaults();
     neo_shooter2.restoreFactoryDefaults();
@@ -119,11 +121,16 @@ public class shooterSubsystem extends SubsystemBase {
     m_lt_angle = m_lt_hoodDownAngle;
     m_lt_feet = m_lt_hoodDownFeet;
 
+    m_desiredRPM = 0;
+
     SmartDashboard.putNumber("RPM set point", m_desiredRPM);
     SmartDashboard.putNumber("RPM", 0);
     SmartDashboard.putNumber("RPM error", 0);
   }
 
+  /**
+   * periodic() - this function runs once every robot scheduler cycle.
+   */
   @Override
   public void periodic() {
 
@@ -138,13 +145,13 @@ public class shooterSubsystem extends SubsystemBase {
     }
 
     double setPoint = m_rateLimiter.calculate(m_desiredRPM);
-    if (m_desiredRPM < 1) {
-      // special case, zero RPM means stop the motor, don't send CAN updates. 
+    if (m_desiredRPM < setPoint) {
+      // we don't rate reduce slowing the robot
+      setPoint = m_desiredRPM;
     }
-    else if (Math.abs(m_desiredRPM - setPoint) > 0.01) {
-      // if setPoint equal to desired RPM, we can stop sending updates via CAN
-      m_pidController.setReference(setPoint, ControlType.kVelocity);
-    }
+
+    m_pidController.setReference(setPoint, ControlType.kVelocity);
+ 
 
     SmartDashboard.putNumber("RPM", m_currentRPM);
     SmartDashboard.putNumber("RPM set point", setPoint);
@@ -159,9 +166,13 @@ public class shooterSubsystem extends SubsystemBase {
    */
   public void setShooterRPM (double desiredRPM) {
     m_desiredRPM = desiredRPM;
-    m_atSpeed = false;
+    isAtSpeed();
+
     if (m_desiredRPM == 0) {
       setPercentOutput(0.0);
+
+      // zero the RPM change rate limit. No rate limit to stop the flywheel
+      m_rateLimiter = new SlewRateLimiter(m_rate_RPMpersecond, m_desiredRPM);
     }
   }
 
@@ -216,7 +227,16 @@ public class shooterSubsystem extends SubsystemBase {
    * 
    * @return true if at correct speed, else false
    */
-  public boolean isAtSpeed(){
+  public boolean isAtSpeed() {
+    m_error = m_currentRPM - m_desiredRPM;
+
+    if (Math.abs(m_error) < m_max_RPM_error) {
+      m_atSpeed = true;
+    }
+    else {
+      m_atSpeed = false;  
+    }
+
     return m_atSpeed;
   }
 
@@ -251,6 +271,13 @@ public class shooterSubsystem extends SubsystemBase {
   }
 
   /**
+   * getSetpoint() - return current target RPM
+   */
+  public double getSetPoint() {
+    return m_desiredRPM;
+  }
+
+  /**
    * idle()  - run the flywheel at pre-determined idle speed
    */
   public void idle() {
@@ -260,5 +287,8 @@ public class shooterSubsystem extends SubsystemBase {
   public void stop() {
     m_desiredRPM = 0;
     setPercentOutput(0.0);
+
+    // zero the RPM change rate limit. No rate limit to stop the flywheel
+    m_rateLimiter = new SlewRateLimiter(m_rate_RPMpersecond, m_desiredRPM);
   }
 }
