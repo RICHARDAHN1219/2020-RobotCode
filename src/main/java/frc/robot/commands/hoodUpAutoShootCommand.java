@@ -65,36 +65,35 @@ public class hoodUpAutoShootCommand extends CommandBase {
       // we're stationary and we saw the target
       // Trust that the target didn't move
       m_turret.setPercentOutput(0);
-    }
-    else {
-      
+    } else {
+
       if (tv != 1) {
+        // no target seen, use manual turret input
+
         RobotContainer.limelightOnTarget = false;
         limelightSteerCommand = 0;
         var manualInput = RobotContainer.m_operatorController.getX(Hand.kLeft);
         if (Math.abs(manualInput) > 0.05) {
           m_turret.setPercentOutput(manualInput * 0.5);
-        }
-        else {
+        } else {
           // if we don't see a target stop the turret
           m_turret.setPercentOutput(0);
         }
         return;
       }
-    
+
       m_shooter.setShooterRPM(m_shooter.getRPMforTY(m_limelight.getTY()));
       limelightSteerCommand = tx * steer_k;
       m_turret.setPercentOutput(limelightSteerCommand);
 
       if (Math.abs(m_limelight.getTX()) < 0.75) {
         RobotContainer.limelightOnTarget = true;
-      }
-      else {
+      } else {
         RobotContainer.limelightOnTarget = false;
       }
     }
 
-    // shoot! 
+    // shoot!
     if (m_shooter.isAtSpeed() == true && RobotContainer.limelightOnTarget == true) {
       m_indexer.ejectOneBall();
     }
