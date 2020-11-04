@@ -45,7 +45,7 @@ public class shooterSubsystem extends SubsystemBase {
   private int m_idleRPM = 1500;
   private double m_currentRPM = 0;
   private double m_error = 0;
-  private double m_max_RPM_error = 75;
+  private double m_max_RPM_error = 15;
 
   private double m_rate_RPMpersecond = 2000;
   private SlewRateLimiter m_rateLimiter = new SlewRateLimiter(m_rate_RPMpersecond, m_desiredRPM);
@@ -63,7 +63,7 @@ public class shooterSubsystem extends SubsystemBase {
     {5, 3000}, // 9 feet
     {-0.11, 3100}, // 10 ft
     {-4.3, 3250}, // 13 feet
-    {-9.85, 3400}, // 17 feet
+    {-9.85, 3300}, // 17 feet
     {-13.5, 3400}, // 21 feet
     {-16, 4300} // 25 feet
   };
@@ -106,7 +106,7 @@ public class shooterSubsystem extends SubsystemBase {
     m_pidController = neo_shooter1.getPIDController();
     m_encoder = neo_shooter1.getEncoder(EncoderType.kHallSensor, 4096);
     
-    kMaxOutput = 0.9; 
+    kMaxOutput = 1.0; 
     kMinOutput = -0.0;
     m_pidController.setOutputRange(kMinOutput, kMaxOutput);
 
