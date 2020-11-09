@@ -17,7 +17,7 @@ public class driveCommand extends CommandBase {
 
   driveSubsystem m_drive;
   XboxController driveController = RobotContainer.m_driveController;
-  private double speedMultiplier = 0.5;
+  private double speedMultiplier = 0.7;
 
   public driveCommand(driveSubsystem drive) {
     addRequirements(drive);
