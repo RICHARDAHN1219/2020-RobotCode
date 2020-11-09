@@ -431,10 +431,10 @@ public class driveSubsystem extends SubsystemBase {
   }
 
   /**
-   * Disablecurrent limiting for drivetrain.
+   * Disable current limiting for drivetrain.
    */
   public void disableCurrentLimit() {
-    // not completely disabled, 4x80 amps is 240Amps, wich is almost 100% of the battery output
+    // not completely disabled, 4x80 amps is 240Amps, which is almost 100% of the battery output
     setCurrentLimit(new SupplyCurrentLimitConfiguration(true, 80, 60, 1));
   }
 
