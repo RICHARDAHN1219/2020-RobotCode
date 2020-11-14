@@ -48,7 +48,7 @@ public class shooterSubsystem extends SubsystemBase {
   private double m_max_RPM_error = 15;
 
   private double m_rate_RPMpersecond = 2000;
-  private SlewRateLimiter m_rateLimiter = new SlewRateLimiter(m_rate_RPMpersecond, m_desiredRPM);
+  private SlewRateLimiter m_rateLimiter;
 
   // based on the reported limelight angle
   private double hoodDownAngle[][] = {
@@ -88,6 +88,7 @@ public class shooterSubsystem extends SubsystemBase {
    * shooterSubsystem() - constructor for shooterSubsytem class
    */
   public shooterSubsystem() {
+
     neo_shooter1.restoreFactoryDefaults();
     neo_shooter2.restoreFactoryDefaults();
 
@@ -123,10 +124,14 @@ public class shooterSubsystem extends SubsystemBase {
     m_lt_feet = m_lt_hoodDownFeet;
 
     m_desiredRPM = 0;
+    m_pidController.setReference(0, ControlType.kVelocity);
+    m_rateLimiter = new SlewRateLimiter(m_rate_RPMpersecond, m_desiredRPM);
 
     SmartDashboard.putNumber("RPM set point", m_desiredRPM);
     SmartDashboard.putNumber("RPM", 0);
     SmartDashboard.putNumber("RPM error", 0);
+    SmartDashboard.putNumber("Shooter Voltage", 0.0);
+
   }
 
   /**
@@ -158,6 +163,7 @@ public class shooterSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("RPM set point", setPoint);
     SmartDashboard.putNumber("RPM error", m_error);
     SmartDashboard.putBoolean("isAtSpeed", m_atSpeed);
+    SmartDashboard.putNumber("Shooter Voltage", neo_shooter1.getAppliedOutput());
   }
 
   /**
