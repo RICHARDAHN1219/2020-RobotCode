@@ -29,6 +29,7 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
     m_robotContainer = new RobotContainer();
+  
     SmartDashboard.putNumber("distance ft", 0);
     //RobotContainer.m_limelight.setLEDMode(1);
     CameraServer.getInstance().startAutomaticCapture();
@@ -59,6 +60,7 @@ public class Robot extends TimedRobot {
   @Override
   public void disabledInit() {
     //RobotContainer.m_limelight.setLEDMode(1);
+    m_robotContainer.m_shooter.setShooterRPM(0);
   }
 
   @Override
