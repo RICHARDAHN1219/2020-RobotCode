@@ -111,7 +111,7 @@ public class shooterSubsystem extends SubsystemBase {
     kMinOutput = -0.0;
     m_pidController.setOutputRange(kMinOutput, kMaxOutput);
 
-    setShooterPID(0.0004, 0.000001, 0.0, 0.0002, 200);
+    setShooterPID(0.0007, 0.000001, 0.0, 0.0002, 200);
 
     // Build the linear Interpolators just once each.
     m_lt_hoodUpAngle = new linearInterpolator(hoodUpAngle);
@@ -143,7 +143,9 @@ public class shooterSubsystem extends SubsystemBase {
     m_currentRPM = m_encoder.getVelocity();
     m_error = m_currentRPM - m_desiredRPM;
 
-    if (Math.abs(m_error) < m_max_RPM_error) {
+    //if (Math.abs(m_error) < m_max_RPM_error) {
+    if (((m_error >= 0) && (m_error < 100)) ||
+        ((m_error < 0) && (m_error > -m_max_RPM_error))) {
       m_atSpeed = true;
     }
     else {
@@ -237,7 +239,8 @@ public class shooterSubsystem extends SubsystemBase {
   public boolean isAtSpeed() {
     m_error = m_currentRPM - m_desiredRPM;
 
-    if (Math.abs(m_error) < m_max_RPM_error) {
+    if (((m_error >= 0) && (m_error < 100)) ||
+        ((m_error < 0) && (m_error > -m_max_RPM_error))) {
       m_atSpeed = true;
     }
     else {
