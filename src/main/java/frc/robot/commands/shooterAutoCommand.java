@@ -15,7 +15,7 @@ import frc.robot.subsystems.indexerSubsystem;
 import frc.robot.subsystems.shooterSubsystem;
 import frc.robot.subsystems.turretSubsystem;
 
-public class hoodUpAutoShootCommand extends CommandBase {
+public class shooterAutoCommand extends CommandBase {
 
   private indexerSubsystem m_indexer;
   private turretSubsystem m_turret;
@@ -29,8 +29,17 @@ public class hoodUpAutoShootCommand extends CommandBase {
   private double tx;
   private double limelightSteerCommand = 0;
 
-
-  public hoodUpAutoShootCommand(indexerSubsystem indexer, turretSubsystem turret, shooterSubsystem shooter, limelight ll_util, boolean hood_up, boolean stationary) {
+  /**
+   * shooterAutoCommand class constructor
+   * 
+   * @param indexer, indexer subsystem 
+   * @param turret, turret subsystem
+   * @param shooter, shooter subsystem
+   * @param ll_util, limelight class
+   * @param hood_up, boolean: true = hood up, false = hood down
+   * @param stationary, boolean: true if robot is stationary
+   */
+  public shooterAutoCommand(indexerSubsystem indexer, turretSubsystem turret, shooterSubsystem shooter, limelight ll_util, boolean hood_up, boolean stationary) {
     addRequirements(indexer);
     addRequirements(turret);
     addRequirements(shooter);
@@ -42,7 +51,17 @@ public class hoodUpAutoShootCommand extends CommandBase {
     m_hoodup = hood_up;
   }
 
-  public hoodUpAutoShootCommand(indexerSubsystem indexer, turretSubsystem turret, shooterSubsystem shooter, limelight ll_util, boolean hood_up) {
+  
+  /**
+   * shooterAutoCommand class constructor
+   * 
+   * @param indexer, indexer subsystem
+   * @param turret,  turret subsystem
+   * @param shooter, shooter subsystem
+   * @param ll_util, limelight class
+   * @param hood_up, boolean: true = hood up, false = hood down
+   */
+  public shooterAutoCommand(indexerSubsystem indexer, turretSubsystem turret, shooterSubsystem shooter, limelight ll_util, boolean hood_up) {
  
     // call the main constructor, with stationary as "false"
     this(indexer, turret, shooter, ll_util, hood_up, false);
