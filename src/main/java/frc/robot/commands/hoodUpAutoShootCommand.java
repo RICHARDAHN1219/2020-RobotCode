@@ -22,13 +22,15 @@ public class hoodUpAutoShootCommand extends CommandBase {
   private shooterSubsystem m_shooter;
   private limelight m_limelight;
   private boolean m_stationary;
+  private boolean m_hoodup = true;
 
   private double steer_k = 0.075;
   private double tv;
   private double tx;
   private double limelightSteerCommand = 0;
 
-  public hoodUpAutoShootCommand(indexerSubsystem indexer, turretSubsystem turret, shooterSubsystem shooter, limelight ll_util, boolean stationary) {
+
+  public hoodUpAutoShootCommand(indexerSubsystem indexer, turretSubsystem turret, shooterSubsystem shooter, limelight ll_util, boolean hood_up, boolean stationary) {
     addRequirements(indexer);
     addRequirements(turret);
     addRequirements(shooter);
@@ -37,23 +39,24 @@ public class hoodUpAutoShootCommand extends CommandBase {
     m_shooter = shooter;
     m_limelight = ll_util;
     m_stationary = stationary;
+    m_hoodup = hood_up;
   }
 
-  public hoodUpAutoShootCommand(indexerSubsystem indexer, turretSubsystem turret, shooterSubsystem shooter, limelight ll_util) {
-    addRequirements(indexer);
-    addRequirements(turret);
-    addRequirements(shooter);
-    m_indexer = indexer;
-    m_turret = turret;
-    m_shooter = shooter;
-    m_limelight = ll_util;
-    m_stationary = false;
+  public hoodUpAutoShootCommand(indexerSubsystem indexer, turretSubsystem turret, shooterSubsystem shooter, limelight ll_util, boolean hood_up) {
+ 
+    // call the main constructor, with stationary as "false"
+    this(indexer, turret, shooter, ll_util, hood_up, false);
   }
 
   @Override
   public void initialize() {
     m_limelight.setLEDMode(0);
-    m_shooter.deployHood();
+    if (m_hoodup) {
+      m_shooter.deployHood();
+    }
+    else {
+      m_shooter.retractHood();
+    }
   }
 
   @Override
@@ -102,7 +105,7 @@ public class hoodUpAutoShootCommand extends CommandBase {
   @Override
   public void end(boolean interrupted) {
     m_indexer.stopIndexer();
-    m_shooter.idle();
+    m_shooter.setShooterRPM(0);
     m_turret.stop();
     RobotContainer.limelightOnTarget = false;
     m_shooter.retractHood();
