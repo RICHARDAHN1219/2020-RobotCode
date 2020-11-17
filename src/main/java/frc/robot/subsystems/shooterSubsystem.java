@@ -54,8 +54,9 @@ public class shooterSubsystem extends SubsystemBase {
   private double hoodDownAngle[][] = {
     {24.7, 2750}, // 4 feet
     {12.3, 2850}, // 7 feet
-    {2.75, 2950}, // 10 feet
-    {-2.85, 3050} // 12 feet
+    {1.0,  2500}, // 10 feet
+    {-2.85, 2700}, // 12 feet
+    {-5.7,  2800} // 13 feet
   };
 
   // based on the reported limelight angle
@@ -111,7 +112,7 @@ public class shooterSubsystem extends SubsystemBase {
     kMinOutput = -0.0;
     m_pidController.setOutputRange(kMinOutput, kMaxOutput);
 
-    setShooterPID(0.0007, 0.000001, 0.0, 0.0002, 200);
+    setShooterPID(0.0009, 0.000001, 0.0, 0.0002, 200);
 
     // Build the linear Interpolators just once each.
     m_lt_hoodUpAngle = new linearInterpolator(hoodUpAngle);
