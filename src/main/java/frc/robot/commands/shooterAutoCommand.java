@@ -10,6 +10,7 @@ package frc.robot.commands;
 import com.fearxzombie.limelight;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Robot;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.indexerSubsystem;
 import frc.robot.subsystems.shooterSubsystem;
@@ -104,7 +105,8 @@ public class shooterAutoCommand extends CommandBase {
         return;
       }
 
-      m_shooter.setShooterRPM(m_shooter.getRPMforTY(m_limelight.getTY()));
+      // m_shooter.setShooterRPM(m_shooter.getRPMforTY(m_limelight.getTY()));
+      m_shooter.setShooterRPM(m_shooter.getRPMforDistanceMeter(Robot.distance_meters));
       limelightSteerCommand = tx * steer_k;
       m_turret.setPercentOutput(limelightSteerCommand);
 
