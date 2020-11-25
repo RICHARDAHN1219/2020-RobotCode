@@ -116,8 +116,8 @@ public class RobotContainer {
       // B Button - stage balls for shooting
       // X Button - restage balls
       // Y Button - hold to eject balls out the back of the indexer
-      // Right Bumper - shoot with hood up
-      // Left Bumper - shoot with hood down
+      // Right Bumper - shoot
+      // Left Bumper - shoot
       // D Pad Up - manually increase ball count
       // D Pad Down - manually decrease ball count
       // Start Button - zero the turret
@@ -126,8 +126,8 @@ public class RobotContainer {
       opBButton.whenPressed(new indexerStageForShootingCommand(m_indexer));
       opXButton.whenPressed(new indexerRestageCommand(m_indexer));
       opYButton.whileHeld(new indexerReverseEjectCommand(m_indexer));
-      opRightBumper.whileHeld(new shooterAutoCommand(m_indexer, m_turret, m_shooter, m_limelight, true));
-      opLeftBumper.whileHeld(new shooterAutoCommand(m_indexer, m_turret, m_shooter, m_limelight, false));
+      opRightBumper.whileHeld(new shooterAutoCommand(m_indexer, m_turret, m_shooter, m_limelight));
+      opLeftBumper.whileHeld(new shooterAutoCommand(m_indexer, m_turret, m_shooter, m_limelight));
       opDPadUp.whenPressed(() -> m_indexer.setBallCount(m_indexer.getBallCount() + 1));
       opDPadDown.whenPressed(() -> m_indexer.setBallCount(m_indexer.getBallCount() - 1));
       opBackButton.whenPressed(new shooterSpoolCommand(m_shooter));

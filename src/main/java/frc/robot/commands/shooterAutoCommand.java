@@ -23,8 +23,6 @@ public class shooterAutoCommand extends CommandBase {
   private shooterSubsystem m_shooter;
   private limelight m_limelight;
   private boolean m_stationary;
-  private boolean m_hoodup = true;
-
   private double steer_k = 0.075;
   private double tv;
   private double tx;
@@ -33,11 +31,11 @@ public class shooterAutoCommand extends CommandBase {
   /**
    * shooterAutoCommand class constructor
    * 
-   * @param indexer, indexer subsystem 
-   * @param turret, turret subsystem
-   * @param shooter, shooter subsystem
-   * @param ll_util, limelight class
-   * @param hood_up, boolean: true = hood up, false = hood down
+   * @param indexer,    indexer subsystem
+   * @param turret,     turret subsystem
+   * @param shooter,    shooter subsystem
+   * @param ll_util,    limelight class
+   * @param hood_up,    boolean: true = hood up, false = hood down
    * @param stationary, boolean: true if robot is stationary
    */
   public shooterAutoCommand(indexerSubsystem indexer, turretSubsystem turret, shooterSubsystem shooter, limelight ll_util, boolean hood_up, boolean stationary) {
@@ -49,10 +47,8 @@ public class shooterAutoCommand extends CommandBase {
     m_shooter = shooter;
     m_limelight = ll_util;
     m_stationary = stationary;
-    m_hoodup = hood_up;
   }
 
-  
   /**
    * shooterAutoCommand class constructor
    * 
@@ -63,20 +59,41 @@ public class shooterAutoCommand extends CommandBase {
    * @param hood_up, boolean: true = hood up, false = hood down
    */
   public shooterAutoCommand(indexerSubsystem indexer, turretSubsystem turret, shooterSubsystem shooter, limelight ll_util, boolean hood_up) {
- 
+
     // call the main constructor, with stationary as "false"
     this(indexer, turret, shooter, ll_util, hood_up, false);
+  }
+
+  public shooterAutoCommand(indexerSubsystem indexer, turretSubsystem turret, shooterSubsystem shooter, limelight ll_util) {
+
+    // call the main constructor, with stationary as "false"
+    if ((Robot.distance_meters * 3.281) > 9.0) {
+      m_shooter.deployHood();
+    } 
+    else {
+      m_shooter.retractHood();
+    }
+
+    m_indexer = indexer;
+    m_turret = turret;
+    m_shooter = shooter;
+    m_limelight = ll_util;
+    m_stationary = false;
+    //this(indexer, turret, shooter, ll_util, hood_up);
   }
 
   @Override
   public void initialize() {
     m_limelight.setLEDMode(0);
-    if (m_hoodup) {
+
+
+    if ((Robot.distance_meters * 3.281) > 9.0) {
       m_shooter.deployHood();
     }
     else {
       m_shooter.retractHood();
     }
+
   }
 
   @Override
