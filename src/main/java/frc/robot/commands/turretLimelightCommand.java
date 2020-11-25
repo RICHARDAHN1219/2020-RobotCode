@@ -54,18 +54,9 @@ public class turretLimelightCommand extends CommandBase {
       return;
     }
 
-    // m_LimelightHasValidTarget = true;
     // Start with proportional steering
-    double steer_cmd = tx * STEER_K;
-    m_LimelightSteerCommand = steer_cmd;
-
-    // try to drive forward until the target area reaches our desired area
-    // double drive_cmd = (DESIRED_TARGET_AREA - ta) * DRIVE_K;
-
-    // don't let the robot drive too fast into the goal
-    /*
-     * if (drive_cmd > MAX_DRIVE) { drive_cmd = MAX_DRIVE; } m_LimelightDriveCommand = drive_cmd;
-     */
+    m_LimelightSteerCommand = tx * STEER_K;
+    
     m_turret.setPercentOutput(m_LimelightSteerCommand);
     m_shooter.setShooterRPM(rpm);
 
