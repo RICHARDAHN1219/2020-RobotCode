@@ -24,7 +24,7 @@ public class Robot extends TimedRobot {
   public Compressor Compressor;
   //public static boolean isCompBot = true;
   SendableChooser <String> chooser = new SendableChooser<>();
-  public double distance_meters = 0.0;
+  public static double distance_meters = 0.0;
 
   @Override
   public void robotInit() {

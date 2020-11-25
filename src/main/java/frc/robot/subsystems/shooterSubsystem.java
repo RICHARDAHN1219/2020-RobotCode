@@ -59,6 +59,14 @@ public class shooterSubsystem extends SubsystemBase {
     {-5.7,  2800} // 13 feet
   };
 
+  private double hoodDownFeet[][] = {
+    {4.0, 2600},  // 4 feet  2750
+    {7.0, 2500},  // 7 feet
+    {10.0, 2650}, // 10 feet
+    {12.0, 2700}, // 12 feet
+    {13.0, 2800}  // 13 feet
+  };
+
   // based on the reported limelight angle
   private double hoodUpAngle[][] = {
     {5, 3000}, // 9 feet
@@ -71,19 +79,15 @@ public class shooterSubsystem extends SubsystemBase {
 
   // RPM based on distance in feet from target
   private double hoodUpFeet[][] = {
-    {9,  3750},
-    {13, 3300},
-    {17, 3400},
-    {21, 3400},
-    {25, 4300}
+    {9,  3000},
+    {10, 3100},
+    {13, 3250},
+    {17, 3300},
+    {18, 3300},
+    {25, 3600}
   };
 
-  private double hoodDownFeet[][] = {
-    {4.0, 2750},  // 4 feet
-    {7.0, 2850},  // 7 feet
-    {10.0, 2950}, // 10 feet
-    {12.0, 3050}  // 12 feet
-  };
+
 
   /**
    * shooterSubsystem() - constructor for shooterSubsytem class
@@ -145,7 +149,7 @@ public class shooterSubsystem extends SubsystemBase {
     m_error = m_currentRPM - m_desiredRPM;
 
     //if (Math.abs(m_error) < m_max_RPM_error) {
-    if (((m_error >= 0) && (m_error < 100)) ||
+    if (((m_error >= 0) && (m_error < 50)) ||
         ((m_error < 0) && (m_error > -m_max_RPM_error))) {
       m_atSpeed = true;
     }
@@ -240,7 +244,7 @@ public class shooterSubsystem extends SubsystemBase {
   public boolean isAtSpeed() {
     m_error = m_currentRPM - m_desiredRPM;
 
-    if (((m_error >= 0) && (m_error < 100)) ||
+    if (((m_error >= 0) && (m_error < 50)) ||
         ((m_error < 0) && (m_error > -m_max_RPM_error))) {
       m_atSpeed = true;
     }
