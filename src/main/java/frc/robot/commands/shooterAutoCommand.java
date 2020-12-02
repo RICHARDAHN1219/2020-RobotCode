@@ -27,6 +27,7 @@ public class shooterAutoCommand extends CommandBase {
   private double tv;
   private double tx;
   private double limelightSteerCommand = 0;
+  private boolean m_hoodup_override = false;
 
   /**
    * shooterAutoCommand class constructor
@@ -47,6 +48,7 @@ public class shooterAutoCommand extends CommandBase {
     m_shooter = shooter;
     m_limelight = ll_util;
     m_stationary = stationary;
+    m_hoodup_override = hood_up;
   }
 
   /**
@@ -65,21 +67,8 @@ public class shooterAutoCommand extends CommandBase {
   }
 
   public shooterAutoCommand(indexerSubsystem indexer, turretSubsystem turret, shooterSubsystem shooter, limelight ll_util) {
-
-    // call the main constructor, with stationary as "false"
-    if ((Robot.distance_meters * 3.281) > 9.0) {
-      m_shooter.deployHood();
-    } 
-    else {
-      m_shooter.retractHood();
-    }
-
-    m_indexer = indexer;
-    m_turret = turret;
-    m_shooter = shooter;
-    m_limelight = ll_util;
-    m_stationary = false;
-    //this(indexer, turret, shooter, ll_util, hood_up);
+    // call main constructor, w/ stationary false, force hood up false
+     this(indexer, turret, shooter, ll_util, false, false);
   }
 
   @Override
