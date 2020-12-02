@@ -127,7 +127,8 @@ public class RobotContainer {
       opXButton.whenPressed(new indexerRestageCommand(m_indexer));
       opYButton.whileHeld(new indexerReverseEjectCommand(m_indexer));
       opRightBumper.whileHeld(new shooterAutoCommand(m_indexer, m_turret, m_shooter, m_limelight));
-      opLeftBumper.whileHeld(new shooterAutoCommand(m_indexer, m_turret, m_shooter, m_limelight));
+      //opLeftBumper.whileHeld(new shooterAutoCommand(m_indexer, m_turret, m_shooter, m_limelight));
+      opLeftBumper.whileHeld(shootUnderGoal());
       opDPadUp.whenPressed(() -> m_indexer.setBallCount(m_indexer.getBallCount() + 1));
       opDPadDown.whenPressed(() -> m_indexer.setBallCount(m_indexer.getBallCount() - 1));
       opBackButton.whenPressed(new shooterSpoolCommand(m_shooter));
@@ -140,6 +141,14 @@ public class RobotContainer {
    */
   public Command noAutonomous() {
     return new RunCommand(() -> m_drive.tankDriveVolts(0, 0));
+  }
+
+  public Command shootUnderGoal() {
+      return new InstantCommand(() -> m_turret.setAngleDegrees(0), m_turret).
+      andThen(new InstantCommand(() -> m_shooter.setShooterRPM(3200), m_shooter).
+      andThen(new indexerStageForShootingCommand(m_indexer)).
+      andThen(new WaitUntilCommand(() -> m_shooter.isAtSpeed())).
+      andThen(new InstantCommand(() -> m_indexer.ejectOneBall(), m_indexer)));
   }
 
   public Command straightOn3Ball() {
