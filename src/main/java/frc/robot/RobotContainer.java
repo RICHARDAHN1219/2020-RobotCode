@@ -128,7 +128,7 @@ public class RobotContainer {
       opYButton.whileHeld(new indexerReverseEjectCommand(m_indexer));
       opRightBumper.whileHeld(new shooterAutoCommand(m_indexer, m_turret, m_shooter, m_limelight));
       //opLeftBumper.whileHeld(new shooterAutoCommand(m_indexer, m_turret, m_shooter, m_limelight));
-      opLeftBumper.whileHeld(shootUnderGoal());
+      opLeftBumper.whileHeld(new shooterUnderGoal(m_indexer,m_turret,m_shooter,true));
       opDPadUp.whenPressed(() -> m_indexer.setBallCount(m_indexer.getBallCount() + 1));
       opDPadDown.whenPressed(() -> m_indexer.setBallCount(m_indexer.getBallCount() - 1));
       opBackButton.whenPressed(new shooterSpoolCommand(m_shooter));
