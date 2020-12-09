@@ -7,11 +7,7 @@
 
 package frc.robot.commands;
 
-import com.fearxzombie.limelight;
-import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.Robot;
-import frc.robot.RobotContainer;
 import frc.robot.subsystems.indexerSubsystem;
 import frc.robot.subsystems.shooterSubsystem;
 import frc.robot.subsystems.turretSubsystem;
@@ -21,39 +17,22 @@ public class shooterUnderGoal extends CommandBase {
   private indexerSubsystem m_indexer;
   private turretSubsystem m_turret;
   private shooterSubsystem m_shooter;
-  private double steer_k = 0.075;
-  private double limelightSteerCommand = 0;
-  private boolean m_hoodup_override = false;
 
   /**
-   * shooterAutoCommand class constructor
+   * shooterUnderGoal class constructor
    * 
    * @param indexer,    indexer subsystem
    * @param turret,     turret subsystem
    * @param shooter,    shooter subsystem
-   * @param ll_util,    limelight class
-   * @param hood_up,    boolean: true = hood up, false = hood down
-   * @param stationary, boolean: true if robot is stationary
    */
-  public shooterUnderGoal(indexerSubsystem indexer, turretSubsystem turret, shooterSubsystem shooter, boolean stationary) {
+  public shooterUnderGoal(indexerSubsystem indexer, turretSubsystem turret, shooterSubsystem shooter) {
     addRequirements(indexer);
     addRequirements(turret);
     addRequirements(shooter);
     m_indexer = indexer;
     m_turret = turret;
     m_shooter = shooter;
-    stationary = true;
   }
-
-  /**
-   * shooterAutoCommand class constructor
-   * 
-   * @param indexer, indexer subsystem
-   * @param turret,  turret subsystem
-   * @param shooter, shooter subsystem
-   * @param ll_util, limelight class
-   * @param hood_up, boolean: true = hood up, false = hood down
-   */
 
 
   @Override
