@@ -30,7 +30,7 @@ public class driveCommand extends CommandBase {
   @Override
   public void execute() {
     if (m_drive.getDriveInvert() == false) {
-      if (driveController.getBumper(Hand.kLeft) == true) {
+      if (driveController.getBumper(Hand.kLeft) == false) {
         m_drive.arcadeDrive(driveController.getY(Hand.kLeft) * 0.5, -driveController.getX(Hand.kRight) * 0.5);  
       }
       else {
@@ -39,7 +39,7 @@ public class driveCommand extends CommandBase {
     }
 
     if (m_drive.getDriveInvert() == true) {
-      if (driveController.getBumper(Hand.kLeft) == true) {
+      if (driveController.getBumper(Hand.kLeft) == false) {
         m_drive.arcadeDrive(-driveController.getY(Hand.kLeft) * 0.5, -driveController.getX(Hand.kRight) * 0.5);
       }
       else {

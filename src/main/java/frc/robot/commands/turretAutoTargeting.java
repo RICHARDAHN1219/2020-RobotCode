@@ -25,9 +25,10 @@ public class turretAutoTargeting extends CommandBase {
   private limelight m_limelight;
   private double m_targetAngleDegrees = 0.0;
   private double m_errorDegrees = 0.0;
-  double h1 = 0.6096;
-  double h2 = 2.5019;
-  double a1 = 32;
+  // TODO: Put these values in Constants.java
+  double h1 = 0.6096;  // TODO: measured 0.60 meters
+  double h2 = 2.5019;  // TODO: 89.75 inches to center of vision target == 2.278 m
+  double a1 = 32;      // TODO: now 30
 
   // kP for limelight must be 1.0 or less
   private double kPlimelight = 0.5;
