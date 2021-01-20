@@ -128,7 +128,8 @@ public class turretSubsystem extends SubsystemBase {
   public void periodic() {
     boolean turretLimit = !limit.get();
 
-    int pos = turretDrive.getSelectedSensorPosition();
+    // TODO: research if we need to use a double here. 
+    int pos = (int) turretDrive.getSelectedSensorPosition();
 
     SmartDashboard.putBoolean("TurretLimit", turretLimit);
     SmartDashboard.putNumber("Turret Pos", pos);
