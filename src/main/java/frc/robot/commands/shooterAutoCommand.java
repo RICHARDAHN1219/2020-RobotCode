@@ -75,7 +75,7 @@ public class shooterAutoCommand extends CommandBase {
   public void initialize() {
     m_limelight.setLEDMode(0);
 
-
+    //9 Feet Threshhold
     if ((Robot.distance_meters * 3.281) > 9.0) {
       m_shooter.deployHood();
     }

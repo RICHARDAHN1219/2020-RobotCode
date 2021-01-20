@@ -56,7 +56,7 @@ public final class Constants {
                 kDistancePerWheelRevolutionMeters / Math.PI;
 
         // gear reduction from Falcon Gearbox:
-        // Two stages 11:60 then 16:31 for a total gear reduction of 11:120
+        // Two stages 11:60 then 16:32 for a total gear reduction of 11:120
         public static final double kGearReduction = 11.0 / 120.0;
 
         // Assumes the encoders are directly mounted on the motor shafts
