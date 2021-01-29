@@ -75,12 +75,10 @@ public final class Constants {
         public static final int kEncoderCPR = 4096; // CTRE Quadrature?
 
         // BAG motor controlled by Talon
-        // Turret inner teeth = 264. * 360
+        // Turret inner teeth = 264
         // gear teeth = 20
         // gearbox = 35:1
-        // Total motor to turret rotation ration: 1/396
-        // public static final double kGearRation = 1 / 396.0; // turret rotations per motor
-        // rotation
+        // Total motor to turret rotation ration: 1:462  (1:35 * 20:264)
         // POST gearbox encoder ratio is:
         // 20:264 or 1/13.2
         public static final double kGearRation = 1 / 13.2; // turret rotations per encoder rotation
