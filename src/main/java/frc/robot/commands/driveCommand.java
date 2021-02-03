@@ -9,6 +9,7 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.driveSubsystem;
@@ -17,7 +18,7 @@ public class driveCommand extends CommandBase {
 
   driveSubsystem m_drive;
   XboxController driveController = RobotContainer.m_driveController;
-  private double speedMultiplier = 0.6;
+  private double speedMultiplier = 1.0;
 
   public driveCommand(driveSubsystem drive) {
     addRequirements(drive);
@@ -26,29 +27,57 @@ public class driveCommand extends CommandBase {
 
   @Override
   public void initialize() {
+    SmartDashboard.putNumber("Drive Multiplier", speedMultiplier);
   }
 
   @Override
   public void execute() {
-    if (m_drive.getDriveInvert() == false) {
-      if (driveController.getBumper(Hand.kLeft) == false) {
-        m_drive.arcadeDrive(driveController.getY(Hand.kLeft) * speedMultiplier, -driveController.getX(Hand.kRight) * speedMultiplier);  
-      }
-      else {
-        // go slower
-        m_drive.arcadeDrive(driveController.getY(Hand.kLeft) * speedMultiplier * 0.5, -driveController.getX(Hand.kRight) *speedMultiplier * 0.5);
-      }
+
+    double speed = 0;
+    double rotation = 0;
+
+    double m = SmartDashboard.getNumber("Drive Multiplier", 0);
+    if (m != speedMultiplier) {
+      speedMultiplier = Math.min(Math.abs(m), 1.0);
     }
 
-    if (m_drive.getDriveInvert() == true) {
-      if (driveController.getBumper(Hand.kLeft) == false) {
-        m_drive.arcadeDrive(-driveController.getY(Hand.kLeft) * speedMultiplier, -driveController.getX(Hand.kRight) * speedMultiplier);
-      }
-      else {
-        // go slower
-        m_drive.arcadeDrive(-driveController.getY(Hand.kLeft) * speedMultiplier * 0.5, -driveController.getX(Hand.kRight) * speedMultiplier * 0.5);
-      }
+    if (m_drive.getForzaModeEnabled()) {
+      // right trigger forward, left trigger for reverse
+      speed = driveController.getTriggerAxis(Hand.kRight) - driveController.getTriggerAxis(Hand.kLeft);
+      rotation = driveController.getX(Hand.kRight);
     }
+    else {
+      speed = driveController.getY(Hand.kLeft);
+      rotation = -driveController.getX(Hand.kRight);
+    }
+
+    if (m_drive.getSquaredInputs()) {
+      // square the joystick inputs, give much more control at lower speed and rotation inputs
+      speed = speed * Math.abs(speed);
+      rotation = rotation * Math.abs(rotation);
+    }
+
+    if (driveController.getBumper(Hand.kLeft) == false) {
+        // drive slower 
+        speed = speed * 0.5;
+        rotation = rotation * 0.5;
+    }
+
+    // speed multiplier
+    speed = speed * speedMultiplier;
+    rotation = rotation * speedMultiplier;
+
+    if (m_drive.getDriveInvert() == true) {
+      // invert driving direction
+      speed = -speed;
+    }
+
+    m_drive.arcadeDrive(speed, rotation);
+
+    SmartDashboard.putBoolean("Drive Inverted", m_drive.getDriveInvert());
+    SmartDashboard.putBoolean("Drive Forza Mode", m_drive.getForzaModeEnabled());
+    SmartDashboard.putBoolean("Drive Square Inputs", m_drive.getSquaredInputs());
+    SmartDashboard.putNumber("Drive Multiplier", speedMultiplier);
   }
 
   @Override

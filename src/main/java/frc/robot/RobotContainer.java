@@ -100,14 +100,18 @@ public class RobotContainer {
     // Driver Controls
       // Y Button to deploy the elevator
       // X Button to retract the elevator
+      // A Button toggle Forza mode
+      // B Button toggle square driver inputs
       // Left Trigger - climber down (raise robot)
       // Right Trigger - climber up (lower robot)
       // Right Bumper - invert drive controls
       // Left Bumper - Slow down robot by 1/2
       driverYButton.whenPressed(new InstantCommand(() -> m_turret.setAngleDegrees(0), m_turret).andThen(() -> m_elevator.deployElevator()));
-      driverXButton.whenPressed(() -> m_elevator.retractElevator());
+      //driverXButton.whenPressed(() -> m_elevator.retractElevator());
       driverRightBumper.whenPressed(new driveInvertCommand(m_drive));
-    
+      driverAButton.whenPressed(new InstantCommand(() -> m_drive.toggleForzaMode()));
+      driverBButton.whenPressed(new InstantCommand(() -> m_drive.toggleSquaredInputs()));
+
     // Operator Controls
       // Left Joystick - manual turret control
       // Left Trigger - manually move the indexer backwards
