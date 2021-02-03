@@ -44,7 +44,7 @@ public class driveCommand extends CommandBase {
     if (m_drive.getForzaModeEnabled()) {
       // right trigger forward, left trigger for reverse
       speed = driveController.getTriggerAxis(Hand.kRight) - driveController.getTriggerAxis(Hand.kLeft);
-      rotation = -driveController.getX(Hand.kRight);
+      rotation = -driveController.getX(Hand.kLeft);
     }
     else {
       speed = driveController.getY(Hand.kLeft);
