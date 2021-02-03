@@ -58,7 +58,7 @@ public class RobotContainer {
   private final turretSubsystem m_turret = new turretSubsystem();
   public final shooterSubsystem m_shooter = new shooterSubsystem();
   public static final indexerSubsystem m_indexer = new indexerSubsystem();
-  private final elevatorSubsystem m_elevator = new elevatorSubsystem();
+  //private final elevatorSubsystem m_elevator = new elevatorSubsystem();
   //private final controlPanelSubsystem m_controlPanelMotors = new controlPanelSubsystem();
   private final intakeSubsystem m_intake = new intakeSubsystem();
   public static XboxController m_driveController = new XboxController(driveConstants.driveController);
@@ -68,7 +68,7 @@ public class RobotContainer {
   public RobotContainer() {
     configureButtonBindings();
     m_drive.setDefaultCommand(new driveCommand(m_drive));
-    m_elevator.setDefaultCommand(new elevatorWinchCommand(m_elevator));
+    //m_elevator.setDefaultCommand(new elevatorWinchCommand(m_elevator));
     m_indexer.setDefaultCommand(new indexerDefaultCommand(m_indexer));
     m_turret.setDefaultCommand(new turretDefaultCommand(m_turret));
   }
@@ -106,7 +106,7 @@ public class RobotContainer {
       // Right Trigger - climber up (lower robot)
       // Right Bumper - invert drive controls
       // Left Bumper - Slow down robot by 1/2
-      driverYButton.whenPressed(new InstantCommand(() -> m_turret.setAngleDegrees(0), m_turret).andThen(() -> m_elevator.deployElevator()));
+      //driverYButton.whenPressed(new InstantCommand(() -> m_turret.setAngleDegrees(0), m_turret).andThen(() -> m_elevator.deployElevator()));
       //driverXButton.whenPressed(() -> m_elevator.retractElevator());
       driverRightBumper.whenPressed(new driveInvertCommand(m_drive));
       driverAButton.whenPressed(new InstantCommand(() -> m_drive.toggleForzaMode()));
