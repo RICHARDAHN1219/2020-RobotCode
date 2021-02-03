@@ -44,7 +44,7 @@ public class driveCommand extends CommandBase {
     if (m_drive.getForzaModeEnabled()) {
       // right trigger forward, left trigger for reverse
       speed = driveController.getTriggerAxis(Hand.kRight) - driveController.getTriggerAxis(Hand.kLeft);
-      rotation = driveController.getX(Hand.kRight);
+      rotation = -driveController.getX(Hand.kRight);
     }
     else {
       speed = driveController.getY(Hand.kLeft);
@@ -58,9 +58,9 @@ public class driveCommand extends CommandBase {
     }
 
     if (driveController.getBumper(Hand.kLeft) == false) {
-        // drive slower 
-        speed = speed * 0.5;
-        rotation = rotation * 0.5;
+        // drive slower, press button in engage turbo mode
+        speed = speed * 0.7;
+        rotation = rotation * 0.7;
     }
 
     // speed multiplier
