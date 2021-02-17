@@ -34,25 +34,11 @@ public class turretSubsystem extends SubsystemBase {
     turretDrive.configFactoryDefault();
     turretDrive.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, kIndex, kTimeout);
 
-    if (Robot.isCompBot == true) {
-      turretDrive.setInverted(false);
-      turretDrive.setSensorPhase(false);
-    }
-    else {
-      turretDrive.setInverted(true);
-      turretDrive.setSensorPhase(true);
-    }
+    turretDrive.setInverted(false);
+    turretDrive.setSensorPhase(false);
 
-    if (Robot.isCompBot == true) {
-      // +- 81 deg
-      turretDrive.configForwardSoftLimitThreshold(12308, kTimeout);
-      turretDrive.configReverseSoftLimitThreshold(-11629, kTimeout);
-    }
-    else {
-      // +- 90 deg
-      turretDrive.configForwardSoftLimitThreshold(13808, kTimeout);
-      turretDrive.configReverseSoftLimitThreshold(-13423, kTimeout);
-    }
+    turretDrive.configForwardSoftLimitThreshold(12308, kTimeout);
+    turretDrive.configReverseSoftLimitThreshold(-11629, kTimeout);
 
     turretDrive.configForwardSoftLimitEnable(true);
     turretDrive.configReverseSoftLimitEnable(true);
@@ -142,7 +128,8 @@ public class turretSubsystem extends SubsystemBase {
   public void periodic() {
     boolean turretLimit = !limit.get();
 
-    int pos = turretDrive.getSelectedSensorPosition();
+    // TODO: research if we need to use a double here. 
+    int pos = (int) turretDrive.getSelectedSensorPosition();
 
     SmartDashboard.putBoolean("TurretLimit", turretLimit);
     SmartDashboard.putNumber("Turret Pos", pos);

@@ -7,6 +7,10 @@
 
 package frc.robot.subsystems;
 
+import static frc.robot.Constants.shooterConstants.shooter1;
+import static frc.robot.Constants.shooterConstants.shooter2;
+
+import edu.wpi.first.wpilibj.SlewRateLimiter;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -19,129 +23,154 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.team2930.lib.util.linearInterpolator;
 
 import frc.robot.Constants;
-import frc.robot.Robot;
 import frc.robot.RobotContainer;
-import frc.robot.Constants.shooterConstants;
+
 
 public class shooterSubsystem extends SubsystemBase {
 
-  private CANSparkMax neo_shooter1 = new CANSparkMax(Constants.shooterConstants.shooter1, MotorType.kBrushless);
-  private CANSparkMax neo_shooter2 = new CANSparkMax(Constants.shooterConstants.shooter2, MotorType.kBrushless);
+  private CANSparkMax neo_shooter1 = new CANSparkMax(shooter1, MotorType.kBrushless);
+  private CANSparkMax neo_shooter2 = new CANSparkMax(shooter2, MotorType.kBrushless);
   private Solenoid hood = new Solenoid(Constants.shooterConstants.shooterHood);
   private CANPIDController m_pidController;
   private CANEncoder m_encoder;
   private double kMaxOutput, kMinOutput;
   private double m_desiredRPM = 0;
   private boolean m_atSpeed = false;
-  private long m_initialTime = 0;
-  private linearInterpolator m_lt;
-  private linearInterpolator m_lt_hoodDownP;
-  private linearInterpolator m_lt_hoodUpP;
-  private linearInterpolator m_lt_hoodDownC;
-  private linearInterpolator m_lt_hoodUpC;
+  private linearInterpolator m_lt_angle;
+  private linearInterpolator m_lt_feet;
+  private linearInterpolator m_lt_hoodDownAngle;
+  private linearInterpolator m_lt_hoodUpAngle;
+  private linearInterpolator m_lt_hoodDownFeet;
+  private linearInterpolator m_lt_hoodUpFeet;
   private int m_idleRPM = 1500;
-  
-  private double hoodDownP[][] = {
-    {15.4, 2600}, // 4.5 feet
-    {3, 2650}, // 7 feet
-    {-7.2, 2750}, // 10 feet
-    {-12.2, 2900} // 12 feet
-  };
-  private double hoodUpP[][] = {
-    {8, 3900}, // 9 feet
-    {-0.1, 3550}, // 13 feet
-    {-5, 3600}, // 17 feet
-    {-8.5, 3800}, // 21 feet
-    {-11, 4100} // 25 feet
-  };
+  private double m_currentRPM = 0;
+  private double m_error = 0;
+  private double m_max_RPM_error = 15;
 
-  private double hoodDownC[][] = {
+  private double m_rate_RPMpersecond = 2000;
+  private SlewRateLimiter m_rateLimiter;
+
+  // based on the reported limelight angle
+  private double hoodDownAngle[][] = {
     {24.7, 2750}, // 4 feet
     {12.3, 2850}, // 7 feet
-    {2.75, 2950}, // 10 feet
-    {-2.85, 3050} // 12 feet
-  };
-  private double hoodUpC[][] = {
-    {5, 3750}, // 9 feet
-    {-4.3, 3500}, // 13 feet
-    {-9.85, 3600}, // 17 feet
-    {-13.5, 3750}, // 21 feet
-    {-16, 4300} // 25 feet
+    {1.0,  2500}, // 10 feet
+    {-2.85, 2700}, // 12 feet
+    {-5.7,  2800} // 13 feet
   };
 
+  private double hoodDownFeet[][] = {
+    {4.0, 2600},  // 4 feet  2750
+    {7.0, 2500},  // 7 feet
+    {10.0, 2650}, // 10 feet
+    {12.0, 2700}, // 12 feet
+    {13.0, 2800}  // 13 feet
+  };
+
+  // based on the reported limelight angle
+  private double hoodUpAngle[][] = {
+    {5, 3000}, // 9 feet
+    {-0.11, 3100}, // 10 ft
+    {-4.3, 3250}, // 13 feet
+    {-9.85, 3300}, // 17 feet
+    {-11, 3300}, // 17+ feet
+    {-16, 3600} // 25 feet
+  };
+
+  // RPM based on distance in feet from target
+  private double hoodUpFeet[][] = {
+    {9,  3000},
+    {10, 3100},
+    {13, 3250},
+    {17, 3300},
+    {18, 3300},
+    {25, 3600}
+  };
+
+
+
+  /**
+   * shooterSubsystem() - constructor for shooterSubsytem class
+   */
   public shooterSubsystem() {
+
     neo_shooter1.restoreFactoryDefaults();
     neo_shooter2.restoreFactoryDefaults();
 
-
     // set min time to go from neutral to full power
-    neo_shooter1.setClosedLoopRampRate(0.5);
-    neo_shooter2.setClosedLoopRampRate(0.5);
+    // NOTE: closedloop ramp rate interacts poorly with closed loop control sometimes.
+    // neo_shooter1.setClosedLoopRampRate(0.5);
+    // neo_shooter2.setClosedLoopRampRate(0.5);
     
     // Set coast mode
     neo_shooter1.setIdleMode(CANSparkMax.IdleMode.kCoast);
     neo_shooter2.setIdleMode(CANSparkMax.IdleMode.kCoast);
     
-    if (Robot.isCompBot == true) {
-      neo_shooter1.setInverted(true);
-    }
+    neo_shooter1.setInverted(true);
 
     neo_shooter2.follow(neo_shooter1, true);
     m_pidController = neo_shooter1.getPIDController();
     m_encoder = neo_shooter1.getEncoder(EncoderType.kHallSensor, 4096);
     
-    kMaxOutput = 0.9; 
+    kMaxOutput = 1.0; 
     kMinOutput = -0.0;
     m_pidController.setOutputRange(kMinOutput, kMaxOutput);
 
+    setShooterPID(0.0009, 0.000001, 0.0, 0.0002, 200);
+
     // Build the linear Interpolators just once each.
-    m_lt_hoodUpC = new linearInterpolator(hoodUpC);
-    m_lt_hoodDownC = new linearInterpolator(hoodDownC);
-    m_lt_hoodUpP = new linearInterpolator(hoodUpP);
-    m_lt_hoodDownP = new linearInterpolator(hoodDownP);
+    m_lt_hoodUpAngle = new linearInterpolator(hoodUpAngle);
+    m_lt_hoodDownAngle = new linearInterpolator(hoodDownAngle);
+    m_lt_hoodUpFeet = new linearInterpolator(hoodUpFeet);
+    m_lt_hoodDownFeet = new linearInterpolator(hoodDownFeet);
 
     // pick a default, so that it is never undefined
-    m_lt = m_lt_hoodDownC;
+    m_lt_angle = m_lt_hoodDownAngle;
+    m_lt_feet = m_lt_hoodDownFeet;
 
-    SmartDashboard.putNumber("ShooterRPM", m_desiredRPM);
-    SmartDashboard.putNumber("RPM_Error", 0);
+    m_desiredRPM = 0;
+    m_pidController.setReference(0, ControlType.kVelocity);
+    m_rateLimiter = new SlewRateLimiter(m_rate_RPMpersecond, m_desiredRPM);
+
+    SmartDashboard.putNumber("RPM set point", m_desiredRPM);
+    SmartDashboard.putNumber("RPM", 0);
+    SmartDashboard.putNumber("RPM error", 0);
+    SmartDashboard.putNumber("Shooter Voltage", 0.0);
+
   }
 
+  /**
+   * periodic() - this function runs once every robot scheduler cycle.
+   */
   @Override
   public void periodic() {
 
-    SmartDashboard.putNumber("ActualShooterRPM", (int) m_encoder.getVelocity());
+    m_currentRPM = m_encoder.getVelocity();
+    m_error = m_currentRPM - m_desiredRPM;
 
-    //
-    // Manual RPM control from Smartdashboard
-    //
-    double rpm = SmartDashboard.getNumber("ShooterRPM", -1);
-    if (rpm != -1) {
-      if (rpm == 0.0) {
-        // spin down, don't use PID (and power) to stop
-        stop();
-      }
-      else if (m_desiredRPM != rpm ) {
-        setShooterRPM(rpm);
-        m_initialTime = System.nanoTime();
-        m_atSpeed = false;
-      }
-    }
-
-    //
-    // Track how long it takes to reach desired RPM, set m_asSpeed
-    // 
-    if (isAtSpeed()) {
-      if (!m_atSpeed) {
-        SmartDashboard.putNumber("Time2RPM", System.nanoTime() - m_initialTime);
-      }
+    //if (Math.abs(m_error) < m_max_RPM_error) {
+    if (((m_error >= 0) && (m_error < 50)) ||
+        ((m_error < 0) && (m_error > -m_max_RPM_error))) {
       m_atSpeed = true;
     }
     else {
-      m_atSpeed = false;
+      m_atSpeed = false;  
     }
 
+    double setPoint = m_rateLimiter.calculate(m_desiredRPM);
+    if (m_desiredRPM < setPoint) {
+      // we don't rate reduce slowing the robot
+      setPoint = m_desiredRPM;
+    }
+
+    m_pidController.setReference(setPoint, ControlType.kVelocity);
+ 
+
+    SmartDashboard.putNumber("RPM", m_currentRPM);
+    SmartDashboard.putNumber("RPM set point", setPoint);
+    SmartDashboard.putNumber("RPM error", m_error);
     SmartDashboard.putBoolean("isAtSpeed", m_atSpeed);
+    SmartDashboard.putNumber("Shooter Voltage", neo_shooter1.getAppliedOutput());
   }
 
   /**
@@ -151,46 +180,33 @@ public class shooterSubsystem extends SubsystemBase {
    */
   public void setShooterRPM (double desiredRPM) {
     m_desiredRPM = desiredRPM;
-    m_initialTime = System.nanoTime();
-    m_atSpeed = false;
-    if (m_desiredRPM <= m_idleRPM) {
-      m_pidController.setOutputRange(0, kMaxOutput);
-      setShooterPID(0.0003, 0, 0, 0.00018, 0);
+    isAtSpeed();
+
+    if (m_desiredRPM == 0) {
+      setPercentOutput(0.0);
+
+      // zero the RPM change rate limit. No rate limit to stop the flywheel
+      m_rateLimiter = new SlewRateLimiter(m_rate_RPMpersecond, m_desiredRPM);
     }
-    else {
-      m_pidController.setOutputRange(kMinOutput, kMaxOutput);
-      // Old values: setShooterPID(0.0005, 0.00000015, 0, 0.0002, 600);
-      setShooterPID(0.0004, 0.000001, 0.0, 0.0002, 200);
-    }
-    m_pidController.setReference(desiredRPM, ControlType.kVelocity);
-    SmartDashboard.putNumber("ShooterRPM", m_desiredRPM);
-  }
-  public void testMode(){
-    m_desiredRPM = SmartDashboard.getNumber("DesiredShooterRPM", 0);
-    System.out.println("Shooter desired RPM: "  + m_desiredRPM);
-    m_pidController.setReference(m_desiredRPM, ControlType.kVelocity);
-    System.out.println("Activating Test Mode");
   }
 
+  /**
+   * deployHood() - raise shooter hood
+   */
   public void deployHood() {
     RobotContainer.m_limelight.setPipeline(4);
-    if (Robot.isCompBot == true) {
-      m_lt = m_lt_hoodUpC;
-    }
-    else {
-      m_lt = m_lt_hoodUpP;
-    }
+    m_lt_angle = m_lt_hoodUpAngle;
+    m_lt_feet = m_lt_hoodUpFeet;
     hood.set(true);
   }
 
+  /**
+   * retractHood() - lower the shooter hood
+   */
   public void retractHood() {
     RobotContainer.m_limelight.setPipeline(4);
-    if (Robot.isCompBot == true) {
-      m_lt = m_lt_hoodDownC;
-    }
-    else {
-      m_lt = m_lt_hoodDownP;
-    }
+    m_lt_angle = m_lt_hoodDownAngle;
+    m_lt_feet = m_lt_hoodDownFeet;
     hood.set(false);
   }
 
@@ -203,7 +219,6 @@ public class shooterSubsystem extends SubsystemBase {
    * @param kF, feed forward constant
    * @param iZone, need to be this close to target to activate I
    */
-
   public void setShooterPID (double P, double I, double D, double F, double iZ) {
     m_pidController.setP(P);
     m_pidController.setI(I);
@@ -212,7 +227,11 @@ public class shooterSubsystem extends SubsystemBase {
     m_pidController.setIZone(iZ);
   }
 
-  //Current limiting on the fly switching removed due to the SparkMAX API not supporting that sort of switch.
+  /**
+   * setPercentOutput() - override flywheel motor with percent output
+   * 
+   * @param percent, percent motor output -1.0 to 1.0
+   */
   public void setPercentOutput(double percent) {
     neo_shooter1.set(percent);
   }
@@ -222,15 +241,18 @@ public class shooterSubsystem extends SubsystemBase {
    * 
    * @return true if at correct speed, else false
    */
-  public boolean isAtSpeed(){
-    double error = m_desiredRPM - m_encoder.getVelocity();
-    SmartDashboard.putNumber("RPM_Error", error);
-    
-    if (Math.abs(error) < 75) {
-      return true;
-    } else {
-      return false;
+  public boolean isAtSpeed() {
+    m_error = m_currentRPM - m_desiredRPM;
+
+    if (((m_error >= 0) && (m_error < 50)) ||
+        ((m_error < 0) && (m_error > -m_max_RPM_error))) {
+      m_atSpeed = true;
     }
+    else {
+      m_atSpeed = false;  
+    }
+
+    return m_atSpeed;
   }
 
   /**
@@ -240,7 +262,7 @@ public class shooterSubsystem extends SubsystemBase {
    * @return RPM for flywheel
    */
   public double getRPMforTY(double TY) {
-    return m_lt.getInterpolatedValue(TY);
+    return m_lt_angle.getInterpolatedValue(TY);
   }
 
   /**
@@ -250,7 +272,7 @@ public class shooterSubsystem extends SubsystemBase {
    * @return RPM for flywheel
    */
   public double getRPMforDistanceFeet(double distanceFeet) {
-    return m_lt.getInterpolatedValue(distanceFeet);
+    return m_lt_feet.getInterpolatedValue(distanceFeet);
   }
 
   /**
@@ -264,15 +286,24 @@ public class shooterSubsystem extends SubsystemBase {
   }
 
   /**
+   * getSetpoint() - return current target RPM
+   */
+  public double getSetPoint() {
+    return m_desiredRPM;
+  }
+
+  /**
    * idle()  - run the flywheel at pre-determined idle speed
    */
   public void idle() {
     setShooterRPM(m_idleRPM);   
   }
 
-
   public void stop() {
     m_desiredRPM = 0;
     setPercentOutput(0.0);
+
+    // zero the RPM change rate limit. No rate limit to stop the flywheel
+    m_rateLimiter = new SlewRateLimiter(m_rate_RPMpersecond, m_desiredRPM);
   }
 }

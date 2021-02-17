@@ -56,7 +56,7 @@ public class RobotContainer {
   // public so that it can get the right instance.
   public static final limelight m_limelight = new limelight("limelight-one");
   private final turretSubsystem m_turret = new turretSubsystem();
-  public static final shooterSubsystem m_shooter = new shooterSubsystem();
+  public final shooterSubsystem m_shooter = new shooterSubsystem();
   public static final indexerSubsystem m_indexer = new indexerSubsystem();
   private final elevatorSubsystem m_elevator = new elevatorSubsystem();
   //private final controlPanelSubsystem m_controlPanelMotors = new controlPanelSubsystem();
@@ -116,8 +116,8 @@ public class RobotContainer {
       // B Button - stage balls for shooting
       // X Button - restage balls
       // Y Button - hold to eject balls out the back of the indexer
-      // Right Bumper - shoot with hood up
-      // Left Bumper - shoot with hood down
+      // Right Bumper - shoot
+      // Left Bumper - shoot
       // D Pad Up - manually increase ball count
       // D Pad Down - manually decrease ball count
       // Start Button - zero the turret
@@ -126,11 +126,12 @@ public class RobotContainer {
       opBButton.whenPressed(new indexerStageForShootingCommand(m_indexer));
       opXButton.whenPressed(new indexerRestageCommand(m_indexer));
       opYButton.whileHeld(new indexerReverseEjectCommand(m_indexer));
-      opRightBumper.whileHeld(new hoodUpAutoShootCommand(m_indexer, m_turret, m_shooter, m_limelight));
-      opLeftBumper.whileHeld(new hoodDownAutoShootCommand(m_indexer, m_turret, m_shooter, m_limelight));
+      opRightBumper.whileHeld(new shooterAutoCommand(m_indexer, m_turret, m_shooter, m_limelight));
+      //opLeftBumper.whileHeld(new shooterAutoCommand(m_indexer, m_turret, m_shooter, m_limelight));
+      opLeftBumper.whileHeld(new shooterUnderGoal(m_indexer, m_turret, m_shooter));
       opDPadUp.whenPressed(() -> m_indexer.setBallCount(m_indexer.getBallCount() + 1));
       opDPadDown.whenPressed(() -> m_indexer.setBallCount(m_indexer.getBallCount() - 1));
-      opBackButton.toggleWhenPressed(new shooterSpoolCommand(m_shooter));
+      opBackButton.whenPressed(new shooterSpoolCommand(m_shooter));
   }
   
   /**
@@ -145,10 +146,8 @@ public class RobotContainer {
   public Command straightOn3Ball() {
     RamseteCommand moveBack1 = createTrajectoryCommand(new Pose2d(0, 0, new Rotation2d(0)), List.of(new Translation2d(-0.5, 0)), new Pose2d(-1, 0, new Rotation2d(0)), true, 2.5, 0.75);
     
-    return 
-    new InstantCommand(() -> m_shooter.setShooterPID(0.0005, 0.00000025, 0, 0.00022, 250), m_shooter).
-    andThen(moveBack1.alongWith(new InstantCommand(() -> m_shooter.setShooterRPM(3550), m_shooter))).
-    andThen(new hoodUpAutoShootCommand(m_indexer, m_turret, m_shooter, m_limelight));
+    return moveBack1.alongWith(new InstantCommand(() -> m_shooter.setShooterRPM(3000), m_shooter)).
+    andThen(new shooterAutoCommand(m_indexer, m_turret, m_shooter, m_limelight, true));
   }
 
   public Command straightOn3BallForward() {
@@ -157,7 +156,7 @@ public class RobotContainer {
     return 
     new InstantCommand(() -> m_shooter.setShooterPID(0.0005, 0.000000, 0, 0.00018, 250), m_shooter).
     andThen(moveForward1.alongWith(new InstantCommand(() -> m_shooter.setShooterRPM(2800), m_shooter))).
-    andThen(new hoodDownAutoShootCommand(m_indexer, m_turret, m_shooter, m_limelight));
+    andThen(new shooterAutoCommand(m_indexer, m_turret, m_shooter, m_limelight, false));
   }
 
   public Command straightOn6BallRendezvous() {//Gets the 3 balls on rendezvous point towards center of field
@@ -166,18 +165,18 @@ public class RobotContainer {
     RamseteCommand moveForward3 = createTrajectoryCommand(new Pose2d(-2, 0, new Rotation2d(0)), List.of(new Translation2d(-1, 0)), new Pose2d(0, 0, new Rotation2d(0)), false, 2.5, 1);
     return 
     new InstantCommand(() -> m_shooter.setShooterPID(0.0005, 0.00000025, 0, 0.00022, 250), m_shooter).alongWith(new InstantCommand(() -> m_indexer.setBallCount(3), m_indexer)).
-    andThen((new hoodUpAutoShootCommand(m_indexer, m_turret, m_shooter, m_limelight))).
+    andThen((new shooterAutoCommand(m_indexer, m_turret, m_shooter, m_limelight, true))).
     andThen(moveBack1.alongWith(new InstantCommand(() -> m_shooter.setShooterRPM(3550), m_shooter))).
     andThen(new WaitUntilCommand(() -> m_indexer.getBallCount() == 0)).
     andThen(moveBack2.deadlineWith(new intakeDeployCommand(m_intake), new indexerDefaultCommand(m_indexer).perpetually()).
     andThen(moveForward3.deadlineWith(new InstantCommand(() -> m_shooter.setShooterRPM(3550), m_shooter), new InstantCommand(() -> m_turret.setAngleDegrees(3.0), m_turret), new indexerStageForShootingCommand(m_indexer))).
-    andThen(new hoodUpAutoShootCommand(m_indexer, m_turret, m_shooter, m_limelight)));
+    andThen(new shooterAutoCommand(m_indexer, m_turret, m_shooter, m_limelight, true)));
   }
 
   // same as straightOn3Ball() but with sing SequentialCommandGroup
   public Command straightOn3Ball_reorg() {
    
-    // power port is directly in front of robot, center limelight over initiaton line
+    // power port is directly in front of robot, center limelight over initiation line
     powerPortLocation = new Translation2d(feet2Meters(10), 0);
 
     Command ac = new SequentialCommandGroup(
@@ -190,7 +189,7 @@ public class RobotContainer {
         ),
         createTrajectoryCommand(new Pose2d(0, 0, new Rotation2d(0)), List.of(new Translation2d(-0.5, 0)), new Pose2d(-1, 0, new Rotation2d(0)), true, 2.5, 0.75)
       ),
-      new hoodUpAutoShootCommand(m_indexer, m_turret, m_shooter, m_limelight, true)
+      new shooterAutoCommand(m_indexer, m_turret, m_shooter, m_limelight, true, true)
     );
 
     return ac;
@@ -203,7 +202,7 @@ public class RobotContainer {
     return 
     new InstantCommand(() -> m_shooter.setShooterPID(0.0005, 0.00000025, 0, 0.00022, 250), m_shooter).
     andThen(moveBack1.alongWith(new InstantCommand(() -> m_shooter.setShooterRPM(3550), m_shooter), new InstantCommand(() -> m_turret.setAngleDegrees(-3), m_turret))).
-    andThen(new hoodUpAutoShootCommand(m_indexer, m_turret, m_shooter, m_limelight));
+    andThen(new shooterAutoCommand(m_indexer, m_turret, m_shooter, m_limelight, true));
   }
 
   public Command rightSide4Ball() {
@@ -214,7 +213,7 @@ public class RobotContainer {
     new InstantCommand(() -> m_shooter.setShooterPID(0.0005, 0.00000025, 0, 0.00022, 250), m_shooter).
     andThen(moveBack1.deadlineWith(new intakeDeployCommand(m_intake), new indexerDefaultCommand(m_indexer).perpetually(), new InstantCommand(() -> m_indexer.runIntake()))).
     andThen(moveForward2.alongWith(new InstantCommand(() -> m_shooter.setShooterRPM(3550), m_shooter), new InstantCommand(() -> m_turret.setAngleDegrees(-3), m_turret)).
-    andThen(new hoodUpAutoShootCommand(m_indexer, m_turret, m_shooter, m_limelight)));
+    andThen(new shooterAutoCommand(m_indexer, m_turret, m_shooter, m_limelight, true)));
   }
 
   public Command rightSide5Ball() {
@@ -228,7 +227,7 @@ public class RobotContainer {
     andThen(moveBack2.deadlineWith(new intakeDeployCommand(m_intake), new indexerDefaultCommand(m_indexer).perpetually())).
     andThen(new WaitCommand(2).deadlineWith(new intakeDeployCommand(m_intake), new indexerDefaultCommand(m_indexer).perpetually())).
     andThen(moveForward3.alongWith(new InstantCommand(() -> m_shooter.setShooterRPM(3550), m_shooter), new InstantCommand(() -> m_turret.setAngleDegrees(-3), m_turret), new indexerStageForShootingCommand(m_indexer))).
-    andThen(new hoodUpAutoShootCommand(m_indexer, m_turret, m_shooter, m_limelight));
+    andThen(new shooterAutoCommand(m_indexer, m_turret, m_shooter, m_limelight, true));
   }
 
   public Command rightSide6Ball() {
@@ -240,20 +239,20 @@ public class RobotContainer {
     return 
     new InstantCommand(() -> m_shooter.setShooterPID(0.0005, 0.00000025, 0, 0.00022, 250), m_shooter).alongWith(new InstantCommand(() -> m_indexer.setBallCount(3))).
     andThen(new InstantCommand(() -> m_turret.setAngleDegrees(-3), m_turret)).
-    andThen(new WaitUntilCommand(() -> m_indexer.getBallCount() == 0).deadlineWith(new hoodUpAutoShootCommand(m_indexer, m_turret, m_shooter, m_limelight))).
+    andThen(new WaitUntilCommand(() -> m_indexer.getBallCount() == 0).deadlineWith(new shooterAutoCommand(m_indexer, m_turret, m_shooter, m_limelight, true))).
     andThen(moveBack1.deadlineWith(new intakeDeployCommand(m_intake), new indexerDefaultCommand(m_indexer).perpetually())).
     andThen(moveBack2.deadlineWith(new intakeDeployCommand(m_intake), new indexerDefaultCommand(m_indexer).perpetually())).
     andThen(new WaitCommand(0.5).deadlineWith(new intakeDeployCommand(m_intake), new indexerDefaultCommand(m_indexer).perpetually())).
     andThen(moveBack3.deadlineWith(new intakeDeployCommand(m_intake), new indexerDefaultCommand(m_indexer).perpetually()).
     andThen(new WaitCommand(0.75).deadlineWith(new intakeDeployCommand(m_intake), new indexerDefaultCommand(m_indexer).perpetually())).
     andThen(moveForward4.deadlineWith(new InstantCommand(() -> m_shooter.setShooterRPM(3550), m_shooter), new InstantCommand(() -> m_turret.setAngleDegrees(-3), m_turret), new indexerStageForShootingCommand(m_indexer)))).
-    andThen(new hoodUpAutoShootCommand(m_indexer, m_turret, m_shooter, m_limelight));
+    andThen(new shooterAutoCommand(m_indexer, m_turret, m_shooter, m_limelight, true));
   }
 
   public Command rightSide6Ball_reorg() {
 
     // power port is left of robot, 
-    // 1. front of frame over initiaton line
+    // 1. front of frame over initiation line
     // 2. robot lined up on row of balls
     powerPortLocation = new Translation2d(feet2Meters(10.5), inches2Meters(66.91));
 
@@ -274,7 +273,7 @@ public class RobotContainer {
 
       // shoot until all the balls are gone
       new ParallelRaceGroup(
-        new hoodUpAutoShootCommand(m_indexer, m_turret, m_shooter, m_limelight, true),
+        new shooterAutoCommand(m_indexer, m_turret, m_shooter, m_limelight, true, true),
         new WaitUntilCommand(() -> m_indexer.getBallCount() == 0)
       ),
 
@@ -302,7 +301,7 @@ public class RobotContainer {
 
       // shoot, finish when all the balls are gone
       new ParallelRaceGroup(
-        new hoodUpAutoShootCommand(m_indexer, m_turret, m_shooter, m_limelight, true),
+        new shooterAutoCommand(m_indexer, m_turret, m_shooter, m_limelight, true, true),
         new WaitUntilCommand(() -> m_indexer.getBallCount() == 0)
       )
 
@@ -323,10 +322,10 @@ public class RobotContainer {
     alongWith(new InstantCommand(() -> m_indexer.setBallCount(3))).
     andThen(new InstantCommand(() -> m_turret.setAngleDegrees(-3), m_turret), new InstantCommand(() -> m_shooter.setShooterRPM(3550), m_shooter), new InstantCommand(() -> m_limelight.setLEDMode(0))).
     andThen(moveBack1.deadlineWith(new intakeDeployCommand(m_intake), new indexerDefaultCommand(m_indexer).perpetually())).
-    andThen(new WaitUntilCommand(() -> m_indexer.getBallCount() == 0).deadlineWith(new hoodUpAutoShootCommand(m_indexer, m_turret, m_shooter, m_limelight))).
+    andThen(new WaitUntilCommand(() -> m_indexer.getBallCount() == 0).deadlineWith(new shooterAutoCommand(m_indexer, m_turret, m_shooter, m_limelight, true))).
     andThen(moveBack2.deadlineWith(new intakeDeployCommand(m_intake), new indexerDefaultCommand(m_indexer).perpetually())).
     andThen(moveForward3.deadlineWith(new InstantCommand(() -> m_shooter.setShooterRPM(3550), m_shooter), new InstantCommand(() -> m_turret.setAngleDegrees(-3), m_turret), new indexerStageForShootingCommand(m_indexer), new InstantCommand(() -> m_limelight.setLEDMode(0)))).
-    andThen(new hoodUpAutoShootCommand(m_indexer, m_turret, m_shooter, m_limelight));
+    andThen(new shooterAutoCommand(m_indexer, m_turret, m_shooter, m_limelight, true, true));
   }
 
   public Command middle3Ball() {
@@ -335,7 +334,7 @@ public class RobotContainer {
     return 
     new InstantCommand(() -> m_shooter.setShooterPID(0.0005, 0.00000025, 0, 0.00022, 250), m_shooter).
     andThen(moveBack1.deadlineWith(new InstantCommand(() -> m_shooter.setShooterRPM(3550), m_shooter), new InstantCommand(() -> m_turret.setAngleDegrees(3), m_turret))).
-    andThen(new hoodUpAutoShootCommand(m_indexer, m_turret, m_shooter, m_limelight));
+    andThen(new shooterAutoCommand(m_indexer, m_turret, m_shooter, m_limelight, true));
   }
 
   public Command middle4BallTest() {
@@ -346,7 +345,7 @@ public class RobotContainer {
     new InstantCommand(() -> m_shooter.setShooterPID(0.0005, 0.00000025, 0, 0.00022, 250), m_shooter).
     andThen(moveBack1.deadlineWith(new intakeDeployCommand(m_intake), new indexerDefaultCommand(m_indexer).perpetually())).
     andThen(moveForward2.alongWith(new InstantCommand(() -> m_shooter.setShooterRPM(3550), m_shooter), new InstantCommand(() -> m_turret.setAngleDegrees(3)))).
-    andThen(new hoodUpAutoShootCommand(m_indexer, m_turret, m_shooter, m_limelight));
+    andThen(new shooterAutoCommand(m_indexer, m_turret, m_shooter, m_limelight, true));
   }
 
   /**
@@ -376,7 +375,7 @@ public class RobotContainer {
         .addConstraint(autoVoltageConstraint)
         .setReversed(isReversed);
 
-    var initalTime = System.nanoTime();
+    var initialTime = System.nanoTime();
 
     // trajectory to follow. All units in meters.
     var trajectory = TrajectoryGenerator.generateTrajectory(
@@ -397,7 +396,7 @@ public class RobotContainer {
             m_drive::tankDriveVolts,
             m_drive);
 
-    var dt = (System.nanoTime() - initalTime) / 1E6;
+    var dt = (System.nanoTime() - initialTime) / 1E6;
     System.out.println("RamseteCommand generation time: " + dt + "ms");
 
     // Run path following command, then stop at the end.

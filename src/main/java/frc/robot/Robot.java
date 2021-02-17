@@ -1,5 +1,9 @@
 package frc.robot;
 
+import static frc.robot.Constants.limeLightConstants.targetHeight_meters;
+import static frc.robot.Constants.limeLightConstants.limeLightHeight_meters;
+import static frc.robot.Constants.limeLightConstants.limeLightAngle_degrees;
+
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -9,7 +13,6 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DriverStation;
-import frc.robot.RobotContainer;
 
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
@@ -19,13 +22,15 @@ public class Robot extends TimedRobot {
   private RobotContainer m_robotContainer;
   public PowerDistributionPanel m_pdp = new PowerDistributionPanel();
   public Compressor Compressor;
-  public static boolean isCompBot = true;
+  //public static boolean isCompBot = true;
   SendableChooser <String> chooser = new SendableChooser<>();
+  public static double distance_meters = 0.0;
 
   @Override
   public void robotInit() {
     m_robotContainer = new RobotContainer();
-    SmartDashboard.putNumber("distance", 0);
+  
+    SmartDashboard.putNumber("distance ft", 0);
     //RobotContainer.m_limelight.setLEDMode(1);
     CameraServer.getInstance().startAutomaticCapture();
     chooser.addOption("Right 3 Ball", "r3");
@@ -44,13 +49,18 @@ public class Robot extends TimedRobot {
   public void robotPeriodic() {
     CommandScheduler.getInstance().run();
     SmartDashboard.putBoolean("limelight on target", RobotContainer.limelightOnTarget);
-    double distance = RobotContainer.m_limelight.getDist(0.6096, 2.5019, 32);
-    SmartDashboard.putNumber("distance", distance);
+    if (RobotContainer.m_limelight.getTV() == 1 ) {
+      // limelight can see a target
+      distance_meters = RobotContainer.m_limelight.getDist(targetHeight_meters, limeLightHeight_meters , limeLightAngle_degrees);
+      // distance_meters = ( 2.5019 - 0.603250) / Math.tan( Math.toRadians(30 + RobotContainer.m_limelight.getTY()));
+      SmartDashboard.putNumber("distance ft", distance_meters * 3.28084);
+    }
   }
 
   @Override
   public void disabledInit() {
     //RobotContainer.m_limelight.setLEDMode(1);
+    m_robotContainer.m_shooter.setShooterRPM(0);
   }
 
   @Override
@@ -59,8 +69,8 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousInit() {
-    // TODO: move this to RobotInit() that get's run when the robot is powered on instead of here when
-    // Autonomous starts. Auton command geneneration can take almost a second. Don't waste it during a 
+    // TODO: move this to RobotInit() that gets run when the robot is powered on instead of here when
+    // Autonomous starts. Auton command generation can take almost a second. Don't waste it during a 
     // match.
     if (chooser.getSelected() == "r3"){
       m_autonomousCommand = m_robotContainer.rightSide3Ball();
@@ -153,6 +163,5 @@ public class Robot extends TimedRobot {
 
   @Override
   public void testPeriodic() {
-    RobotContainer.m_shooter.testMode();
   }
 }

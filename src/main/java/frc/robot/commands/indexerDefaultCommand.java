@@ -18,6 +18,7 @@ public class indexerDefaultCommand extends CommandBase {
   private indexerSubsystem m_indexer;
   private boolean clearedSensor2 = false;
   private XboxController opController = RobotContainer.m_operatorController;
+  private long m_started = 0;
 
   public indexerDefaultCommand(indexerSubsystem indexer) {
     addRequirements(indexer);
@@ -28,6 +29,7 @@ public class indexerDefaultCommand extends CommandBase {
   public void initialize() {
     clearedSensor2 = false;
     m_indexer.runOnlyIntake();
+    m_started = System.nanoTime();
   }
 
   @Override
@@ -47,21 +49,25 @@ public class indexerDefaultCommand extends CommandBase {
       m_indexer.setKickerPercentOutput(-opController.getTriggerAxis(Hand.kLeft));
     }
 
-      if (m_indexer.ballStaged() == false) {
-        clearedSensor2 = true;
-      }
-        
-      if (m_indexer.ballExiting() == true) {
-        // Always stop indexer if a ball is at the exit point.
-        // Don't eject a ball unless we're shooting.
-        m_indexer.stopIndexer();
-      }
-      else if (m_indexer.ballReadyForIndexer() == true) {
-        // here we know ballExiting() == false
-        // OK to pull in more balls and continue to fill indexer
-        m_indexer.runIndexer();
-      }
-    } 
+    if (m_indexer.ballStaged() == false) {
+      clearedSensor2 = true;
+    }
+
+    if (m_indexer.ballExiting() == true) {
+      // Always stop indexer if a ball is at the exit point.
+      // Don't eject a ball unless we're shooting.
+      m_indexer.stopIndexer();
+    } else if (m_indexer.ballReadyForIndexer() == true) {
+      // here we know ballExiting() == false
+      // OK to pull in more balls and continue to fill indexer
+      m_indexer.runIndexer();
+      m_started = System.nanoTime();
+    }
+    else if ((System.nanoTime() - m_started)  > (10 * 1_000_000_000)) {
+      // stop the indexer if we've run for more than 6 seconds
+      m_indexer.stopIndexer();
+    }
+  }
 
   @Override
   public void end(boolean interrupted) {

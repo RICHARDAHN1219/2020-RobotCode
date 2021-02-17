@@ -17,6 +17,7 @@ public class driveCommand extends CommandBase {
 
   driveSubsystem m_drive;
   XboxController driveController = RobotContainer.m_driveController;
+  private double speedMultiplier = 0.6;
 
   public driveCommand(driveSubsystem drive) {
     addRequirements(drive);
@@ -31,22 +32,24 @@ public class driveCommand extends CommandBase {
   public void execute() {
     if (m_drive.getDriveInvert() == false) {
       if (driveController.getBumper(Hand.kLeft) == false) {
-        m_drive.arcadeDrive(driveController.getY(Hand.kLeft) * 0.5, -driveController.getX(Hand.kRight) * 0.5);  
+        m_drive.arcadeDrive(driveController.getY(Hand.kLeft) * speedMultiplier, -driveController.getX(Hand.kRight) * speedMultiplier);  
       }
       else {
-        m_drive.arcadeDrive(driveController.getY(Hand.kLeft), -driveController.getX(Hand.kRight));
+        // go slower
+        m_drive.arcadeDrive(driveController.getY(Hand.kLeft) * speedMultiplier * 0.5, -driveController.getX(Hand.kRight) *speedMultiplier * 0.5);
       }
     }
 
     if (m_drive.getDriveInvert() == true) {
       if (driveController.getBumper(Hand.kLeft) == false) {
-        m_drive.arcadeDrive(-driveController.getY(Hand.kLeft) * 0.5, -driveController.getX(Hand.kRight) * 0.5);
+        m_drive.arcadeDrive(-driveController.getY(Hand.kLeft) * speedMultiplier, -driveController.getX(Hand.kRight) * speedMultiplier);
       }
       else {
-        m_drive.arcadeDrive(-driveController.getY(Hand.kLeft), -driveController.getX(Hand.kRight));
+        // go slower
+        m_drive.arcadeDrive(-driveController.getY(Hand.kLeft) * speedMultiplier * 0.5, -driveController.getX(Hand.kRight) * speedMultiplier * 0.5);
       }
     }
-    }
+  }
 
   @Override
   public void end(boolean interrupted) {

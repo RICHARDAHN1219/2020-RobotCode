@@ -14,9 +14,9 @@ import edu.wpi.first.wpilibj.geometry.Translation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.driveSubsystem;
-import frc.robot.subsystems.shooterSubsystem;
 import frc.robot.subsystems.turretSubsystem;
 import com.team2930.lib.util.geometry;
+import frc.robot.Constants.limeLightConstants;
 
 public class turretAutoTargeting extends CommandBase {
   private turretSubsystem m_turret;
@@ -25,10 +25,8 @@ public class turretAutoTargeting extends CommandBase {
   private limelight m_limelight;
   private double m_targetAngleDegrees = 0.0;
   private double m_errorDegrees = 0.0;
-  // TODO: Put these values in Constants.java
-  double h1 = 0.6096;  // TODO: measured 0.60 meters
-  double h2 = 2.5019;  // TODO: 89.75 inches to center of vision target == 2.278 m
-  double a1 = 32;      // TODO: now 30
+  private double m_ll_target_distance_meters = 0.0;
+
 
   // kP for limelight must be 1.0 or less
   private double kPlimelight = 0.5;
@@ -80,16 +78,24 @@ public class turretAutoTargeting extends CommandBase {
     if ((int) m_limelight.getTV() == 1 ) {
       ll_angleDegrees = m_limelight.getTY();
       m_targetAngleDegrees = m_targetAngleDegrees + kPlimelight * ll_angleDegrees;
+      m_ll_target_distance_meters = m_limelight.getDist(limeLightConstants.limeLightHeight_meters, limeLightConstants.targetHeight_meters, limeLightConstants.limeLightAngle_degrees);
+      // move turret to angle
+      m_turret.setAngleDegrees(m_targetAngleDegrees);
+
+      m_errorDegrees = m_targetAngleDegrees - m_turret.getAngleDegrees();
+    }
+    else {
+      // no target lock
+      // TODO: use pose estimation
+      m_errorDegrees = 0;
+      m_targetAngleDegrees = 0;
+      m_ll_target_distance_meters = -1;
     }
 
-    // move turret to angle
-    m_turret.setAngleDegrees(m_targetAngleDegrees);
-
-    m_errorDegrees = m_targetAngleDegrees - m_turret.getAngleDegrees();
-
+   
     SmartDashboard.putNumber("Angle2Target", m_targetAngleDegrees);
-    SmartDashboard.putNumber("Dist2Target", dist_pose);
-    SmartDashboard.putNumber("LL_Dist2Target", m_limelight.getDist(h1, h2, a1));
+    SmartDashboard.putNumber("Dist2Target (meters)", dist_pose);
+    SmartDashboard.putNumber("LL_Dist2Target (meters)", m_ll_target_distance_meters);
     SmartDashboard.putNumber("AngleError", m_errorDegrees);
     SmartDashboard.putNumber("LL_Angle", ll_angleDegrees);
   }

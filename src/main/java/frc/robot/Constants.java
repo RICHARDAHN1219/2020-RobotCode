@@ -10,6 +10,8 @@ package frc.robot;
 import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveKinematics;
 
+//This is a test to show how to push code
+
 public final class Constants {
     public static final class currentLimits {
         public static SupplyCurrentLimitConfiguration m_currentlimitMain = new SupplyCurrentLimitConfiguration(true, 35, 1, 1);
@@ -44,7 +46,7 @@ public final class Constants {
         public static final double kPDriveVel = 5.0; // frc-characterization 14.4
         public static final double kDDriveVel = 0.0; // frc-characterization 5.16
 
-        // TalonFX encoders have 2048, Rev Robitics have 4096
+        // TalonFX encoders have 2048, Rev Robotics have 4096
         public static final int kEncoderCPR = 2048;
 
         // Aprox 6 inch (0.1524 meters) traction wheels, measured 0.15836 m
@@ -54,7 +56,7 @@ public final class Constants {
                 kDistancePerWheelRevolutionMeters / Math.PI;
 
         // gear reduction from Falcon Gearbox:
-        // Two stages 11:60 then 16:31 for a total gear reduction of 11:120
+        // Two stages 11:60 then 16:32 for a total gear reduction of 11:120
         public static final double kGearReduction = 11.0 / 120.0;
 
         // Assumes the encoders are directly mounted on the motor shafts
@@ -73,12 +75,10 @@ public final class Constants {
         public static final int kEncoderCPR = 4096; // CTRE Quadrature?
 
         // BAG motor controlled by Talon
-        // Turret inner teeth = 264. * 360
+        // Turret inner teeth = 264
         // gear teeth = 20
         // gearbox = 35:1
-        // Total motor to turret rotation ration: 1/396
-        // public static final double kGearRation = 1 / 396.0; // turret rotations per motor
-        // rotation
+        // Total motor to turret rotation ration: 1:462  (1:35 * 20:264)
         // POST gearbox encoder ratio is:
         // 20:264 or 1/13.2
         public static final double kGearRation = 1 / 13.2; // turret rotations per encoder rotation
@@ -91,6 +91,11 @@ public final class Constants {
         public static final double kMaxDegreesPerSecondSquared = 45;
         public static final int kTimeout = 30; // Talon command timeout
         public static final int kIndex = 0; // Talon PID index
+    }
+    public static final class limeLightConstants {
+        public static final double limeLightHeight_meters = .68394;
+        public static final double targetHeight_meters = 2.5019;
+        public static final double limeLightAngle_degrees = 30;
     }
     public static final class shooterConstants {
         public static final int shooter1 = 16;
