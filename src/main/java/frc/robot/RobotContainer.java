@@ -134,6 +134,55 @@ public class RobotContainer {
   }
   
   /**
+   * return the generated autonomous command given the chooser string. String is
+   * set in the Chooser that id displayed on the SmartDashboard.
+   * 
+   * @param autonName
+   * @return Autonomous Command
+   */
+  public Command getAutonCommand(String autonName) {
+
+    Command autonCommand = null;
+
+    if (autonName == "r3") {
+      autonCommand = rightSide3Ball();
+    } else if (autonName == "r4") {
+      autonCommand = rightSide4Ball();
+    } else if (autonName == "r5") {
+      autonCommand = rightSide5Ball();
+    } else if (autonName == "m3") {
+      autonCommand = middle3Ball();
+    } else if (autonName == "s3") {
+      autonCommand = straightOn3Ball();
+    } else if (autonName == "s3_reorg") {
+      autonCommand = straightOn3Ball_reorg();
+    } else if (autonName == "r6") {
+      autonCommand = rightSide6Ball();
+    } else if (autonName == "r6t") {
+      autonCommand = rightSide6BallTest();
+    } else if (autonName == "r6reorg") {
+      autonCommand = rightSide6Ball_reorg();
+    } else if (autonName == "s3f") {
+      autonCommand = straightOn3BallForward();
+    } else if (autonName == "s1m") {
+      autonCommand = autonCalibrationForward(1.0);
+    } else if (autonName == "s1r1m") {
+      autonCommand = autonCalibrationCurve(1.0, -1.0);
+    } else if (autonName == "s1b1m") {
+      autonCommand = autonCalibrationForwardThenBack(1.0, 1.0);
+    } else if (autonName == "circle") {
+      autonCommand = autonCalibrationCircle(1.0);
+    } else if (autonName == "figure8") {
+      autonCommand = autonCalibrationFigure8(1.0);
+    } else {
+      System.out.println("WARNING: Unknown autonomous command: " + autonName);
+      autonCommand = noAutonomous();
+    }
+
+    return autonCommand;
+  }
+
+  /**
    * Do nothing during auton
    * 
    * @return Auton do nothing command
@@ -142,22 +191,168 @@ public class RobotContainer {
     return new RunCommand(() -> m_drive.tankDriveVolts(0, 0));
   }
 
+ /**
+   * Forward Autonomous Command
+   * 
+   * Return an autonomous command that drives straight for a given distance
+   * in meters.
+   * 
+   * @param distanceInMeters
+   * @return Autonomous Command
+   */
+  public Command autonCalibrationForward(double distanceInMeters) {
+
+    RamseteCommand ramseteCommand = createTrajectoryCommand(
+        new Pose2d(0.0, 0.0, new Rotation2d(0)), 
+        List.of(),
+        new Pose2d(distanceInMeters, 0.0, new Rotation2d(0)),
+        false, 1.5, 0.75);
+
+    // Run path following command, then stop at the end.
+    return ramseteCommand.andThen(() -> m_drive.tankDriveVolts(0, 0));
+  }
+
+ /**
+   * Curve Autonomous Command
+   *  
+   * Return an autonomous command that drives forward and to the left/right for a given distances
+   * in meters.
+   * 
+   * @param forwardInMeters
+   * @param leftInMeters
+   * @return Autonomous Command
+   */
+  public Command autonCalibrationCurve(double forwardInMeters, double leftInMeters) {
+
+    double rotation = Math.PI/2;
+
+    if (leftInMeters == 0) {
+        rotation = 0;
+    }
+    else if (leftInMeters < 0)  {
+      // turning tp the right
+      rotation = -1.0 * Math.PI / 2.0;
+    }
+
+    RamseteCommand ramseteCommand = createTrajectoryCommand(
+        new Pose2d(0.0, 0.0, new Rotation2d(0)), 
+        List.of(),
+        new Pose2d(forwardInMeters, leftInMeters, new Rotation2d(rotation)),
+        false, 1.5, 0.75);
+
+    // Run path following command, then stop at the end.
+    return ramseteCommand.andThen(() -> m_drive.tankDriveVolts(0, 0));
+  }
+
+ /**
+   * Forward and Backwards Autonomous Command
+   * 
+   * Return an autonomous command that drives straight for a given distance
+   * in meters, and then backs up. Both distances are positive.
+   * 
+   * @param forwardInMeters
+   * @param backwardsInMeters
+   * @return Autonomous Command
+   */
+  public Command autonCalibrationForwardThenBack(double forwardsInMeters, double backwardsInMeters) {
+
+    RamseteCommand moveBack = createTrajectoryCommand(
+      new Pose2d(0, 0, new Rotation2d(0)),
+      List.of(), new Pose2d(-backwardsInMeters, 0, new Rotation2d(0)),
+      true, 2.0, 0.75);
+
+    RamseteCommand ramseteCommand = createTrajectoryCommand(
+      new Pose2d(0.0, 0.0, new Rotation2d(0)), 
+      List.of(),
+      new Pose2d(forwardsInMeters, 0.0, new Rotation2d(0)),
+      false, 2.0, 0.75);
+
+    return ramseteCommand.
+      andThen(moveBack).
+      andThen(() -> m_drive.tankDriveVolts(0, 0));
+  }
+
+  /**
+   * Figure 8 Autonomous Command
+   * 
+   * Return an autonomous command that drives in a figure eight. The diameter of
+   * the circles is given in meters.
+   * 
+   * @param diameterInMeters
+   * @return Autonomous Command
+   */
+  public Command autonCalibrationFigure8(double diameterInMeters) {
+
+    // This assumes a start pose of (0,0) angle 0 (where ever the robot starts at)
+
+    // distances are in Meters
+    var figure_eight = List.of(
+        new Translation2d(0.5 * diameterInMeters, -0.5 * diameterInMeters),
+        new Translation2d(1.0 * diameterInMeters, -1.0 * diameterInMeters),
+        new Translation2d(1.5 * diameterInMeters, -0.5 * diameterInMeters),
+        new Translation2d(1.0 * diameterInMeters, 0.0 * diameterInMeters),
+        new Translation2d(0.5 * diameterInMeters, -0.5 * diameterInMeters),
+        new Translation2d(0.0 * diameterInMeters, -1.0 * diameterInMeters),
+        new Translation2d(-0.5 * diameterInMeters, -0.5 * diameterInMeters));
+
+    // Start of a Figure 8
+    RamseteCommand ramseteCommand = createTrajectoryCommand(
+        new Pose2d(0.0, 0.0, new Rotation2d(0)), 
+        figure_eight,
+        new Pose2d(0.0, 0.0, new Rotation2d(0)),
+        false, 1.5, 0.75);
+
+    // Run path following command, then stop at the end.
+    return ramseteCommand.andThen(() -> m_drive.tankDriveVolts(0, 0));
+  }
+
+  /**
+   * Circle Autonomous Command
+   * 
+   * Return an autonomous command that drives in a circle. The diameter of
+   * the circles is given in meters.
+   * 
+   * @param diameterInMeters
+   * @return Autonomous Command
+   */
+  public Command autonCalibrationCircle(double diameterInMeters) {
+
+    // This assumes a start pose of (0,0) angle 0 (where ever the robot starts at)
+
+    // distances are in Meters
+    var circle = List.of(
+        new Translation2d(0.5 * diameterInMeters, -0.5 * diameterInMeters),
+        new Translation2d(0.0 * diameterInMeters, -1.0 * diameterInMeters),
+        new Translation2d(-0.5 * diameterInMeters, -0.5 * diameterInMeters));
+
+    // Start of a Figure 8
+    RamseteCommand ramseteCommand = createTrajectoryCommand(
+        new Pose2d(0.0, 0.0, new Rotation2d(0)), 
+        circle,
+        new Pose2d(0.0, 0.0, new Rotation2d(0)),
+        false, 1.5, 0.75);
+
+    // Run path following command, then stop at the end.
+    return ramseteCommand.andThen(() -> m_drive.tankDriveVolts(0, 0));
+  }
+
+
   public Command straightOn3Ball() {
-    RamseteCommand moveBack1 = createTrajectoryCommand(new Pose2d(0, 0, new Rotation2d(0)), List.of(new Translation2d(-0.5, 0)), new Pose2d(-1, 0, new Rotation2d(0)), true, 2.5, 0.75);
-    
-    return 
-    new InstantCommand(() -> m_shooter.setShooterPID(0.0005, 0.00000025, 0, 0.00022, 250), m_shooter).
-    andThen(moveBack1.alongWith(new InstantCommand(() -> m_shooter.setShooterRPM(3550), m_shooter))).
-    andThen(new hoodUpAutoShootCommand(m_indexer, m_turret, m_shooter, m_limelight));
+    RamseteCommand moveBack1 = createTrajectoryCommand(new Pose2d(0, 0, new Rotation2d(0)),
+        List.of(new Translation2d(-0.5, 0)), new Pose2d(-1, 0, new Rotation2d(0)), true, 2.5, 0.75);
+
+    return new InstantCommand(() -> m_shooter.setShooterPID(0.0005, 0.00000025, 0, 0.00022, 250), m_shooter)
+        .andThen(moveBack1.alongWith(new InstantCommand(() -> m_shooter.setShooterRPM(3550), m_shooter)))
+        .andThen(new hoodUpAutoShootCommand(m_indexer, m_turret, m_shooter, m_limelight));
   }
 
   public Command straightOn3BallForward() {
-    RamseteCommand moveForward1 = createTrajectoryCommand(new Pose2d(0, 0, new Rotation2d(0)), List.of(new Translation2d(0.25, 0)), new Pose2d(0.5, 0, new Rotation2d(0)), false, 2.5, 0.75);
-    
-    return 
-    new InstantCommand(() -> m_shooter.setShooterPID(0.0005, 0.000000, 0, 0.00018, 250), m_shooter).
-    andThen(moveForward1.alongWith(new InstantCommand(() -> m_shooter.setShooterRPM(2800), m_shooter))).
-    andThen(new hoodDownAutoShootCommand(m_indexer, m_turret, m_shooter, m_limelight));
+    RamseteCommand moveForward1 = createTrajectoryCommand(new Pose2d(0, 0, new Rotation2d(0)),
+        List.of(new Translation2d(0.25, 0)), new Pose2d(0.5, 0, new Rotation2d(0)), false, 2.5, 0.75);
+
+    return new InstantCommand(() -> m_shooter.setShooterPID(0.0005, 0.000000, 0, 0.00018, 250), m_shooter)
+        .andThen(moveForward1.alongWith(new InstantCommand(() -> m_shooter.setShooterRPM(2800), m_shooter)))
+        .andThen(new hoodDownAutoShootCommand(m_indexer, m_turret, m_shooter, m_limelight));
   }
 
   public Command straightOn6BallRendezvous() {//Gets the 3 balls on rendezvous point towards center of field
@@ -177,7 +372,7 @@ public class RobotContainer {
   // same as straightOn3Ball() but with sing SequentialCommandGroup
   public Command straightOn3Ball_reorg() {
    
-    // power port is directly in front of robot, center limelight over initiaton line
+    // power port is directly in front of robot, center limelight over initiation line
     powerPortLocation = new Translation2d(feet2Meters(10), 0);
 
     Command ac = new SequentialCommandGroup(
@@ -253,7 +448,7 @@ public class RobotContainer {
   public Command rightSide6Ball_reorg() {
 
     // power port is left of robot, 
-    // 1. front of frame over initiaton line
+    // 1. front of frame over initiation line
     // 2. robot lined up on row of balls
     powerPortLocation = new Translation2d(feet2Meters(10.5), inches2Meters(66.91));
 
@@ -376,7 +571,7 @@ public class RobotContainer {
         .addConstraint(autoVoltageConstraint)
         .setReversed(isReversed);
 
-    var initalTime = System.nanoTime();
+    var initialTime = System.nanoTime();
 
     // trajectory to follow. All units in meters.
     var trajectory = TrajectoryGenerator.generateTrajectory(
@@ -397,7 +592,7 @@ public class RobotContainer {
             m_drive::tankDriveVolts,
             m_drive);
 
-    var dt = (System.nanoTime() - initalTime) / 1E6;
+    var dt = (System.nanoTime() - initialTime) / 1E6;
     System.out.println("RamseteCommand generation time: " + dt + "ms");
 
     // Run path following command, then stop at the end.
