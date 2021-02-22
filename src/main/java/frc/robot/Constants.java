@@ -20,8 +20,8 @@ public final class Constants {
     public static final class driveConstants {
         public static final int falcon1_leftLead = 12;
         public static final int falcon2_leftFollow = 13;
-        public static final int falcon3_rightLead = 14;
-        public static final int falcon4_rightFollow = 15;
+        public static final int falcon3_rightLead = 15;
+        public static final int falcon4_rightFollow = 14;
         public static final int driveTimeout = 30;
         public static final int pigeonCANid = 15;
         public static final int driveController = 0;
@@ -30,7 +30,8 @@ public final class Constants {
         public static final boolean kLeftEncoderReversed = false;
         public static final boolean kRightEncoderReversed = false;
 
-        public static final boolean kGyroReversed = true;
+        // NOTE: pigeon gyro is NOT reversed (NAVX and Analog gyros are)
+        public static final boolean kGyroReversed = false;
 
         // Comp bot track width (center of wheel to center of wheel) is 0.627m
         public static final double kTrackwidthMeters = 0.627;

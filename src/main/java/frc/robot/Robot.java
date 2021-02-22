@@ -33,14 +33,18 @@ public class Robot extends TimedRobot {
     SmartDashboard.putNumber("distance ft", 0);
     //RobotContainer.m_limelight.setLEDMode(1);
     CameraServer.getInstance().startAutomaticCapture();
-    chooser.addOption("Right 3 Ball", "r3");
-    chooser.addOption("Right 4 ball", "r4");
-    chooser.addOption("Right 5 ball", "r5");
-    chooser.addOption("Right 6 ball", "r6");
-    chooser.addOption("Right 6 ball test", "r6t");
-    chooser.addOption("straight on 3", "s3");
-    chooser.addOption("straight on 3 forward", "s3f");
-    chooser.addOption("right side 6 reorg", "r6reorg");
+    //chooser.addOption("Right 3 Ball", "r3");
+    //chooser.addOption("Right 4 ball", "r4");
+    //chooser.addOption("Right 5 ball", "r5");
+    //chooser.addOption("Right 6 ball", "r6");
+    //chooser.addOption("Right 6 ball test", "r6t");
+    //chooser.addOption("straight on 3", "s3");
+    //chooser.addOption("straight on 3 forward", "s3f");
+    //chooser.addOption("right side 6 reorg", "r6reorg");
+    chooser.addOption("forward 1m", "forward1");
+    chooser.addOption("curve left", "curveLeft");
+    chooser.addOption("curve right", "curveRight");
+
     chooser.addOption("Barrel", "barrel");
     chooser.addOption("Slalom", "slalom");
     chooser.addOption("Bounce", "bounce");
@@ -48,8 +52,12 @@ public class Robot extends TimedRobot {
     chooser.addOption("Red B", "redb");
     chooser.addOption("Blue A", "bluea");
     chooser.addOption("Blue A", "bluea");
-    chooser.setDefaultOption("Center 3 ball", "m3");
+    chooser.setDefaultOption("Do Nothing", "nothing");
     SmartDashboard.putData("Auto mode", chooser);
+
+    // zero gyro heading and reset encoders to zero.
+    m_robotContainer.m_drive.zeroHeading();
+    m_robotContainer.m_drive.resetEncoders();
   }
 
   @Override
@@ -82,57 +90,77 @@ public class Robot extends TimedRobot {
     if (chooser.getSelected() == "r3"){
       m_autonomousCommand = m_robotContainer.rightSide3Ball();
     }
-    if (chooser.getSelected() == "r4"){
+    else if (chooser.getSelected() == "r4"){
       m_autonomousCommand = m_robotContainer.rightSide4Ball();
     }
-    if (chooser.getSelected() == "r5"){
+    else if (chooser.getSelected() == "r5"){
       m_autonomousCommand = m_robotContainer.rightSide5Ball();
     }
-    if (chooser.getSelected() == "m3"){
+    else if (chooser.getSelected() == "m3"){
       m_autonomousCommand = m_robotContainer.middle3Ball();
     }
-    if (chooser.getSelected() == "s3"){
+    else if (chooser.getSelected() == "s3"){
       m_autonomousCommand = m_robotContainer.straightOn3Ball();
     }
-    if (chooser.getSelected() == "s3_reorg"){
+    else if (chooser.getSelected() == "s3_reorg"){
       m_autonomousCommand = m_robotContainer.straightOn3Ball_reorg();
     }
-    if (chooser.getSelected() == "r6"){
+    else if (chooser.getSelected() == "r6"){
       m_autonomousCommand = m_robotContainer.rightSide6Ball();
     }
-    if (chooser.getSelected() == "r6t"){
+    else if (chooser.getSelected() == "r6t"){
       m_autonomousCommand = m_robotContainer.rightSide6BallTest();
     }
-    if (chooser.getSelected() == "r6reorg"){
+    else if (chooser.getSelected() == "r6reorg"){
       m_autonomousCommand = m_robotContainer.rightSide6Ball_reorg();
     }
-    if (chooser.getSelected() == "s3f") {
+    else if (chooser.getSelected() == "s3f") {
       m_autonomousCommand = m_robotContainer.straightOn3BallForward();
     }
-    if (chooser.getSelected() == "figure8") {
+    else if (chooser.getSelected() == "figure8") {
       m_autonomousCommand = m_robotContainer.getAutonomousFigure8Command();
     }
-    if (chooser.getSelected() == "barrel") {
+    else if (chooser.getSelected() == "barrel") {
       m_autonomousCommand = m_robotContainer.getAutonomousBarrelCommand();
     }
-    if (chooser.getSelected() == "slalom") {
+    else if (chooser.getSelected() == "slalom") {
       m_autonomousCommand = m_robotContainer.getAutonomousSlalomCommand();
     }
-    if (chooser.getSelected() == "bounce") {
+    else if (chooser.getSelected() == "bounce") {
       m_autonomousCommand = m_robotContainer.getAutonomousBounceCommand();
     }
-    if (chooser.getSelected() == "reda") {
+    else if (chooser.getSelected() == "reda") {
       m_autonomousCommand = m_robotContainer.getAutonomousRedACommand();
     }
-    if (chooser.getSelected() == "redb") {
+    else if (chooser.getSelected() == "redb") {
       m_autonomousCommand = m_robotContainer.getAutonomousRedBCommand();
     }
-    if (chooser.getSelected() == "bluea") {
+    else if (chooser.getSelected() == "bluea") {
       m_autonomousCommand = m_robotContainer.getAutonomousBlueACommand();
     }
-    if (chooser.getSelected() == "blueb") {
+    else if (chooser.getSelected() == "blueb") {
       m_autonomousCommand = m_robotContainer.getAutonomousBlueBCommand();
     }
+    else if (chooser.getSelected() == "forward1") {
+      m_autonomousCommand = m_robotContainer.autonCalibrationForward(1.0);
+    }
+    else if (chooser.getSelected() == "curveLeft") {
+      m_autonomousCommand = m_robotContainer.autonCalibrationCurve(1.0, 1.0);
+    }   
+    else if (chooser.getSelected() == "curveRight") {
+      m_autonomousCommand = m_robotContainer.autonCalibrationCurve(1.0, -1.0);
+    }
+    else if (chooser.getSelected() == "nothing") {
+      m_autonomousCommand = m_robotContainer.noAutonomous();
+    }
+    else {
+      // must be last
+      m_autonomousCommand = m_robotContainer.noAutonomous();
+    }
+
+    // zero gyro heading and reset encoders to zero.
+    m_robotContainer.m_drive.zeroHeading();
+    m_robotContainer.m_drive.resetEncoders();
 
     if (m_autonomousCommand != null) {
       System.out.println("Scheduling Autonomous Command");

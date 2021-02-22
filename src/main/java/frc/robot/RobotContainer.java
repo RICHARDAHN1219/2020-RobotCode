@@ -145,6 +145,58 @@ public class RobotContainer {
 
 
 
+ /**
+   * Forward Autonomous Command
+   * 
+   * Return an autonomous command that drives straight for a given distance
+   * in meters.
+   * 
+   * @param distanceInMeters
+   * @return Autonomous Command
+   */
+  public Command autonCalibrationForward(double distanceInMeters) {
+
+    RamseteCommand ramseteCommand = createTrajectoryCommand(
+        new Pose2d(0.0, 0.0, new Rotation2d(0)), 
+        List.of(),
+        new Pose2d(distanceInMeters, 0.0, new Rotation2d(0)),
+        false, 1.5, 0.75);
+
+    // Run path following command, then stop at the end.
+    return ramseteCommand.andThen(() -> m_drive.tankDriveVolts(0, 0));
+  }
+
+ /**
+   * Curve Autonomous Command
+   *  
+   * Return an autonomous command that drives forward and to the left/right for a given distances
+   * in meters.
+   * 
+   * @param forwardInMeters
+   * @param leftInMeters
+   * @return Autonomous Command
+   */
+  public Command autonCalibrationCurve(double forwardInMeters, double leftInMeters) {
+
+    double rotation = Math.PI/2;
+
+    if (leftInMeters == 0) {
+        rotation = 0;
+    }
+    else if (leftInMeters < 0)  {
+      // turning tp the right
+      rotation = -1.0 * Math.PI / 2.0;
+    }
+
+    RamseteCommand ramseteCommand = createTrajectoryCommand(
+        new Pose2d(0.0, 0.0, new Rotation2d(0)), 
+        List.of(),
+        new Pose2d(forwardInMeters, leftInMeters, new Rotation2d(rotation)),
+        false, 1.5, 0.75);
+
+    // Run path following command, then stop at the end.
+    return ramseteCommand.andThen(() -> m_drive.tankDriveVolts(0, 0));
+  }
 
 
 
@@ -427,7 +479,7 @@ public class RobotContainer {
     TrajectoryConfig config;
   
     // Create a voltage constraint to ensure we don't accelerate too fast
-    autoVoltageConstraint = new DifferentialDriveVoltageConstraint(m_drive.getFeedforward(), kDriveKinematics, 6);
+    autoVoltageConstraint = new DifferentialDriveVoltageConstraint(m_drive.getFeedforward(), kDriveKinematics, 2);
 
     // Create config for trajectory
     config = new TrajectoryConfig(Constants.AutoConstants.kMaxSpeedMetersPerSecond, Constants.AutoConstants.kMaxAccelerationMetersPerSecondSquared)

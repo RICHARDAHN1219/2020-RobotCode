@@ -45,13 +45,6 @@ public class driveSubsystem extends SubsystemBase {
 
   private boolean driveInvert = false;
 
-  // limit max ramp rate of joystick velocity and rotation. Set max units/sec.
-  //private SlewRateLimiter speedFilter = new SlewRateLimiter(0.05);
-  //private SlewRateLimiter rotationFilter = new SlewRateLimiter(0.05);
-
-  // OLD Gyro, NAVX:
-  //    private final AHRS m_gyro = new AHRS(SPI.Port.kMXP);
-
   // New Gyro, pigeon IMU on the CAN bus
   private PigeonIMU m_gyro = new PigeonIMU(driveConstants.pigeonCANid);
 
@@ -76,7 +69,6 @@ public class driveSubsystem extends SubsystemBase {
 
     m_gyro.configFactoryDefault();
 
-    m_drive = new DifferentialDrive(falcon1_leftLead, falcon3_rightLead);
     falcon1_leftLead.configFactoryDefault();
     falcon2_leftFollow.configFactoryDefault();
     falcon3_rightLead.configFactoryDefault();
@@ -92,10 +84,11 @@ public class driveSubsystem extends SubsystemBase {
     // configOpenLoopRampRate(0.25);
     
     // set brake mode
-    falcon1_leftLead.setNeutralMode(NeutralMode.Brake);
-    falcon2_leftFollow.setNeutralMode(NeutralMode.Brake);
-    falcon3_rightLead.setNeutralMode(NeutralMode.Brake);
-    falcon4_rightFollow.setNeutralMode(NeutralMode.Brake);
+    NeutralMode mode = NeutralMode.Brake;
+    falcon1_leftLead.setNeutralMode(mode);
+    falcon2_leftFollow.setNeutralMode(mode);
+    falcon3_rightLead.setNeutralMode(mode);
+    falcon4_rightFollow.setNeutralMode(mode);
     
     // No need to invert Follow Motors
     // TODO:maybe the motors are inverted incorrectly? but this is in phase with gyro? not sure
@@ -117,6 +110,8 @@ public class driveSubsystem extends SubsystemBase {
     falcon1_leftLead.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor, 0, driveTimeout);
     falcon3_rightLead.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor, 0, driveTimeout);
 
+
+    m_drive = new DifferentialDrive(falcon1_leftLead, falcon3_rightLead);
     m_drive.setRightSideInverted(false);
 
     // TODO: only set open loop ramp AFTER auton, so not to conflict with path follow
@@ -146,15 +141,22 @@ public class driveSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("right_wheel_Velocity", getRightVelocity());
     SmartDashboard.putNumber("left_wheel_Distance", leftDist); 
     SmartDashboard.putNumber("right_wheel_Distance", rightDist);
+    SmartDashboard.putNumber("left volts", falcon1_leftLead.getMotorOutputVoltage()); 
+    SmartDashboard.putNumber("right volts", falcon3_rightLead.getMotorOutputVoltage());
     
     Pose2d currentPose = m_odometry.getPoseMeters();
     SmartDashboard.putNumber("pose_x",currentPose.getTranslation().getX());
     SmartDashboard.putNumber("pose_y",currentPose.getTranslation().getY());
     SmartDashboard.putNumber("pose_theta", currentPose.getRotation().getDegrees());
+
+    // from https://github.com/CrossTheRoadElec/Phoenix-Examples-Languages/blob/master/Java%20General/DriveStraight_Pigeon/src/main/java/frc/robot/Robot.java
+		boolean angleIsGood = (m_gyro.getState() == PigeonIMU.PigeonState.Ready) ? true : false;
+    SmartDashboard.putBoolean("DEBUG pigeon angle is good", angleIsGood);
+
   }
   
   /**
-   * Returns the distance in Meteres the left wheel has travelled
+   * Returns the distance in Meters the left wheel has travelled
    *
    * @return distance in meters
    */
@@ -310,8 +312,10 @@ public class driveSubsystem extends SubsystemBase {
    * @param rightVolts the commanded right output
    */
   public void tankDriveVolts(double leftVolts, double rightVolts) {
-    falcon1_leftLead.setVoltage(leftVolts);
-    falcon3_rightLead.setVoltage(rightVolts);
+    // Motors are inverted from direction of travel
+    // setVoltage() is absolute and ignore motor inversion.
+    falcon1_leftLead.setVoltage(-leftVolts);
+    falcon3_rightLead.setVoltage(-rightVolts);
     m_drive.feed();
   }
 
@@ -346,6 +350,7 @@ public class driveSubsystem extends SubsystemBase {
    */
   public void zeroHeading() {
     m_gyro.setFusedHeading(0.0);
+    m_gyro.setYaw(0.0);
     m_gyro.setAccumZAngle(0.0);
     // was m_gyro.reset();
   }
