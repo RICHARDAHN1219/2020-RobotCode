@@ -143,6 +143,332 @@ public class RobotContainer {
     return new RunCommand(() -> m_drive.tankDriveVolts(0, 0));
   }
 
+
+
+
+
+
+
+
+  //The Following are the Autonomous commands for the 2021 Infinite Recharge at home season
+
+
+
+
+
+ /**
+   * getAutonomousBarrelCommand - generate Barrel AutoNav Command
+   * 
+   * @return Command object
+   */
+  public Command getAutonomousBarrelCommand(){
+
+    // Tell the odometry know where the robot is starting from and what direction it is pointing.
+    Pose2d startPose = new Pose2d(inches2meters(50), inches2meters(90), new Rotation2d(0));
+    m_drive.resetOdometry(startPose);
+
+    // TODO: complete Barrel Auton command and uncomment the next line
+
+    // distances are in Meters
+    var barrel_path_points = List.of(
+      // navigate around first barrel, centered at D5 (150,60)
+      new Translation2d( inches2meters(150), inches2meters(90)),
+      new Translation2d( inches2meters(180), inches2meters(60)),
+      new Translation2d( inches2meters(150), inches2meters(30)),
+      new Translation2d( inches2meters(120), inches2meters(60))
+
+      // TODO: navigate around B8  (240, 120)
+
+      // TODO: navigate around D10 (300, 60)
+
+      // TODO: navigate back to start without hitting any markers
+
+      );
+
+    // Start of a Figure 8
+    RamseteCommand ramseteCommand = createTrajectoryCommand(
+        startPose,
+        barrel_path_points,
+        new Pose2d(inches2meters(50), inches2meters(90), new Rotation2d(Math.PI)));
+    
+    // Run path following command, then stop at the end.
+    return ramseteCommand.andThen(() -> m_drive.tankDriveVolts(0, 0));
+  }
+
+
+  /**
+   * getAutonomousSlalomCommand - generate Barrel AutoNav Command
+   * 
+   * @return Command object
+   */
+  public Command getAutonomousSlalomCommand(){
+     
+    Pose2d startPose = new Pose2d(inches2meters(50), inches2meters(30), new Rotation2d(0));
+    m_drive.resetOdometry(startPose);
+
+    var slalom_path_points = List.of(
+      // TODO: Set up Slalom path points
+      new Translation2d( inches2meters(80), inches2meters(30)),
+      //new Translation2d( inches2meters(90), inches2meters(60)),
+      new Translation2d( inches2meters(105), inches2meters(90)),
+      new Translation2d( inches2meters(255), inches2meters(90)),
+      //new Translation2d( inches2meters(270), inches2meters(60)),
+      new Translation2d( inches2meters(290), inches2meters(30)),
+      new Translation2d( inches2meters(345), inches2meters(60)),
+      new Translation2d( inches2meters(285), inches2meters(90)),
+      //new Translation2d( inches2meters(270), inches2meters(60)),
+      new Translation2d( inches2meters(260), inches2meters(30)),
+      new Translation2d( inches2meters(125), inches2meters(30)),
+      //new Translation2d( inches2meters(90), inches2meters(60)),
+      new Translation2d( inches2meters(75), inches2meters(90))
+      );
+
+
+    // Start of The Slalom Path Program
+    RamseteCommand ramseteCommand = createTrajectoryCommand(
+        startPose,
+        slalom_path_points,
+        new Pose2d(inches2meters(50), inches2meters(90), new Rotation2d(Math.PI)));
+    
+    // Run path following command, then stop at the end. Turn off Drive train
+    return ramseteCommand.andThen(() -> m_drive.tankDriveVolts(0, 0));
+  }
+
+
+  /**
+   * getAutonomousSlalomCommand - generate Barrel AutoNav Command
+   * 
+   * @return Command object
+   */
+  public Command getAutonomousBounceCommand(){
+    Pose2d startPose = new Pose2d(inches2meters(50), inches2meters(90), new Rotation2d(0));
+    m_drive.resetOdometry(startPose);
+    
+
+    var bounce_path_points = List.of(
+      // TODO: Set up Slalom path points
+      new Translation2d( inches2meters(70), inches2meters(90))
+      // new Translation2d( inches2meters(90), inches2meters(150))      
+      );
+
+    // Start of The Slalom Path Program
+    RamseteCommand ramseteCommand = createTrajectoryCommand(
+        startPose,
+        bounce_path_points,
+        new Pose2d(inches2meters(90), inches2meters(150), new Rotation2d(Math.PI/2)));
+    
+    // Run path following command, then stop at the end. Turn off Drive train
+    return ramseteCommand.andThen(() -> m_drive.tankDriveVolts(0, 0));
+  }
+
+  
+  /**
+   * getAutonomousBlueBCommand - generate Blue B AutoNav Command
+   * @return Command object
+   */
+  public Command getAutonomousBlueBCommand(){
+
+    // TODO: temporarily moving start from (20,90) to (40,90) to avoid moving goal
+    Pose2d startPose = new Pose2d(inches2meters(40), inches2meters(90), new Rotation2d(0));
+    m_drive.resetOdometry(startPose);
+
+
+    var blue_b_points = List.of(
+      new Translation2d( inches2meters(180), inches2meters(60)),
+      new Translation2d( inches2meters(240), inches2meters(120)),
+      new Translation2d( inches2meters(300), inches2meters(60))
+      );
+    
+    // Start of Blue B program
+    RamseteCommand ramseteCommand = createTrajectoryCommand(
+      startPose,
+      blue_b_points,
+      new Pose2d(inches2meters(340), inches2meters(90), new Rotation2d(0))
+    );
+
+    // Run path following command, then stop at end. Turn off Drive train
+    return ramseteCommand.andThen(() -> m_drive.tankDriveVolts(0, 0));
+  }
+
+
+  /**
+   * getAutonomousBlueACommand - generate Blue A AutoNav Command
+   * @return Command object
+   */
+  public Command getAutonomousBlueACommand(){
+    // TODO: temporarily moving start from (20,90) to (40,90) to avoid moving goal
+    Pose2d startPose = new Pose2d(inches2meters(40), inches2meters(90), new Rotation2d(0));
+    m_drive.resetOdometry(startPose);
+
+
+    var blue_a_points = List.of(
+      new Translation2d( inches2meters(180), inches2meters(30)),
+      new Translation2d( inches2meters(210), inches2meters(120)),
+      new Translation2d( inches2meters(270), inches2meters(90))
+      );
+    
+    // Start of Blue A program
+    RamseteCommand ramseteCommand = createTrajectoryCommand(
+      startPose,
+      blue_a_points,
+      new Pose2d(inches2meters(340), inches2meters(90), new Rotation2d(0))
+    );
+
+    // Run path following command, then stop at end. Turn off Drive train
+    return ramseteCommand.andThen(() -> m_drive.tankDriveVolts(0, 0));
+  }
+
+
+  /**
+   * getAutonomousRedBCommand - generate Red B AutoNav Command
+   * @return Command object
+   */
+  public Command getAutonomousRedBCommand(){
+    // TODO: temporarily moving start from (20,90) to (40,90) to avoid moving goal
+    Pose2d startPose = new Pose2d(inches2meters(40), inches2meters(90), new Rotation2d(0));
+    m_drive.resetOdometry(startPose);
+
+
+    var red_b_points = List.of(
+      new Translation2d( inches2meters(90), inches2meters(120)),
+      new Translation2d( inches2meters(150), inches2meters(60)),
+      new Translation2d( inches2meters(210), inches2meters(120))
+      );
+    
+    // Start of Red B program
+    RamseteCommand ramseteCommand = createTrajectoryCommand(
+      startPose,
+      red_b_points,
+      new Pose2d(inches2meters(340), inches2meters(90), new Rotation2d(0))
+    );
+
+    // Run path following command, then stop at end. Turn off Drive train
+    return ramseteCommand.andThen(() -> m_drive.tankDriveVolts(0, 0));
+  }
+
+
+  /**
+   * getAutonomousRedACommand - generate Red A AutoNav Command
+   * @return Command object
+   */
+  public Command getAutonomousRedACommand(){
+    // TODO: temporarily moving start from (20,90) to (40,90) to avoid moving goal
+    Pose2d startPose = new Pose2d(inches2meters(40), inches2meters(90), new Rotation2d(0));
+    m_drive.resetOdometry(startPose);
+
+
+    var red_a_points = List.of(
+      new Translation2d( inches2meters(90), inches2meters(90)),
+      new Translation2d( inches2meters(150), inches2meters(60)),
+      new Translation2d( inches2meters(180), inches2meters(150))
+      );
+    
+    // Start of Red A program
+    RamseteCommand ramseteCommand = createTrajectoryCommand(
+      startPose,
+      red_a_points,
+      new Pose2d(inches2meters(340), inches2meters(90), new Rotation2d(0))
+    );
+
+    // Run path following command, then stop at end. Turn off Drive train
+    return ramseteCommand.andThen(() -> m_drive.tankDriveVolts(0, 0));
+  }
+
+
+  /**
+   * Figure 8 Autonomous Command
+   * 
+   * @return Command object
+   */
+  public Command getAutonomousFigure8Command() {
+ 
+    // This assumes a start pose of (0,0) angle 0 (where ever the robot starts at)
+
+    // distances are in Meters
+    var figure_eight = List.of(
+      new Translation2d( 0.5, -0.5),
+      new Translation2d( 1.0, -1.0),
+      new Translation2d( 1.5, -0.5),
+      new Translation2d( 1.0,  0.0),
+      new Translation2d( 0.5, -0.5),
+      new Translation2d( 0.0, -1.0),
+      new Translation2d(-0.5, -0.5));
+
+    // Start of a Figure 8
+    RamseteCommand ramseteCommand = createTrajectoryCommand(
+        new Pose2d(0, 0, new Rotation2d(0)),
+        figure_eight,
+        new Pose2d(0.0, 0.0, new Rotation2d(0)));
+    
+    // Run path following command, then stop at the end.
+    return ramseteCommand.andThen(() -> m_drive.tankDriveVolts(0, 0));
+  }
+
+  /**
+   * RamseteCommand - generate a path following autonomous driving command.
+   * 
+   * @param startPose where the robot starts
+   * @param translationList list of intermediate points to pass through
+   * @param endPose where the robot stops
+   * @return Command object that executes the path
+   */
+  public RamseteCommand createTrajectoryCommand(Pose2d startPose, List<Translation2d> translationList, Pose2d endPose) {
+    DifferentialDriveVoltageConstraint autoVoltageConstraint;
+    TrajectoryConfig config;
+  
+    // Create a voltage constraint to ensure we don't accelerate too fast
+    autoVoltageConstraint = new DifferentialDriveVoltageConstraint(m_drive.getFeedforward(), kDriveKinematics, 6);
+
+    // Create config for trajectory
+    config = new TrajectoryConfig(kMaxSpeedMetersPerSecond, kMaxAccelerationMetersPerSecondSquared)
+        // Add kinematics to ensure max speed is actually obeyed
+        .setKinematics(kDriveKinematics)
+        // Apply the voltage constraint
+        .addConstraint(autoVoltageConstraint);
+
+    var initialTime = System.nanoTime();
+
+    // trajectory to follow. All units in meters.
+    var trajectory = TrajectoryGenerator.generateTrajectory(
+        startPose,
+        translationList,
+        endPose,
+        config);
+
+    RamseteCommand ramseteCommand =
+        new RamseteCommand(trajectory, 
+            m_drive::getPose,
+            new RamseteController(kRamseteB, kRamseteZeta),
+            m_drive.getFeedforward(),
+            kDriveKinematics,
+            m_drive::getWheelSpeeds,
+            m_drive.getLeftPidController(),
+            m_drive.getRightPidController(),
+            m_drive::tankDriveVolts,
+            m_drive);
+
+    var dt = (System.nanoTime() - initialTime) / 1E6;
+    System.out.println("RamseteCommand generation time: " + dt + "ms");
+
+    // Run path following command, then stop at the end.
+    return ramseteCommand;
+  }
+
+
+
+
+
+
+
+
+  //The Following are the Autonomous Commands for the 2020 Infinite Recharge Season
+
+
+
+
+
+
+
   public Command straightOn3Ball() {
     RamseteCommand moveBack1 = createTrajectoryCommand(new Pose2d(0, 0, new Rotation2d(0)), List.of(new Translation2d(-0.5, 0)), new Pose2d(-1, 0, new Rotation2d(0)), true, 2.5, 0.75);
     

@@ -41,6 +41,13 @@ public class Robot extends TimedRobot {
     chooser.addOption("straight on 3", "s3");
     chooser.addOption("straight on 3 forward", "s3f");
     chooser.addOption("right side 6 reorg", "r6reorg");
+    chooser.addOption("Barell", "barell");
+    chooser.addOption("Slalom", "slalom");
+    chooser.addOption("Bounce", "bounce");
+    chooser.addOption("Red A", "reda");
+    chooser.addOption("Red B", "redb");
+    chooser.addOption("Blue A", "bluea");
+    chooser.addOption("Blue A", "bluea");
     chooser.setDefaultOption("Center 3 ball", "m3");
     SmartDashboard.putData("Auto mode", chooser);
   }
@@ -101,6 +108,30 @@ public class Robot extends TimedRobot {
     }
     if (chooser.getSelected() == "s3f") {
       m_autonomousCommand = m_robotContainer.straightOn3BallForward();
+    }
+    if (chooser.getSelected() == "figure8") {
+      m_autonomousCommand = m_robotContainer.getAutonomousFigure8Command();
+    }
+    if (chooser.getSelected() == "barrel") {
+      m_autonomousCommand = m_robotContainer.getAutonomousBarrelCommand();
+    }
+    if (chooser.getSelected() == "slalom") {
+      m_autonomousCommand = m_robotContainer.getAutonomousSlalomCommand();
+    }
+    if (chooser.getSelected() == "bounce") {
+      m_autonomousCommand = m_robotContainer.getAutonomousBounceCommand();
+    }
+    if (chooser.getSelected() == "reda") {
+      m_autonomousCommand = m_robotContainer.getAutonomousRedACommand();
+    }
+    if (chooser.getSelected() == "redb") {
+      m_autonomousCommand = m_robotContainer.getAutonomousRedBCommand();
+    }
+    if (chooser.getSelected() == "bluea") {
+      m_autonomousCommand = m_robotContainer.getAutonomousBlueACommand();
+    }
+    if (chooser.getSelected() == "blueb") {
+      m_autonomousCommand = m_robotContainer.getAutonomousBlueBCommand();
     }
 
     if (m_autonomousCommand != null) {
