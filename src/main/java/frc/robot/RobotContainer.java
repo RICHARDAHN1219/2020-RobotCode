@@ -199,7 +199,7 @@ public class RobotContainer {
     RamseteCommand ramseteCommand = createTrajectoryCommand(
         startPose,
         barrel_path_points,
-        new Pose2d(inches2meters(50), inches2meters(90), new Rotation2d(Math.PI)));
+        new Pose2d(inches2meters(50), inches2meters(90), new Rotation2d(0)), false, 0.5, 0.25);
     
     // Run path following command, then stop at the end.
     return ramseteCommand.andThen(() -> m_drive.tankDriveVolts(0, 0));

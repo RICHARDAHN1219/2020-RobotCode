@@ -88,7 +88,7 @@ public class driveSubsystem extends SubsystemBase {
     // Voltage limits
     setVoltageLimit(11);
 
-    // set Ramp up speed, time in seconds (smaller is more responseive, 0 disables)
+    // set Ramp up speed, time in seconds (smaller is more responsive, 0 disables)
     // configOpenLoopRampRate(0.25);
     
     // set brake mode
@@ -98,6 +98,7 @@ public class driveSubsystem extends SubsystemBase {
     falcon4_rightFollow.setNeutralMode(NeutralMode.Brake);
     
     // No need to invert Follow Motors
+    // TODO:maybe the motors are inverted incorrectly? but this is in phase with gyro? not sure
     falcon1_leftLead.setInverted(false);
     falcon3_rightLead.setInverted(true);
     falcon2_leftFollow.setInverted(InvertType.FollowMaster);
@@ -119,8 +120,8 @@ public class driveSubsystem extends SubsystemBase {
     m_drive.setRightSideInverted(false);
 
     // TODO: only set open loop ramp AFTER auton, so not to conflict with path follow
-    falcon1_leftLead.configOpenloopRamp(0.2);
-    falcon3_rightLead.configOpenloopRamp(0.2);
+    //falcon1_leftLead.configOpenloopRamp(0.2);
+    //falcon3_rightLead.configOpenloopRamp(0.2);
 
     resetEncoders();
     m_odometry = new DifferentialDriveOdometry(Rotation2d.fromDegrees(getHeading()));
@@ -163,7 +164,7 @@ public class driveSubsystem extends SubsystemBase {
   }
 
   /**
-   * Returns the distance in Meteres the right wheel has travelled
+   * Returns the distance in Meters the right wheel has travelled
    *
    * @return distance in meters
    */
