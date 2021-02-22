@@ -175,17 +175,27 @@ public class RobotContainer {
       new Translation2d( inches2meters(150), inches2meters(90)),
       new Translation2d( inches2meters(180), inches2meters(60)),
       new Translation2d( inches2meters(150), inches2meters(30)),
-      new Translation2d( inches2meters(120), inches2meters(60))
+      new Translation2d( inches2meters(120), inches2meters(60)),
 
       // TODO: navigate around B8  (240, 120)
+      new Translation2d( inches2meters(150), inches2meters(90)),
+      new Translation2d( inches2meters(240), inches2meters(90)),
+      new Translation2d( inches2meters(270), inches2meters(120)),
+      new Translation2d( inches2meters(240), inches2meters(150)),
+      new Translation2d( inches2meters(210), inches2meters(120)),
 
       // TODO: navigate around D10 (300, 60)
+      new Translation2d( inches2meters(210), inches2meters(60)),
+      new Translation2d( inches2meters(300), inches2meters(30)),
+      new Translation2d( inches2meters(330), inches2meters(60)),
+      new Translation2d( inches2meters(300), inches2meters(90)),
 
       // TODO: navigate back to start without hitting any markers
-
+      new Translation2d( inches2meters(150), inches2meters(90))
+      // above point is just in case, but from (300, 90) to the finish is a straight shot
       );
 
-    // Start of a Figure 8
+    // Start of Barrel Path
     RamseteCommand ramseteCommand = createTrajectoryCommand(
         startPose,
         barrel_path_points,
@@ -420,7 +430,7 @@ public class RobotContainer {
     autoVoltageConstraint = new DifferentialDriveVoltageConstraint(m_drive.getFeedforward(), kDriveKinematics, 6);
 
     // Create config for trajectory
-    config = new TrajectoryConfig(kMaxSpeedMetersPerSecond, kMaxAccelerationMetersPerSecondSquared)
+    config = new TrajectoryConfig(Constants.AutoConstants.kMaxSpeedMetersPerSecond, Constants.AutoConstants.kMaxAccelerationMetersPerSecondSquared)
         // Add kinematics to ensure max speed is actually obeyed
         .setKinematics(kDriveKinematics)
         // Apply the voltage constraint
@@ -452,6 +462,16 @@ public class RobotContainer {
 
     // Run path following command, then stop at the end.
     return ramseteCommand;
+  }
+
+   /**
+   * Convert units form inches to meters
+   * 
+   * @param distInches
+   * @return distance in meters
+   */
+  public static double inches2meters(double distInches) {
+    return distInches * 0.0254;
   }
 
 

@@ -51,7 +51,8 @@ public final class Constants {
 
         // Aprox 6 inch (0.1524 meters) traction wheels, measured 0.15836 m
         // Measured circumference = 0.509 m
-        public static final double kDistancePerWheelRevolutionMeters = 0.509;
+        // New Measured Circumference = 0.495 m 
+        public static final double kDistancePerWheelRevolutionMeters = 0.495;
         public static final double kWheelDiameterMeters =
                 kDistancePerWheelRevolutionMeters / Math.PI;
 
@@ -64,6 +65,9 @@ public final class Constants {
                 (kDistancePerWheelRevolutionMeters * kGearReduction) / (double) kEncoderCPR;
     }
     public static final class AutoConstants {
+        public static final double kMaxSpeedMetersPerSecond =  0.5;
+        public static final double kMaxAccelerationMetersPerSecondSquared = 0.25;
+
         // Reasonable baseline values for a RAMSETE follower in units of meters and seconds
         public static final double kRamseteB = 2;
         public static final double kRamseteZeta = 0.7;
