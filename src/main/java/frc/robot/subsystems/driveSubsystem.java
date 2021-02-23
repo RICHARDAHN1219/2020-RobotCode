@@ -58,6 +58,8 @@ public class driveSubsystem extends SubsystemBase {
   // Odometry class for tracking robot pose
   private final DifferentialDriveOdometry m_odometry;
 
+  private double invertEncoders = -1.0;
+
   // http://www.ctr-electronics.com/downloads/pdf/Falcon%20500%20User%20Guide.pdf
   // Peak power: 140A
   // Stall:      257A  (more than the battery can supply)
@@ -162,7 +164,7 @@ public class driveSubsystem extends SubsystemBase {
    */
   double getLeftPosition() {
      // Native units are encoder ticks (2048 ticks per revolution)
-    return falcon1_leftLead.getSelectedSensorPosition() * kDistancePerWheelRevolutionMeters * kGearReduction / kEncoderCPR;
+    return invertEncoders * falcon1_leftLead.getSelectedSensorPosition() * kDistancePerWheelRevolutionMeters * kGearReduction / kEncoderCPR;
   }
 
   /**
@@ -172,7 +174,7 @@ public class driveSubsystem extends SubsystemBase {
    */
   double getRightPosition() {
     // Native units are encoder ticks (2048 ticks per revolution)
-    return falcon3_rightLead.getSelectedSensorPosition() * kDistancePerWheelRevolutionMeters * kGearReduction / kEncoderCPR;
+    return invertEncoders * falcon3_rightLead.getSelectedSensorPosition() * kDistancePerWheelRevolutionMeters * kGearReduction / kEncoderCPR;
   }
 
   /**
@@ -182,7 +184,7 @@ public class driveSubsystem extends SubsystemBase {
    */
   double getLeftVelocity() {
     // Native units are encoder ticks per 100ms
-    return falcon1_leftLead.getSelectedSensorVelocity() * kDistancePerWheelRevolutionMeters * kGearReduction * 10.0 / kEncoderCPR ;
+    return invertEncoders * falcon1_leftLead.getSelectedSensorVelocity() * kDistancePerWheelRevolutionMeters * kGearReduction * 10.0 / kEncoderCPR ;
   }
 
   /**
@@ -192,7 +194,7 @@ public class driveSubsystem extends SubsystemBase {
    */
   double getRightVelocity() {
     // Native units are encoder ticks per 100ms
-    return falcon3_rightLead.getSelectedSensorVelocity() * kDistancePerWheelRevolutionMeters * kGearReduction * 10.0 / kEncoderCPR ;
+    return invertEncoders * falcon3_rightLead.getSelectedSensorVelocity() * kDistancePerWheelRevolutionMeters * kGearReduction * 10.0 / kEncoderCPR ;
   }
 
   /**
