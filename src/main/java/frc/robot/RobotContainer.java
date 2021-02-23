@@ -275,7 +275,7 @@ public class RobotContainer {
    */
   public Command getAutonomousSlalomCommand(){
      
-    Pose2d startPose = new Pose2d(inches2meters(50), inches2meters(30), new Rotation2d(0));
+    Pose2d startPose = new Pose2d(inches2meters(45), inches2meters(30), new Rotation2d(0));
     m_drive.resetOdometry(startPose);
 
     var slalom_path_points = List.of(
@@ -284,9 +284,11 @@ public class RobotContainer {
       //new Translation2d( inches2meters(90), inches2meters(60)),
       new Translation2d( inches2meters(105), inches2meters(90)),
       new Translation2d( inches2meters(255), inches2meters(90)),
-      //new Translation2d( inches2meters(270), inches2meters(60)),
+      new Translation2d( inches2meters(270), inches2meters(60)),
+
+      // Between D8(240, 60) and D10(300, 60)
       new Translation2d( inches2meters(290), inches2meters(30)),
-      new Translation2d( inches2meters(345), inches2meters(60)),
+      new Translation2d( inches2meters(340), inches2meters(60)),
       new Translation2d( inches2meters(285), inches2meters(90)),
       //new Translation2d( inches2meters(270), inches2meters(60)),
       new Translation2d( inches2meters(260), inches2meters(30)),
@@ -300,7 +302,7 @@ public class RobotContainer {
     RamseteCommand ramseteCommand = createTrajectoryCommand(
         startPose,
         slalom_path_points,
-        new Pose2d(inches2meters(50), inches2meters(90), new Rotation2d(Math.PI)));
+        new Pose2d(inches2meters(60), inches2meters(90), new Rotation2d(Math.PI)), false, 0.5, 0.25);
     
     // Run path following command, then stop at the end. Turn off Drive train
     return ramseteCommand.andThen(() -> m_drive.tankDriveVolts(0, 0));
