@@ -242,16 +242,18 @@ public class RobotContainer {
       new Translation2d( inches2meters(240), inches2meters(90)),
       new Translation2d( inches2meters(270), inches2meters(120)),
       new Translation2d( inches2meters(240), inches2meters(150)),
-      new Translation2d( inches2meters(210), inches2meters(120)),
+      new Translation2d( inches2meters(205), inches2meters(120)),
 
       // TODO: navigate around D10 (300, 60)
       new Translation2d( inches2meters(210), inches2meters(60)),
       new Translation2d( inches2meters(300), inches2meters(30)),
       new Translation2d( inches2meters(330), inches2meters(60)),
-      new Translation2d( inches2meters(300), inches2meters(90)),
+      new Translation2d( inches2meters(300), inches2meters(90)), // shift left slightly 
 
-      // TODO: navigate back to start without hitting any markers
-      new Translation2d( inches2meters(150), inches2meters(90))
+      // avoid cones on the way back
+      new Translation2d( inches2meters(240), inches2meters(80)), 
+      new Translation2d( inches2meters(150), inches2meters(100))
+
       // above point is just in case, but from (300, 90) to the finish is a straight shot
       );
 
@@ -259,7 +261,7 @@ public class RobotContainer {
     RamseteCommand ramseteCommand = createTrajectoryCommand(
         startPose,
         barrel_path_points,
-        new Pose2d(inches2meters(50), inches2meters(90), new Rotation2d(0)), false, 0.5, 0.25);
+        new Pose2d(inches2meters(60), inches2meters(90), new Rotation2d(Math.PI)), false, 1.5, 0.50);
     
     // Run path following command, then stop at the end.
     return ramseteCommand.andThen(() -> m_drive.tankDriveVolts(0, 0));
