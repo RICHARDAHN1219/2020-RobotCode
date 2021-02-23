@@ -53,7 +53,7 @@ public final class Constants {
         // Aprox 6 inch (0.1524 meters) traction wheels, measured 0.15836 m
         // Measured circumference = 0.509 m
         // New Measured Circumference = 0.495 m 
-        public static final double kDistancePerWheelRevolutionMeters = 0.495;
+        public static final double kDistancePerWheelRevolutionMeters = 0.495 * 1.066666;
         public static final double kWheelDiameterMeters =
                 kDistancePerWheelRevolutionMeters / Math.PI;
 
