@@ -156,8 +156,12 @@ public class RobotContainer {
    */
   public Command autonCalibrationForward(double distanceInMeters) {
 
+    Pose2d startPose = new Pose2d(0.0, 0.0, new Rotation2d(0));
+
+    m_drive.resetOdometry(startPose);
+
     RamseteCommand ramseteCommand = createTrajectoryCommand(
-        new Pose2d(0.0, 0.0, new Rotation2d(0)), 
+        startPose, 
         List.of(),
         new Pose2d(distanceInMeters, 0.0, new Rotation2d(0)),
         false, 1.5, 0.75);
@@ -188,8 +192,12 @@ public class RobotContainer {
       rotation = -1.0 * Math.PI / 2.0;
     }
 
+    Pose2d startPose = new Pose2d(0.0, 0.0, new Rotation2d(0));
+
+    m_drive.resetOdometry(startPose);
+
     RamseteCommand ramseteCommand = createTrajectoryCommand(
-        new Pose2d(0.0, 0.0, new Rotation2d(0)), 
+        startPose, 
         List.of(),
         new Pose2d(forwardInMeters, leftInMeters, new Rotation2d(rotation)),
         false, 1.5, 0.75);
