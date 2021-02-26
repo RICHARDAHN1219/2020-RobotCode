@@ -58,6 +58,7 @@ public class driveSubsystem extends SubsystemBase {
   // Odometry class for tracking robot pose
   private final DifferentialDriveOdometry m_odometry;
 
+  // robot drives opposite of built in motor encoders
   private double invertEncoders = -1.0;
 
   // http://www.ctr-electronics.com/downloads/pdf/Falcon%20500%20User%20Guide.pdf
@@ -116,7 +117,7 @@ public class driveSubsystem extends SubsystemBase {
     m_drive = new DifferentialDrive(falcon1_leftLead, falcon3_rightLead);
     m_drive.setRightSideInverted(false);
 
-    // TODO: only set open loop ramp AFTER auton, so not to conflict with path follow
+    // Open loop ramp rate doesn't help and might interfere with auton.
     //falcon1_leftLead.configOpenloopRamp(0.2);
     //falcon3_rightLead.configOpenloopRamp(0.2);
 
@@ -292,7 +293,7 @@ public class driveSubsystem extends SubsystemBase {
    */
   public void resetOdometry(Pose2d pose) {
     resetEncoders();
-    zeroHeading();
+    setHeadingDegrees(pose.getRotation().getDegrees());
     m_odometry.resetPosition(pose, Rotation2d.fromDegrees(getHeading()));
   }
 
@@ -349,13 +350,25 @@ public class driveSubsystem extends SubsystemBase {
   }
 
   /**
+   * Set the heading of the robot. In degrees.
+   */
+  public void setHeadingRadians(double headingRadians) {
+    setHeadingDegrees(Math.toDegrees(headingRadians));
+  }
+
+  /**
+   * Set the heading of the robot. In degrees.
+   */
+  public void setHeadingDegrees(double headingDegrees) {
+    m_gyro.setAccumZAngle(headingDegrees);
+    m_gyro.setFusedHeading(headingDegrees);
+  }
+
+  /**
    * Zeroes the heading of the robot.
    */
   public void zeroHeading() {
-    m_gyro.setFusedHeading(0.0);
-    m_gyro.setYaw(0.0);
-    m_gyro.setAccumZAngle(0.0);
-    // was m_gyro.reset();
+    setHeadingDegrees(0.0);
   }
 
   /**
