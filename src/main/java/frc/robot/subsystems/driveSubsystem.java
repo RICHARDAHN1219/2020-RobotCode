@@ -94,7 +94,6 @@ public class driveSubsystem extends SubsystemBase {
     falcon4_rightFollow.setNeutralMode(mode);
     
     // No need to invert Follow Motors
-    // TODO:maybe the motors are inverted incorrectly? but this is in phase with gyro? not sure
     falcon1_leftLead.setInverted(false);
     falcon3_rightLead.setInverted(true);
     falcon2_leftFollow.setInverted(InvertType.FollowMaster);

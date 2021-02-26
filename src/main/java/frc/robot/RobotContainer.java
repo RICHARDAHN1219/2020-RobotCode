@@ -104,8 +104,8 @@ public class RobotContainer {
       // Right Trigger - climber up (lower robot)
       // Right Bumper - invert drive controls
       // Left Bumper - Slow down robot by 1/2
-      driverYButton.whenPressed(new InstantCommand(() -> m_turret.setAngleDegrees(0), m_turret).andThen(() -> m_elevator.deployElevator()));
-      driverXButton.whenPressed(() -> m_elevator.retractElevator());
+      // driverYButton.whenPressed(new InstantCommand(() -> m_turret.setAngleDegrees(0), m_turret).andThen(() -> m_elevator.deployElevator()));
+      // driverXButton.whenPressed(() -> m_elevator.retractElevator());
       driverRightBumper.whenPressed(new driveInvertCommand(m_drive));
     
     // Operator Controls
@@ -132,8 +132,11 @@ public class RobotContainer {
       opDPadUp.whenPressed(() -> m_indexer.setBallCount(m_indexer.getBallCount() + 1));
       opDPadDown.whenPressed(() -> m_indexer.setBallCount(m_indexer.getBallCount() - 1));
       opBackButton.whenPressed(new shooterSpoolCommand(m_shooter));
+      
+      // Start button zeros the robot pose and heading. Zeros encoders and gyro heading.
+      opStartButton.whenPressed(() -> m_drive.resetOdometry(new Pose2d(0,0,new Rotation2d(0))), m_drive);
   }
-  
+
   /**
    * Do nothing during auton
    * 
